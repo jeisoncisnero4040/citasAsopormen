@@ -1,0 +1,32 @@
+.select-data-client{
+    width: 100%;
+    background: #f1f1f1;
+}
+.input-name-client{
+    display: flex;
+}
+
+.show-data-client{
+    display:flex;
+    flex-direction: column;
+}
+.show-data-client-3{
+    display: flex;
+}
+.show-data-client-4{
+    display: flex;
+}
+.sex-and-age{
+    display: flex;
+}
+@media screen and (max-width: 768px){
+    .show-data-client-3{
+        display: flex;
+        flex-direction: column;
+    }
+    .show-data-client-4{
+        display: flex;
+        flex-direction: column;
+    }
+ 
+}

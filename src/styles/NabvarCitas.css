@@ -1,0 +1,97 @@
+.subnavbar {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.subnavbar img{
+    width: 50%;
+    height: auto;
+    margin-top: 10%;
+    margin-bottom: 10%;
+}
+
+.card {
+    margin: 0;
+    width: 100%;
+    background: #1b0dd3;
+}
+
+.card-header {
+    background: #1b0dd3;
+    padding: 0%;
+    cursor: pointer;
+    width: 100%;
+}
+
+.card-btn {
+    background: #1b0dd3;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: left;  
+}
+
+.card-btn:hover {
+    background-color: #236db8;
+}
+
+.card-body {
+    width: 100%;
+    background: #1b0dd3;
+}
+
+.card-body a {
+    display: block;
+    margin: 0%;
+    color: #f1f1f1;
+    text-decoration: none;
+    padding: 4% 8%;
+    font-weight: bold;
+}
+
+.card-body a:hover {
+    background-color: #236db8;
+}
+
+.link {
+    width: 100%;  
+    text-align: left;  
+}
+
+.link a {
+    display: block;  
+    font-size: 16px;
+    color: #f1f1f1;
+    text-decoration: none;  
+    padding: 10px; 
+}
+
+.link a:hover {
+    background-color: #236db8; 
+}
+@media screen and (max-width: 768px) {
+   .subnavbar{
+    display: flex;
+    
+   }
+    .subnavbar img {
+ 
+        display: none;
+    }
+
+     
+    .card-btn {
+        font-size: 14px;  
+    }
+
+    .card-body a {
+        padding: 2% 4%;  
+        font-size: 14px;  
+    }
+    
+    .link a {
+        font-size: 14px;  
+        padding: 8px;  
+    }
+}

@@ -1,0 +1,186 @@
+.form-citas-1 {
+    width: 99%;
+    background: #f1f1f1;
+ 
+}
+
+.header-form-citas{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-color:#236db8 ;
+    width: 100%;
+    height: 10%;
+    margin: 0%;
+    padding: 0%;
+
+}
+.header-form-citas p{
+    color: #f1f1f1;
+    font-size: 18px;
+    font-weight: bold;
+}
+.body-form-citas{
+    height: 60%;
+    width: 100%;
+    background-color: #f1f1f1;
+
+}
+.select-data{
+    width: 100%;
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 1%; 
+    
+
+}
+.data-profesional{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    margin: 1%;
+    
+    
+    
+}
+.get-all-data-pro{
+    border: 1px solid #ccc;
+    padding: 1%;
+    border-radius: 5px;
+}
+.input-name-pro{
+    display: flex;
+}
+.input-name-profesional{
+    width: 50%;
+}
+.input-name-profesional label{
+    font-size: 16px;
+    
+}
+.input-name-profesional input{
+    width: 95%;
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f1f1f1;
+
+}
+.select-profesional{
+    font-size: 16px;
+    width: 50%;
+}
+.select-profesional select{
+    width: 100%;
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f1f1f1;
+}
+
+.info-profesional{
+    display: flex;
+}
+.read-info-p{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+.read-info-p label{
+    font-size: 16px;
+    
+}
+.read-info-p  input{
+    width: 95%;
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #c1c1c1;
+
+}
+.read-info-p  input{
+    width: 90%;
+    padding: 5px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #c1c1c1;
+
+}
+.data-client{
+    margin-top: 5%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+     
+}
+.calendario-profesional{
+    width: 40%;
+    height: auto;
+}.calendar-small-screen{
+    display: none;
+}
+.get-client-info{
+    margin-top: 2%;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding:1%;
+}
+
+
+ 
+@media screen and (max-width: 768px) {
+    .body-form-citas {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        width: 100%;
+        padding: 0;  
+    }
+
+    .select-data {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+        width: 100%;
+    }
+
+    .data-profesional {
+        margin-top: 5%;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .input-name-profesional,
+    .select-profesional {
+ 
+        width: 100%;  
+        margin-bottom: 10px;
+    }
+
+    .input-name-profesional input,
+    .select-profesional select {
+        width: 100%; 
+    }
+
+    .calendario-profesional {
+        display: none;
+    }
+    .calendar-small-screen{
+        width: 100%;
+        margin:1%;
+        display: block;
+    }
+
+    .info-profesional,
+    .read-info-p {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+}

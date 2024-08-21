@@ -1,24 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+// src/App.js
+import React from "react";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./components/HomePage";
+import FormCitas from "./components/FormCitas";
+import ProtectedRoute from "./util/ProtectedRout";
+import RecoverPasswordPage from "./components/RecoverPasswordPage";
+import TableInfoProByDay  from "./components/TableInfoProByDay";
+import "./styles/app.css";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    
+      <div className="app-container">
+        <Routes>
+          
+        <Route path="/recover_password" element={<RecoverPasswordPage/>} />
+          <Route path="/" element={<HomePage />} />
+          <Route element={<ProtectedRoute/> }>
+              <Route path="/formcitas" element={<FormCitas />} />
+          </Route>
+          <Route path="/tableinfoByDay" element={<TableInfoProByDay/>}/> 
+          
+        </Routes>
+      </div>
+    
   );
 }
 

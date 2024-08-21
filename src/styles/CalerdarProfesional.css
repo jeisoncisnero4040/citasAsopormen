@@ -1,0 +1,174 @@
+.calendar-container {
+    margin: 1%;
+    width: 98%;
+    overflow-y: auto;
+}
+
+/* Estilo para los párrafos dentro del contenedor del calendario */
+.calendar-container p {
+    margin: 3%;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Estilo para la barra de herramientas del encabezado */
+.fc-header-toolbar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 2%; /* Reduce el margen inferior para acercar la tabla */
+}
+
+/* Grupo de botones en la barra de herramientas */
+.fc-header-toolbar .fc-button-group {
+    display: flex;
+    flex-direction: row;
+    
+}
+
+/* Estilo para los botones del calendario */
+.fc-header-toolbar .fc-button {
+    font-size: 14px;
+    background-color: #1b0dd3;
+}
+
+/* Estilo para las celdas de los días en la vista de mes */
+.fc-daygrid-day {
+    box-sizing: border-box;
+    font-size: 2px;
+    padding: 1px;
+    height: 30px; 
+    overflow: hidden; /* Oculta la información que desborda la celda */
+}
+
+/* Estilo para los números de los días en las celdas */
+.fc-daygrid-day-number {
+    font-size: 14px; /* Ajusta el tamaño de la fuente para que encaje en celdas más pequeñas */
+}
+
+/* Margen para los eventos dentro de los días */
+.fc-daygrid-day-events {
+    margin: 2px 0;
+    overflow: hidden; /* Oculta el desbordamiento de eventos */
+}
+
+/* Estilo para los eventos */
+.fc-event {
+    
+    padding: 3px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+}
+
+/* Estilo para el popover de los eventos */
+.fc-popover {
+    max-width: 250px;
+    font-size: 12px;
+    border-radius: 8px;
+}
+
+/* Estilo global del calendario */
+.fc {
+    max-width: 95%;
+    margin: 0 auto;
+}
+
+/* Ajustes adicionales para mantener el tamaño fijo de las celdas */
+.fc .fc-daygrid-day-frame,
+.fc .fc-timegrid-slot {
+    height: 60px; /* Altura fija de 40 px para las celdas */
+}
+
+/* Estilo para el encabezado de las columnas (días de la semana) */
+.fc .fc-col-header-cell {
+    height: 30px; /* Reduce la altura del encabezado */
+    font-size: 12px; /* Reduce el tamaño de la fuente para ajustar el nuevo tamaño */
+}
+
+/* Ajuste del contenedor de la vista de día para mantener el tamaño fijo */
+.fc .fc-timegrid-col {
+    height: 60px; /* Altura fija de 40 px para el contenedor */
+}
+
+/* Ajuste de la altura de las líneas de los eventos en la vista de semana */
+.fc-daygrid-event {
+    line-height: 1.2; /* Mantiene la consistencia de los eventos en celdas pequeñas */
+    overflow: hidden; /* Oculta cualquier desbordamiento */
+    text-overflow: ellipsis; /* Muestra puntos suspensivos si el texto es demasiado largo */
+}
+
+
+/* CalerdarProfesional.css */
+.modal {
+    position: fixed;  
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -20%); 
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 600px;
+    max-width: 90%;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    overflow: hidden;
+    z-index: 1000;  
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 999;  
+}
+
+.modal-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.close-button {
+    background: #1b0dd3;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-bottom: 20px;
+    align-self: flex-end;
+}
+
+.close-button:hover {
+    background: #1b0dd3;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+table thead {
+    background: #1b0dd3;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+}
+
+.date{
+    width: 20%;
+}
