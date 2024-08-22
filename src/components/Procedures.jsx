@@ -14,7 +14,7 @@ class Procedures extends Component {
     }
 
     componentDidMount() {
-        const urlForProcedures = `${Constants.apiUrl()}get_procedures`;
+        const urlForProcedures = `${Constants.apiUrl()}get_proceduress`;
         axios.get(urlForProcedures)
             .then(response => {
                 this.setState({
