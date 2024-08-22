@@ -17,13 +17,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 2%; /* Reduce el margen inferior para acercar la tabla */
+    margin: 0%; /* Reduce el margen inferior para acercar la tabla */
+    padding: 0%;
 }
 
 /* Grupo de botones en la barra de herramientas */
 .fc-header-toolbar .fc-button-group {
     display: flex;
     flex-direction: row;
+    margin: 0%;
+    padding: 0%;
     
 }
 
@@ -36,20 +39,20 @@
 /* Estilo para las celdas de los días en la vista de mes */
 .fc-daygrid-day {
     box-sizing: border-box;
-    font-size: 2px;
-    padding: 1px;
     height: 30px; 
+    margin: 0%;
+    padding: 0%;
     overflow: hidden; /* Oculta la información que desborda la celda */
 }
 
 /* Estilo para los números de los días en las celdas */
 .fc-daygrid-day-number {
-    font-size: 14px; /* Ajusta el tamaño de la fuente para que encaje en celdas más pequeñas */
+    font-size: 18px; /* Ajusta el tamaño de la fuente para que encaje en celdas más pequeñas */
 }
 
 /* Margen para los eventos dentro de los días */
 .fc-daygrid-day-events {
-    margin: 2px 0;
+ 
     overflow: hidden; /* Oculta el desbordamiento de eventos */
 }
 
@@ -80,13 +83,15 @@
 /* Ajustes adicionales para mantener el tamaño fijo de las celdas */
 .fc .fc-daygrid-day-frame,
 .fc .fc-timegrid-slot {
-    height: 60px; /* Altura fija de 40 px para las celdas */
+    height: 50px; /* Altura fija de 40 px para las celdas */
 }
 
 /* Estilo para el encabezado de las columnas (días de la semana) */
 .fc .fc-col-header-cell {
-    height: 30px; /* Reduce la altura del encabezado */
-    font-size: 12px; /* Reduce el tamaño de la fuente para ajustar el nuevo tamaño */
+    height: 20px; /* Reduce la altura del encabezado */
+    font-size: 18px; /* Reduce el tamaño de la fuente para ajustar el nuevo tamaño */
+    margin: 0%;
+    padding: 0%;
 }
 
 /* Ajuste del contenedor de la vista de día para mantener el tamaño fijo */

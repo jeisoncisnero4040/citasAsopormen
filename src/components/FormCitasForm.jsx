@@ -1,17 +1,24 @@
 import React, { Component } from "react";
 import '../styles/selectProfesional.css';
+import '../styles/SelectOrder.css';
 import Constants from '../js/Constans.jsx';
 import ProfesionalCalendar from "./ProfesionalCalendar.jsx";
 import axios from 'axios';
 import SelectDataClient from "./SelectDataClient.jsx";
 import Warning from "./Warning";
+import TableOrders from "./TableOrders.jsx";
+import Procedures from "./Procedures.jsx";
+import SelectCentral from "./SelectCentral.jsx"
 
 class FormCitasForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            centrals:{},
-            procedures:{},
+            central:{
+                'nombre':'',
+                'direccion':''
+            },
+            procedure:[],
             client:{},
             profesional_calendar: [],
             profesional_list: [],
@@ -30,24 +37,12 @@ class FormCitasForm extends Component {
     }
     componentDidMount() {
         const urlForCentrals = `${Constants.apiUrl()}get_centrals_office`;
-        const urlForProcedures = `${Constants.apiUrl()}get_procedures`;
+ 
 
         axios.get(urlForCentrals)
             .then(response => {
                 this.setState({
                     centrals: response.data.data,
-                });
-            })
-            .catch(error => {
-                this.setState({
-                    error: 'Hubo un error al cargar los datos',
-                    loading: false
-                });
-            });
-            axios.get(urlForProcedures)
-            .then(response => {
-                this.setState({
-                    procedures: response.data.data,
                 });
             })
             .catch(error => {
@@ -156,8 +151,20 @@ class FormCitasForm extends Component {
             return <option>No se encontraron profesionales</option>;
         }
     }
+
+    getProcedureName=(updatedProcedure)=>{
+        this.setState({ procedure: updatedProcedure });
+    }
     getClienInfo = (updatedClient) => {
         this.setState({ client: updatedClient });
+    }
+    getCentralInfo=(UpadtedCentral)=>{
+        this.setState({ central: 
+            {
+                nombre:UpadtedCentral.nombre,
+                direccion:UpadtedCentral.direccion,
+            }
+         });
     }
 
  
@@ -222,29 +229,39 @@ class FormCitasForm extends Component {
                                 </div>
                             </div>
                             <div className="calendario-profesional">
-                            <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}/> 
+                                <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}/> 
                             </div>
                         </div>
-                        <div>
-                            <p>{JSON.stringify(this.state.client)}</p>
-                            <p>{JSON.stringify(this.state.profesional)}</p>
-                            <p>{JSON.stringify(this.props.user)}</p>
-                            <p>{JSON.stringify(this.state.centrals)}</p>
-                            <p>{JSON.stringify(this.state.procedures)}</p>
+                        <div className="select-orden">
+                            <div className="data-order">
+                                <div className="get-order">
+                                    <TableOrders/>
+                                </div>
+                                <div className="get-order">
+                                    <Procedures getProcedureName={this.getProcedureName}/> 
+                                </div>
+                                <div className="get-order">
+                                    <SelectCentral getCentralInfo={this.getCentralInfo}/> 
+                                </div>
+                            </div>
+                            <div className="create-cita">
+                                <p>{JSON.stringify(this.state.procedure)}</p>
+                                <p>{JSON.stringify(this.state.central)}</p>
+                            </div>
                         </div>
-                        <div>
-                             
-
-                            <Warning
-                                isOpen={this.state.warningIsOpen}
-                                onClose={() => this.setState({ warningIsOpen: false })}
-                                errorMessage={this.state.errorMessage}
-                            />
-
-                            
-                        </div>
+ 
+                        
                     </div>
                 </form>
+                <div>
+                    <Warning
+                        isOpen={this.state.warningIsOpen}
+                        onClose={() => this.setState({ warningIsOpen: false })}
+                        errorMessage={this.state.errorMessage}
+                    />
+
+                    
+                </div>
             </div>
         );
     }

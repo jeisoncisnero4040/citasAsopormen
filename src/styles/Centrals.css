@@ -1,0 +1,18 @@
+.central-container{
+    width: 100;
+    display: flex;
+    flex-direction: column;
+}
+.select-central{
+    width: 100%;
+    
+}
+.select-central select{
+    width:100%;
+}
+.show-data-central{
+    display: flex;
+}
+.name-central, .direccion-central{
+    width: 50%;
+}
