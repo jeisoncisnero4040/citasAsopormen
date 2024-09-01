@@ -161,6 +161,20 @@ class ClientController extends Controller{
         return response()->json($infoClient,200);
     }
 
+    public function getAuthorizationByClientCode($clientCode){
+        $authorizations=$this->clientService->getAuthorizationsByCliencode($clientCode);
+        return response()->json($authorizations,200);
+
+    }
+
+    public function getDataFromAuthorization($authorizationCode){
+        $dataAuthorization=$this->clientService->getDataFromAuthorizationCode($authorizationCode);
+        return response()->json($dataAuthorization,200);
+    }
+   
+   
+    
+
 
     
     

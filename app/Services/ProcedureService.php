@@ -21,11 +21,20 @@ class ProcedureService{
             $this->getProcedures(),200
         );
     }
-    private function getProcedures(){
-        $procedures=$this->procedureModel::select('id','nombre')->get();
-        if($procedures->isEmpty()){
-            throw new NotFoundException("lista de procesos no encontrada",404);
+    private function getProcedures() {
+        $procedures = $this->procedureModel::select('id', 'nombre', 'duraccion', 'recordatorio_whatsapp')->get();
+        
+        if ($procedures->isEmpty()) {
+            throw new NotFoundException("Lista de procesos no encontrada", 404);
         }
+    
+         
+        $procedures->transform(function($procedure) {
+            $procedure->recordatorio_whatsapp = (bool) $procedure->recordatorio_whatsapp;
+            return $procedure;
+        });
+    
         return $procedures;
     }
+    
 }       

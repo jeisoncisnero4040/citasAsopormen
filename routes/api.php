@@ -2,10 +2,13 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CentralOfficeController;
+use App\Http\Controllers\CitasController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProcedureController;
 use App\Http\Controllers\ProfesionalController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Controller;
+use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Route;
  
 
@@ -23,10 +26,17 @@ Route::get('get_profesional_calendar/{cedula}/',[ProfesionalController::class,'g
 
 Route::get('get_clients/{string}/',[ClientController::class,'getAllClientByStringSearch']);
 Route::post('client_info',[ClientController::class,'showDataClientByIdHistory']);
+Route::get('clients/get_authorizations/{clientCode}/',[ClientController::class,'getAuthorizationByClientCode']);
+Route::get('clients/get_authorization_data/{authorizationCode}/',[ClientController::class,'getDataFromAuthorization']);
 
 Route::get('get_centrals_office',[CentralOfficeController::class,'getCentralsOffice']);
 
 Route::get('get_procedures',[ProcedureController::class,'getAllProcedures']);
+
+Route::post('citas/create_citas',[CitasController::class, 'createGroupCitas']);
+Route::get('citas/get_num_citas/{authorization}/{procedim}/',[CitasController::class,'GetNumCitasFromOrder']);
+Route::post('citas/get_citas_client',[CitasController::class,'GetCalendarClient']);
+
  
 
 

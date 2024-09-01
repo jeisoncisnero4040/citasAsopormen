@@ -5,28 +5,24 @@ namespace App\Mappers;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use Illuminate\Support\Carbon;
 
-class CalendarProfesionalMapper
-{
-    public function CalendarMapper($calendar)
+class CalendarProfesionalMapper{
+    public function map($calendar)
     {
-        $mappedCalendar = [];
-
-        foreach ($calendar as $cita) {
+        foreach ($calendar as &$cita) {
+            
             $fechaHora = Carbon::parse($cita->fecha);
-            $hora24 = $this->ConvertHourTo24Format($cita->hora);
-            $startFechaHora = $fechaHora->copy()->addMinutes($this->CalculateMinutesSinceStartOfDay($hora24));
-            $minutesToAdd=$cita->duracion;
+            $hora24 = $this->convertHourTo24Format($cita->hora);
+            $startFechaHora = $fechaHora->copy()->addMinutes($this->calculateMinutesSinceStartOfDay($hora24));
+            $minutesToAdd = $cita->duracion;
             $endFechaHora = $startFechaHora->copy()->addMinutes($minutesToAdd);
 
-            $mappedCalendar[] = [
-                'id'=>$cita->id,
-                'title' => trim($cita->usuario) . ' - ' .trim($cita->procedimiento) ,
-                'start' => $startFechaHora->toIso8601String(),
-                'end' => $endFechaHora->toIso8601String()
-            ];
+             
+            $cita->title = trim($cita->usuario) . ' - ' . trim($cita->procedimiento);
+            $cita->start = $startFechaHora->toIso8601String();
+            $cita->end = $endFechaHora->toIso8601String();
         }
 
-        return $mappedCalendar;
+        return $calendar;
     }
 
     private function ConvertHourTo24Format($hour) {

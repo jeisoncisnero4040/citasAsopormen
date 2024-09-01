@@ -62,13 +62,15 @@ class ProfesionalService{
                     ci.id,
                     ci.fecha,
                     ci.hora AS hora,
-                    ci.procedim AS procedimiento,
-                    ci.duracion AS duracion,
+                    ci.procedipro AS procedimiento,
+					pro.duraccion AS duracion,
                     cli.nombre AS usuario
+                    
                 FROM 
                     citas ci
                 INNER JOIN 
                     cliente cli ON cli.codigo LIKE '%' + ci.nro_hist + '%'
+                INNER JOIN procedipro pro ON pro.nombre =ci.procedipro
                 WHERE 
                     ci.cedprof = ?
                     AND ci.fecha > GETDATE()
@@ -84,7 +86,7 @@ class ProfesionalService{
     }
     private function mapCalendar($unMappedCalendar){
         $calendarMapper=new CalendarProfesionalMapper();
-       return $calendarMapper->calendarMapper($unMappedCalendar);
+       return $calendarMapper->map($unMappedCalendar);
 
     }
     

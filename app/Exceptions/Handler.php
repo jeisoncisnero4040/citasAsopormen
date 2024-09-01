@@ -24,7 +24,7 @@ class Handler extends ExceptionHandler
     {
         $this->renderable(function (BadRequestException $e, $request) {
             $responseManager = app(ResponseManager::class);
-            $response = $responseManager->badRequest( ($e->getMessage()));
+            $response = $responseManager->badRequest(($e->getMessage()));
             return response()->json($response,400);
         });
         $this->renderable(function (UnAuthorizateException $e, $request) {
