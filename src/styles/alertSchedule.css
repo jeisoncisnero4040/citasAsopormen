@@ -1,0 +1,28 @@
+.alert {
+    text-align: center; 
+}
+
+.alert img {
+    height: 200px; 
+    display: block;  
+    margin: 0 auto;  
+}
+
+.alert p {
+    font-weight: bold;  
+    font-family: Arial, Helvetica, sans-serif;  
+    font-size: 26px;  
+    text-align: center;  
+    margin-top: 10px;  
+}
+
+.bootons {
+    display: flex;  
+    justify-content: space-between;  
+    margin-top: 10px;  
+}
+
+.bootons button {
+    width: 40%;  
+    margin: 0 5%;  
+}

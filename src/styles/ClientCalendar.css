@@ -1,0 +1,7 @@
+.inputs-date{
+    display:flex;
+}
+.get-date{
+    display:flex;
+    flex-direction: column;
+}

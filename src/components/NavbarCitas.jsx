@@ -3,20 +3,18 @@ import '../styles/NabvarCitas.css';
 import logo from "../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
 
-const NavbarCitas = ({ userName }) => {
+const NavbarCitas = ({ userName = '' }) => {   
     const [isOpcionesCardOpen, setIsOpcionesCardOpen] = useState(false);
     const [isUserCardOpen, setIsUserCardOpen] = useState(false);
     const navigate = useNavigate();
     
-    const whileAddFunction=()=>{
-        navigate('/formcitas', { state: {userName} });
+    const whileAddFunction = () => {
+        navigate('/formcitas', { state: { userName } });
     }
 
     const handleLogout = () => {
- 
         localStorage.removeItem('authToken');
         navigate('/');
-           
     };
 
     const toggleOpcionesCard = () => {
@@ -26,7 +24,9 @@ const NavbarCitas = ({ userName }) => {
     const toggleUserCard = () => {
         setIsUserCardOpen(prev => !prev);
     };
-
+    const redirectToRecoverPassword = () => {
+        navigate('/update_password');
+    };
     return (
         <div className="subnavbar">
             <img src={logo} alt="asopormen" />
@@ -54,7 +54,7 @@ const NavbarCitas = ({ userName }) => {
                 </div>
                 {isUserCardOpen && (
                     <div className="card-body">
-                        <a href={whileAddFunction}>Cambiar contraseña</a>
+                        <a onClick={redirectToRecoverPassword}>Cambiar contraseña</a>
                         <a onClick={handleLogout}>Cerrar sesión</a>
                     </div>
                 )}

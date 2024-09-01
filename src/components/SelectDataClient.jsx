@@ -99,10 +99,10 @@ class SelectDataClient extends Component {
                 
                 if (response.data && response.data.data && response.data.data.length > 0) {
                     const clientData = response.data.data[0];
-                    console.log(clientData)
-                    this.setState({ dataClient: clientData });
-                    this.handleClientSelection(clientData);  
-                } else {
+                    const trimmedClientData = this.trimObjectValues(clientData);
+                    this.setState({ dataClient: trimmedClientData });
+                    this.handleClientSelection(trimmedClientData);  
+                }else {
                     alert('Error: No se encontraron los datos del cliente');
                 }
             } else {
@@ -127,6 +127,16 @@ class SelectDataClient extends Component {
     handleClientSelection = (selectedClient) => {
         this.props.getClienInfo(selectedClient);
     }
+
+    //pasar a un pakete de utils
+    trimObjectValues = (obj) => {
+        return Object.keys(obj).reduce((acc, key) => {
+            const value = obj[key];
+            acc[key] = typeof value === 'string' ? value.trim() : value;
+            return acc;
+        }, {});
+    };
+    
     render() {
         return (
             <div className="secet-data-client">

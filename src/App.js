@@ -6,6 +6,7 @@ import FormCitas from "./components/FormCitas";
 import ProtectedRoute from "./util/ProtectedRout";
 import RecoverPasswordPage from "./components/RecoverPasswordPage";
 import TableInfoProByDay  from "./components/TableInfoProByDay";
+import UpdatePasswordPage from "./components/UpdatePassword";
 import "./styles/app.css";
 
 
@@ -15,12 +16,12 @@ function App() {
       <div className="app-container">
         <Routes>
           
-        <Route path="/recover_password" element={<RecoverPasswordPage/>} />
+          <Route path="/recover_password" element={<RecoverPasswordPage/>} />
           <Route path="/" element={<HomePage />} />
           <Route element={<ProtectedRoute/> }>
               <Route path="/formcitas" element={<FormCitas />} />
           </Route>
-          <Route path="/tableinfoByDay" element={<TableInfoProByDay/>}/> 
+          <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
           
         </Routes>
       </div>

@@ -1,0 +1,88 @@
+.select-data-cita-container {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ccc;
+    padding: 1%;
+    margin: 2%;
+ 
+    border-radius: 5px;
+    position: relative;  
+}
+
+.get-schedule-cita {
+    display: flex;
+    position: relative; 
+    width: 100%; 
+}
+.select-numtype-sessions{
+    width: 30%;
+}
+.select-numtype-sessions input {
+    height: 8px;
+}
+.show-num-sessions{
+    width: 30%;
+    margin-left: 5%;
+    
+}
+.show-num-sessions input{
+    height: 8px;
+    background: #ccc;
+}
+
+.get-date-start {
+    width: 50%;
+}
+
+.get-days {
+    
+    width: 50%;
+    position: relative;  
+}
+
+.custom-dropdown {
+    margin-top: 3%;
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;  
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    z-index: 1000;  
+    max-height: 250px;  
+    overflow-y: auto;  
+}
+
+.dropdown-menu div {
+    padding: 8px;
+    cursor: pointer;
+}
+
+.dropdown-menu div:hover {
+    background-color: #f0f0f0;
+}
+.observations {
+    width: 100%; 
+    margin-top: 2%;
+    display: flex;
+    flex-direction: column;
+}
+
+.observations textarea {
+    width: 94%;
+    height: 90px;
+    padding: 10px;  
+    border: 1px solid #ccc;
+     
+ 
+    font-family: Arial, sans-serif;  
+    font-size: 14px; 
+    line-height: 1.5;
+    resize: none;  
+}
