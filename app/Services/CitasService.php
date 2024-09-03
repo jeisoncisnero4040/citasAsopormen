@@ -47,8 +47,8 @@ class CitasService{
 
         $diferenceBeetwenDays=$this->getDifBeetwenDays($weekDays);
         $scheduleCitas=$this->CreateSchedule($numSessions,$numCitas,$sessionDuration,$startDate,$weekDays,$diferenceBeetwenDays);
-        $citas=$this->saveCitas($scheduleCitas,$citaInDto);
-        return $this->responseManager->success("hecho",200);
+        $numSessionsSaved=$this->saveCitas($scheduleCitas,$citaInDto);
+        return $this->responseManager->success($numSessionsSaved,200);
     }
 
     public function getNumCitasFromOrder($authorization, $codProcedim)
@@ -202,7 +202,7 @@ class CitasService{
             $this->saveCitasInBd($cita);
             $citas[] = $cita;
         }
-        return $citas;
+        return count($citas);
     }
     
     private function citaInDtoToCita($session, $citaInDto){
@@ -279,6 +279,7 @@ class CitasService{
                 ci.regobserva AS observaciones,
                 ci.asistio AS asistida,
                 ci.cancelada AS cancelada,
+                ci.na as no_asistida,
                 pro.duraccion AS duracion,
                 cli.nombre AS usuario,
                 em.enombre AS profesional
