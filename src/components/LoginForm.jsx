@@ -52,8 +52,13 @@ const LoginForm = () => {
 
   return (
     <div className="login-container">
-      <img src={logo} alt="Logo" className="logo" />
-      <p className="title">Login</p>
+      <div className="login-image">
+          <img src={logo} alt="Logo" className="logo" />
+          <div className="clinic-asopormen">
+              <strong>Clínico</strong>
+              <p>Asopormen</p>
+          </div>
+      </div>
       <p>Ingreso de usuarios</p>
       <form onSubmit={handleSubmit}>
         <div className="form-group">

@@ -12,7 +12,7 @@
   
   .login-form {
     flex: 0 0 400px;  
-    height: 100vh;  
+    height: 100%;  
     display: flex;
     background-color: #f8f9fa;  
   }

@@ -30,6 +30,7 @@ class FormCitasForm extends Component {
             procedure:{},
             client:{},
             profesional_calendar: [],
+            client_calendar:[],
             profesional_list: [],
             profesional: {
                 name: "",
@@ -40,6 +41,7 @@ class FormCitasForm extends Component {
             historyNumber:'',
             
             loading: false,
+            sendingCitas:false,
             showClientCalendar:false,
             searchQuery: "",
             selectedOption: "",
@@ -136,6 +138,12 @@ class FormCitasForm extends Component {
                 this.setState({ loading: false });
             });
     }
+
+    getCalendarClient=(calendarUpdated)=>{
+        this.setState({
+            client_calendar:calendarUpdated
+        })
+    }
     changeCalendar=()=>{
         this.setState(
             {showClientCalendar:!this.state.showClientCalendar}
@@ -159,7 +167,8 @@ class FormCitasForm extends Component {
     getClienInfo = (updatedClient) => {
         this.setState({ 
             client: updatedClient,
-            historyNumber:updatedClient.codigo
+            historyNumber:updatedClient.codigo,
+            client_calendar:[]
          });
 
     }
@@ -270,21 +279,33 @@ class FormCitasForm extends Component {
     }
     sendCitas = (body) => {
         const url = `${Constants.apiUrl()}citas/create_citas`;
-        alert(JSON.stringify(body))
+        this.setState({
+            sendingCitas: true
+        });
+    
         axios.post(url, body)
-           .then(response => {
-                this.getCalendarProfesional(body['cedprof'])
-           })
-           .catch(error => {
-               if (error.response) {
-                   const errorData = error.response.data;
-                   this.setState({
+            .then(response => {
+                this.getCounterCitas(response.data.data)
+                this.getCalendarProfesional(body['cedprof']);
+                
+                //actualizar el numero de secciones programadas
+            })
+            .catch(error => {
+                if (error.response) {
+                    const errorData = error.response.data;
+                    this.setState({
                         errorMessage: errorData.error ? JSON.stringify(errorData.error) : 'Error al hacer la petición',
                         warningIsOpen: true,
-                   });
-              }
+                    });
+                }
+            })
+            .finally(() => {
+                this.setState({
+                    sendingCitas: false
+                });
             });
-    }
+    };
+    
     driveSendCitasRequest = () => {
         const alertMessage = this.checkSchedule();
     
@@ -364,7 +385,14 @@ class FormCitasForm extends Component {
                                     </div>
                                 </div>
                                 <div className="calendar-small-screen">
-                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}/> 
+                                    <a onClick={this.changeCalendar}>
+                                        {this.state.showClientCalendar ? "Mostrar calendario Profesional" : "Mostrar calendario cliente"}
+                                    </a>
+                                    {this.state.showClientCalendar ? (
+                                        <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
+                                    ) : (
+                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name} />
+                                    )}
                                 </div>
                                 <div className="get-client-info">
                                     
@@ -376,7 +404,7 @@ class FormCitasForm extends Component {
                                     {this.state.showClientCalendar ? "Mostrar calendario Profesional" : "Mostrar calendario cliente"}
                                 </a>
                                 {this.state.showClientCalendar ? (
-                                    <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} />
+                                    <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
                                 ) : (
                                     <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name} />
                                 )}
@@ -410,7 +438,7 @@ class FormCitasForm extends Component {
                         </div>
 
                         <div className="send-citas">
-                            <a onClick={this.driveSendCitasRequest }>enviar citas</a>
+                            {this.state.sendingCitas?<a onClick={null}>Creando Citas...</a>:<a onClick={this.driveSendCitasRequest }>enviar citas</a>}
                         </div>
  
                         
