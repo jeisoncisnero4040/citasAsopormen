@@ -27,4 +27,12 @@ class CitasController extends Controller
         $calendarClient=$this->citasService->getCitasByClientInRangeTime($request->all());
         return response()->json($calendarClient,200);
     }
+    public function deleteCitaById($id){
+        $citaDelete=$this->citasService->deleteCitaById(($id));
+        return response()->json($citaDelete,200);
+    }
+    public function deleteAllCitasByProfesionalDay(Request $request){
+        $citasDleted=$this->citasService->deleteDayCitasProfesional($request->all());
+        return response()->json($citasDleted,200);
+    }
 }

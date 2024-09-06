@@ -62,6 +62,10 @@ class ProfesionalService{
                     ci.id,
                     ci.fecha,
                     ci.hora AS hora,
+                    ci.tiempo AS tiempo,
+                    asistio AS asistida,
+                    cancelada
+                    na AS no_asistida
                     ci.procedipro AS procedimiento,
 					pro.duraccion AS duracion,
                     cli.nombre AS usuario

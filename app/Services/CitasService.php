@@ -13,7 +13,6 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
 
-
 class CitasService{
     private $citasModel;
     private $responseManager;
@@ -54,7 +53,7 @@ class CitasService{
     public function getNumCitasFromOrder($authorization, $codProcedim)
     {
         $this->validateAuthorizationAndProcedim($authorization, $codProcedim);
-        $numCitasFromOrder = $this->citasModel::where('nroAutoriza', $authorization)
+        $numCitasFromOrder = $this->citasModel::where('autoriz', $authorization)
                                 ->where('tiempo', $codProcedim)
                                 //->where('asistio', 1)
                                 ->count();
@@ -81,6 +80,26 @@ class CitasService{
 
         return $this->responseManager->success($calendarMapped);
 
+    }
+
+    public function deleteCitaById($id){
+        $unCheckedCita=$this->getCitasWitStatushById($id);
+        $isCitaAvaible=$this->CheckStatusCitas($unCheckedCita);
+        if(!$isCitaAvaible){
+           throw new BadRequestException("no es posible eliminar la citas por que ya se ha registradfo estatus",400);
+
+       }
+        $this->sendQuerydeleteCitaById($id);
+        return $this->responseManager->delete('cita con id '.$id);
+    }
+
+    public function deleteDayCitasProfesional($request){
+        citasRequests::vaalidateDateAndCedulaProfesional($request);
+        $cedulaPro=$request['profesional_identity'];
+        $day=Carbon::parse($request['day']);
+        DateManager::getDateInSmallDateTime($day);
+        $deletedCitas=$this->sendQueryDeleteAllCitasDay($day,$cedulaPro);
+        return $this->responseManager->success($deletedCitas);
     }
 
     private function validateCitas($request){
@@ -220,7 +239,7 @@ class CitasService{
         try {
             DB::insert("
                 INSERT INTO citas (
-                    nro_hist, cedprof, ced_usu, registro,sede, regobserva, codent, codent2,tiempo,direccion_cita,procedim, procedipro,nroAutoriza, fecha, hora, fec_hora, recordatorio_wsp
+                    nro_hist, cedprof, ced_usu, registro,sede, regobserva, codent, codent2,tiempo,direccion_cita,procedim, procedipro,autoriz, fecha, hora, fec_hora, recordatorio_wsp
                 )
                 VALUES (?,?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?,  
                     CONVERT(smalldatetime, ?, 120), 
@@ -312,6 +331,44 @@ class CitasService{
         $calendarMapper=new CalendarProfesionalMapper();
         return $calendarMapper->map($unMappedCalendar);
 
-}
-    
+    }
+    private function getCitasWitStatushById($id){
+        $cita=DB::select("
+            SELECT id,asistio,cancelada,na As no_asistida 
+            FROM citas WHERE id= ? ",[$id]);
+        if(empty($cita)){
+            throw new NotFoundException("cita no encontrada",404);
+        }
+        return $cita[0];
+    }
+    private function CheckStatusCitas($cita){
+        return (int)$cita->cancelada==0 && (int)$cita->asistio==0 && (int)$cita->no_asistida==0;
+    }
+
+    private function sendQuerydeleteCitaById($id){
+        try{
+            DB::delete('delete from citas where id = ?',[$id]);
+
+        }catch(\Exception  $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+
+    private function sendQueryDeleteAllCitasDay($day,$cedulaPro){
+        try{
+            $numCitasDeletes=DB::delete(
+                "
+                DELETE CITAS WHERE fecha = 
+                CONVERT(smalldatetime,?, 120) AND
+                (cedprof = ?) AND
+                (cancelada=0) AND
+                (asistio=0) AND
+                (na = 0)
+                ",[$day,$cedulaPro]
+            );
+            return ['citas_eliminadas'=>$numCitasDeletes];
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
 }

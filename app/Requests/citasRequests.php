@@ -107,5 +107,13 @@ class CitasRequests
             throw new BadRequestException($validator->errors(), 400);
         }
     }
-    
+    public static function vaalidateDateAndCedulaProfesional($request){
+        $validator = Validator::make($request, [
+            'day' => 'required|date_format:Y-m-d',
+            'profesional_identity' => 'required|regex:/^\d+$/',
+        ]);
+        if ($validator->fails()) {
+            throw new BadRequestException($validator->errors(), 400);
+        }
+    }
 }

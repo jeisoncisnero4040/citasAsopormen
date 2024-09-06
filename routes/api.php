@@ -36,12 +36,5 @@ Route::get('get_procedures',[ProcedureController::class,'getAllProcedures']);
 Route::post('citas/create_citas',[CitasController::class, 'createGroupCitas']);
 Route::get('citas/get_num_citas/{authorization}/{procedim}/',[CitasController::class,'GetNumCitasFromOrder']);
 Route::post('citas/get_citas_client',[CitasController::class,'GetCalendarClient']);
-
- 
-
-
-
-
- 
-
-
+Route::delete('citas/{id}', [CitasController::class, 'deleteCitaById'])->where('id', '\d+');
+Route::post('citas/delete_all_citas',[CitasController::class, 'deleteAllCitasByProfesionalDay']);

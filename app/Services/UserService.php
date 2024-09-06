@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Requests\UserRequest;
 use App\utils\ResponseManager;
 use App\utils\PasswordGenerator;
+use Illuminate\Support\Facades\DB;
 
 class UserService {
     private $emailService;
@@ -53,7 +54,7 @@ class UserService {
         $this->validatePassword($user, $oldPassword);
         $userUpdate=$this->updateUserPassword($user,$newPassword);
 
-        return $this->responseManager->success(null);
+        return $this->responseManager->success($userUpdate);
     }
 
     private function validateRequest($request) {
@@ -73,7 +74,7 @@ class UserService {
     }
     private function getUserByCedula($cedula){
         try {
-            $user = $this->userModel::where("cedula", $cedula)->first();
+            $user = $this->userModel::select('cedula','password')->where("cedula", $cedula)->first();
 
             if (!$user) {
                 throw new NotFoundException("Usuario no encontrado", 404);
@@ -97,8 +98,7 @@ class UserService {
 
     private function updateUserPassword($user, $newPassword) {
         try {
-            $user->update(['password' => $newPassword]);
-            return $user ;
+            $user=DB::update("update usuarios set password = ? where cedula = ?",[$newPassword,$user->cedula]);
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }
