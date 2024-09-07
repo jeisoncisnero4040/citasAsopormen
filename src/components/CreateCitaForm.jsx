@@ -153,15 +153,15 @@ class CreateCitaForm extends Component {
                 </div>
                 <div className="get-schedule-cita">
                     <div className="select-numtype-sessions">
-                        <label>Num seccions:</label>
+                        <label>Sesiones:</label>
                         <select onChange={this.handleNumSessionByDay}>
                             {this.renderListNumSessions()}
                         </select>
                     </div>
                     <div className="select-numtype-sessions">
-                        <label>Num citas</label>
+                        <label>Dias</label>
                         <input 
-                            placeholder="Numero de citas"
+                            placeholder="Numero días"
                             autocomplete="off" 
                             type="text" 
                             onChange={this.handleNumCitas}
@@ -169,7 +169,7 @@ class CreateCitaForm extends Component {
                         />
                     </div>
                     <div className="show-num-sessions">
-                        <label>Secciones disp:</label>
+                        <label>Asignadas:</label>
                         <input
                             type="text"
                             placeholder={this.props.numCitas}

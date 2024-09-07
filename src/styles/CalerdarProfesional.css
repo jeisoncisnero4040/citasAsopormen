@@ -4,13 +4,14 @@
     overflow-y: auto;
 }
 
-/* Estilo para los párrafos dentro del contenedor del calendario */
+ 
 .calendar-container p {
     margin: 3%;
     font-size: 16px;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
 }
+
 
 /* Estilo para la barra de herramientas del encabezado */
 .fc-header-toolbar {
@@ -116,7 +117,7 @@
     background: white;
     padding: 20px;
     border-radius: 8px;
-    width: 600px;
+    width: 1000px;
     max-width: 90%;
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     overflow: hidden;
@@ -130,13 +131,24 @@
     right: 0;
     bottom: 0;
     background: rgba(0,0,0,0.5);
-    z-index: 999;  
+    z-index: 1000;  
 }
 
 .modal-content {
     display: flex;
     flex-direction: column;
     height: 100%;
+}
+.header-t-p {
+    display: flex;
+    justify-content: space-between;  
+    align-items: center;  
+}
+.delete-citas{
+    height: 30px;
+    width: auto;
+    margin-right: 40px;
+
 }
 
 .close-button {
@@ -157,7 +169,7 @@
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
+ 
 }
 
 table thead {
@@ -168,6 +180,16 @@ th, td {
     padding: 10px;
     border: 1px solid #ddd;
     text-align: left;
+}
+.iconos{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icono-table{
+    height: 20px;
+    width: auto;
+    
 }
 
 th {

@@ -5,7 +5,6 @@ import HomePage from "./components/HomePage";
 import FormCitas from "./components/FormCitas";
 import ProtectedRoute from "./util/ProtectedRout";
 import RecoverPasswordPage from "./components/RecoverPasswordPage";
-import TableInfoProByDay  from "./components/TableInfoProByDay";
 import UpdatePasswordPage from "./components/UpdatePassword";
 import "./styles/app.css";
 

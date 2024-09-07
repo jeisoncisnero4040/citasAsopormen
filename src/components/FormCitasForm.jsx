@@ -12,6 +12,7 @@ import Procedures from "./Procedures.jsx";
 import SelectCentral from "./SelectCentral.jsx"
 import CreateCitaForm from "./CreateCitaForm.jsx";
 import AlertSchedule from "./AlertSchedule.jsx";
+import ApiRequestManager from "../util/ApiRequestMamager.js";
 
 
 
@@ -58,47 +59,44 @@ class FormCitasForm extends Component {
     handleKeyDown = (event) => {
         if (event.key === 'Enter') {
             this.setState({ loading: true });
-
+    
             const url = `${Constants.apiUrl()}get_profesionals/${this.state.searchQuery}/`;
-            axios.get(url)
-                .then(response => {
-                    if (response.status === 200) {
-                        const profesionalList = response.data.data;
-                        if (profesionalList.length > 0) {
-                            const firstProfesional = profesionalList[0];
-                            const selectedEcc = (firstProfesional.ecc || '').trim();
-
-                            this.setState({
-                                profesional_list: profesionalList,
-                                profesional: {
-                                    name: (firstProfesional.enombre || '').trim(),
-                                    speciality: (firstProfesional.nombre || '').trim(),
-                                    cedula: selectedEcc
-                                },
-                                selectedOption: selectedEcc
-                            }, () => {
-                                this.getCalendarProfesional(selectedEcc);
-                            });
-                        } else {
-                            this.setState({ profesional_list: profesionalList });
-                        }
+            const requestManager = new ApiRequestManager();
+    
+            requestManager.getMethod(url)
+                .then(data => {
+                    const profesionalList = data.data;
+                    if (profesionalList.length > 0) {
+                        const firstProfesional = profesionalList[0];
+                        const selectedEcc = (firstProfesional.ecc || '').trim();
+    
+                        this.setState({
+                            profesional_list: profesionalList,
+                            profesional: {
+                                name: (firstProfesional.enombre || '').trim(),
+                                speciality: (firstProfesional.nombre || '').trim(),
+                                cedula: selectedEcc
+                            },
+                            selectedOption: selectedEcc
+                        }, () => {
+                            this.getCalendarProfesional(selectedEcc);
+                        });
+                    } else {
+                        this.setState({ profesional_list: profesionalList });
                     }
                 })
                 .catch(error => {
-                    if (error.response ) {
-                        const errorData = error.response.data;
-                        this.setState({
-                            errorMessage: errorData.error ? errorData.error : 'Error al hacer la petición',
-                            warningIsOpen: true,
-                        });
-                         
-                    } 
+                    this.setState({
+                        errorMessage: error ? error : 'Error al hacer la petición',
+                        warningIsOpen: true,
+                    });
                 })
                 .finally(() => {
                     this.setState({ loading: false });
                 });
         }
     }
+    
     handleInputChange = (event) => {
         this.setState({ searchQuery: event.target.value });
     }
@@ -139,11 +137,37 @@ class FormCitasForm extends Component {
             });
     }
 
-    getCalendarClient=(calendarUpdated)=>{
+    getCalendarClient=(calendarUpdated,tiempo=null)=>{
         this.setState({
             client_calendar:calendarUpdated
-        })
+        },()=>this.updateCounterCitas(tiempo))
     }
+
+    
+    getUpdateCalendarPro = (calendarUpdated, tiempo) => {
+
+        this.setState({
+            profesional_calendar: calendarUpdated
+        }, () => this.updateCounterCitas(tiempo));
+    }
+    
+    updateCounterCitas = (tiempo) => {
+        if (typeof tiempo === 'object' && tiempo !== null) {  
+            if (tiempo[this.state.Authorization.tiempo]) {
+                this.setState(prevState => ({
+                    AuthorizationcounterCitas: prevState.AuthorizationcounterCitas - tiempo[this.state.Authorization.tiempo]
+                }));
+            }
+        } else {
+            if (tiempo === this.state.Authorization.tiempo) {
+                this.setState(prevState => ({
+                    AuthorizationcounterCitas: prevState.AuthorizationcounterCitas - 1
+                }));
+            }
+        }
+    }
+    
+    
     changeCalendar=()=>{
         this.setState(
             {showClientCalendar:!this.state.showClientCalendar}
@@ -322,6 +346,7 @@ class FormCitasForm extends Component {
         const body = this.getBodyRequests();
         this.sendCitas(body);
     }
+
     onAccept = () => {
         this.setState({
             canContinue: true,
@@ -391,7 +416,7 @@ class FormCitasForm extends Component {
                                     {this.state.showClientCalendar ? (
                                         <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
                                     ) : (
-                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name} />
+                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} cedulaProfesional={this.state.profesional.cedula.trim()} />
                                     )}
                                 </div>
                                 <div className="get-client-info">
@@ -406,7 +431,7 @@ class FormCitasForm extends Component {
                                 {this.state.showClientCalendar ? (
                                     <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
                                 ) : (
-                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name} />
+                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} cedulaProfesional={this.state.profesional.cedula.trim()} />
                                 )}
                             </div>
 

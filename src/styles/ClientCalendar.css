@@ -25,3 +25,15 @@
 a{
   cursor: pointer;  
 }
+.iconos-cita-cli{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+.icono-citas-cli{
+    height: 30px;
+    width: auto;
+    margin-right: 40px;  
+    margin: 0%;
+}

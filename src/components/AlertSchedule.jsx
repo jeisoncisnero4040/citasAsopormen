@@ -1,6 +1,6 @@
 import React from "react";
 import Modal from 'react-modal';
-import PropTypes from 'prop-types';
+ 
 import alert from "../assets/alerta.png";
 import '../styles/alertSchedule.css'
 

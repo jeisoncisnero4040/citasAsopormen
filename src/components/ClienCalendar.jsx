@@ -8,10 +8,13 @@ import Constants from '../js/Constans.jsx';
 import Warning from './Warning.jsx';
 import buscar from "../assets/buscar.jpg";
 import pdf from "../assets/pdf.webp";
+import eliminar from "../assets/eliminar.png";
+import cancelar from "../assets/cancelar.png"
 import axios from 'axios';
 import Modal from 'react-modal';  
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
+
 
 
 Modal.setAppElement('#root');
@@ -27,7 +30,10 @@ class ClientCalendar extends Component {
             warningIsOpen: false,
             modalIsOpen: false,
             eventDetails: [],
-            loading:false
+            loading:false,
+            tiempoCitaSelected:'',
+            error:'',
+            showError:false
         };
     }
     handleStartDateChange = (event) => {
@@ -164,7 +170,49 @@ class ClientCalendar extends Component {
         };
         pdfMake.createPdf(docDefinition).open();
     };
-    
+    handleDeleteClick(id,tiempo){
+        this.setState(
+            {
+                tiempoCitaSelected:tiempo,
+
+            },()=>this.deleteCitaById(id)
+        )
+    }
+    deleteCitaById=(id)=> {
+
+        const url = `${Constants.apiUrl()}citas/${id}/`;
+        axios.delete(url)
+            .then(response => {
+                this.closeModal();
+                const newFilteredEvents=this.state.eventDetails.filter(event=>event.id !==id);
+                this.props.getCalendarClient(
+                    this.props.events.filter(event => event.id !== id),
+                    this.state.tiempoCitaSelected
+                );
+
+                 
+                this.setState({ tiempoCitaSelected: '' });
+                if (newFilteredEvents.length > 0){
+                    this.openModal(newFilteredEvents,this.state.selectedday);
+                }
+                
+
+            })
+            .catch(error => {
+                if (error.response) {
+                    const errorData = error.response.data;
+                    this.setState({
+                        error: errorData.error ? errorData.error : 'Error al hacer la petición',
+                        showError: true
+                    }, () => {
+                         
+                        setTimeout(() => {
+                            this.setState({ showError: false });
+                        }, 1000); 
+                    });
+                }
+            });
+    }
 
     render() {
         return (
@@ -225,6 +273,7 @@ class ClientCalendar extends Component {
                                     <th className="date">Hora</th>
                                     <th>Profesional</th>
                                     <th>Procedimiento</th>
+                                    <th>Opciones</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -236,12 +285,24 @@ class ClientCalendar extends Component {
                                             </td>
                                             <td>{event.profesional ? event.profesional : 'N/A'}</td>
                                             <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
+                                            <td className='iconos-cita-cli'>
+                                                <a onClick={() => this.handleDeleteClick(event.id,event.tiempo)}>
+                                                    <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
+                                                </a>
+                                                <a onClick={null}>
+                                                    <img className='icono-citas-cli' src={cancelar} alt="cancelar" />
+                                                </a>
+                                                <a onClick={null}>
+                                                    <img className='icono-citas-cli' src={pdf} alt="pdf" />
+                                                </a>
+                                            </td>
                                         </tr>
                                     );
                                 })}
                             </tbody>
                         </table>
                         <button className="close-button" onClick={this.closeModal}>Cerrar</button>
+                        <p>{this.state.showError?this.state.error:null}</p>
                     </div>
                 </Modal>
                 <div>
