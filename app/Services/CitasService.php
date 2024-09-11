@@ -121,7 +121,7 @@ class CitasService{
         citasRequests::ValidateRealizarField($request);
         $id=$request['id'];
         $observations=$request['realizar'];
-        //$this->checkObservations($observations);
+        $this->checkObservations($observations);
         $citacancel=$this->sendQueryToCancelCita($id,$observations);
         return $this->responseManager->success($citacancel);
 
@@ -483,7 +483,7 @@ class CitasService{
         }
       }
     private function checkObservations($observations){
-        $arrayWords=explode($observations,' ');
+        $arrayWords=explode(" ",$observations);
         count($arrayWords)<=5? throw new BadRequestException('La observacion no es valida',400):null;
 
     }
