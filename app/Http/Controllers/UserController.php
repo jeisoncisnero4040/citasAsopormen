@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\UserService;
-use GuzzleHttp;
-use GuzzleHttp\Client;
-
 class UserController extends Controller
 {
     protected $userService;
@@ -140,15 +137,11 @@ class UserController extends Controller
         $isPasswordUpdated=$this->userService->updatePasswordByUserCedula($request->all());
         return response()->json($isPasswordUpdated,200);
     }
-
-    //public function f($cp){
-        //$client=new Client();
-        //$token='76661443-cb8e-45e6-9a88-e8e1f289f857';
-        //$response = $client->request('GET',
-           // 'https://api.copomex.com/query/get_colonia_por_cp/'.$cp.'?token='.$token,
-        //);
-        //// return response()->json($responseData);
+    
+    public function encryptPAsswords(){
+        $paswordsUpdates=$this->userService->encryptAllpasswords();
+        return response()->json($paswordsUpdates,200);
+    }
 
 
-    //}
 }

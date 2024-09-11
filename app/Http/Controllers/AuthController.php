@@ -87,7 +87,7 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $dataLogin=$this->authService->login($request->all());
-        return response() ->json($dataLogin,200)->header('authorization','Bearer '.$dataLogin['data']);
+        return response() ->json($dataLogin,200)->header('authorization','Bearer '.$dataLogin['access_token']);
     }
     
     /**

@@ -78,7 +78,9 @@ class ProfesionalService{
                 WHERE 
                     ci.cedprof = ?
                     AND ci.fecha > GETDATE()
-                    AND ci.cancelada=0
+                    AND ci.cancelada='0'
+                    AND ci.asistio='0'
+                    AND ci.na='0'
                 ORDER BY 
                     ci.hora ASC;
 

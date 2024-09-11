@@ -11,6 +11,8 @@ use App\Requests\UserRequest;
 use App\utils\ResponseManager;
 use App\utils\PasswordGenerator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+
 
 class UserService {
     private $emailService;
@@ -37,9 +39,9 @@ class UserService {
         $newPassword = PasswordGenerator::generatePassword();
         $user=$this->getUserByCedula($request['cedula']);
         $userUpdated = $this->updateUserPassword($user, $newPassword);
-        $this->sendRecoveryEmail($user->usuario, $newPassword, 'jecsnroxf@gmail.com');
+        $this->sendRecoveryEmail($user->usuario, $newPassword,$employee->email);
 
-        return $this->responseManager->success(null);
+        return $this->responseManager->success($employee->email);
     }
 
     public function UpdatePasswordByUserCedula($request){
@@ -55,6 +57,26 @@ class UserService {
         $userUpdate=$this->updateUserPassword($user,$newPassword);
 
         return $this->responseManager->success($userUpdate);
+    }
+    public function encryptAllPasswords(){
+
+        $users = DB::select("SELECT cedula, password FROM usuarios WHERE estado = 'ACTIVO' AND permisomc = '1'");
+        $cont = 0;
+        foreach ($users as $user) {
+            if (is_object($user) && isset($user->password)) {
+                 
+                if (!Hash::needsRehash($user->password)) {
+                    continue;  
+                }
+                $this->updateUserPassword($user, $user->password);
+                $cont++;
+            } else {
+                 
+                throw new \Exception("El usuario no tiene la estructura correcta.");
+            }
+        }
+    
+        return $this->responseManager->success('Contraseñas actualizadas: ' . $cont);
     }
 
     private function validateRequest($request) {
@@ -91,14 +113,15 @@ class UserService {
         }
     }
     private function validatePassword($user,$oldPassword){
-        if($user->password != $oldPassword){
+        if(!Hash::check($oldPassword, $user->password)){
             throw new BadRequestException("por favor verifica la contraseña",400);
         }
     }
 
     private function updateUserPassword($user, $newPassword) {
+        $newPasswordEncrypted=bcrypt($newPassword);
         try {
-            $user=DB::update("update usuarios set password = ? where cedula = ?",[$newPassword,$user->cedula]);
+            $user=DB::update("update usuarios set password = ? where cedula = ?",[$newPasswordEncrypted,$user->cedula]);
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }

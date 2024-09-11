@@ -161,11 +161,130 @@ class ClientController extends Controller{
         return response()->json($infoClient,200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/clients/get_authorizations/{clientCode}",
+     *     tags={"Clientes"},
+     *     summary="Obtener autorizaciones por código de cliente",
+     *     description="Obtiene las primeras 20 autorizaciones activas de un cliente específico, excluyendo aquellas anuladas o suspendidas.",
+     *     @OA\Parameter(
+     *         name="clientCode",
+     *         in="path",
+     *         description="Código del cliente para buscar sus autorizaciones",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="123456"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Autorizaciones encontradas exitosamente",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="n_autoriza", type="string", example="AUT123"),
+     *                 @OA\Property(property="fecha", type="string", format="date", example="2024-09-10"),
+     *                 @OA\Property(property="f_vence", type="string", format="date", example="2025-09-10"),
+     *                 @OA\Property(property="codent", type="string", example="ENT001"),
+     *                 @OA\Property(property="codent2", type="string", example="PAQ001"),
+     *                 @OA\Property(property="observa", type="string", example="Observaciones adicionales")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="El código de cliente es inválido o está vacío",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="el parametro de búsqueda debe ser válido"),
+     *             @OA\Property(property="status", type="integer", example=400),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="El cliente no registra autorizaciones",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="El usuario no registra autorizaciones"),
+     *             @OA\Property(property="status", type="integer", example=404),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(property="error", type="string", example="Server error"),
+     *             @OA\Property(property="status", type="integer", example=500),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     )
+     * )
+     */
+
     public function getAuthorizationByClientCode($clientCode){
         $authorizations=$this->clientService->getAuthorizationsByCliencode($clientCode);
         return response()->json($authorizations,200);
 
     }
+    /**
+     * @OA\Get(
+     *     path="/clients/get_authorization_data/{authorizationCode}",
+     *     tags={"Clientes"},
+     *     summary="Obtener datos de autorización por código",
+     *     description="Obtiene los detalles de una autorización específica usando el código de autorización.",
+     *     @OA\Parameter(
+     *         name="authorizationCode",
+     *         in="path",
+     *         description="Código de la autorización",
+     *         required=true,
+     *         @OA\Schema(
+     *             type="string",
+     *             example="AUTH123456"
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Datos de la autorización obtenidos exitosamente",
+     *         @OA\JsonContent(
+     *             type="array",
+     *             @OA\Items(
+     *                 type="object",
+     *                 @OA\Property(property="n_autoriza", type="string", example="AUTH123456"),
+     *                 @OA\Property(property="tiempo", type="string", example="30"),
+     *                 @OA\Property(property="procedim", type="string", example="Consulta médica"),
+     *                 @OA\Property(property="cantidad", type="integer", example=1)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="El código de autorización es inválido o está vacío",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="el codigo de authorization debe ser un codigo valido"),
+     *             @OA\Property(property="status", type="integer", example=400),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             type="object",
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(property="error", type="string", example="Server error"),
+     *             @OA\Property(property="status", type="integer", example=500),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     )
+     * )
+     */
 
     public function getDataFromAuthorization($authorizationCode){
         $dataAuthorization=$this->clientService->getDataFromAuthorizationCode($authorizationCode);

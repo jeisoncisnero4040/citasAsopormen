@@ -107,10 +107,30 @@ class CitasRequests
             throw new BadRequestException($validator->errors(), 400);
         }
     }
+    public static function ValidateTineRangeFromCitasProfesional($request){
+        $validator = Validator::make($request, [
+            'cedula' => 'required|regex:/^\d+$/',
+            'startDate' => 'required|date_format:Y-m-d',
+            'endDate' => 'required|date_format:Y-m-d'
+        ]);
+
+        if ($validator->fails()) {
+            throw new BadRequestException($validator->errors(), 400);
+        }
+    }
     public static function vaalidateDateAndCedulaProfesional($request){
         $validator = Validator::make($request, [
             'day' => 'required|date_format:Y-m-d',
             'profesional_identity' => 'required|regex:/^\d+$/',
+        ]);
+        if ($validator->fails()) {
+            throw new BadRequestException($validator->errors(), 400);
+        }
+    }
+    public static function ValidateRealizarField($request){
+        $validator = Validator::make($request, [
+            'realizar' => 'required|string',
+            'id'=>'required|numeric'
         ]);
         if ($validator->fails()) {
             throw new BadRequestException($validator->errors(), 400);

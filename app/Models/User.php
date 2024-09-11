@@ -27,7 +27,9 @@ class User extends Authenticatable implements JWTSubject
      */
     protected $fillable = [
         'cedula',
-        'password',  
+        'password',
+        'estado',
+        'permisomc'  
     ];
 
     /**

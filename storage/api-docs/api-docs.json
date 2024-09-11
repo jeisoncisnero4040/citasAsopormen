@@ -486,6 +486,1150 @@
                 }
             }
         },
+        "/get_centrals_office": {
+            "get": {
+                "tags": [
+                    "Sedes"
+                ],
+                "summary": "Obtener listado de sedes centrales",
+                "description": "Obtiene una lista de las sedes centrales con su código, nombre y dirección.",
+                "operationId": "55ef37f1dfd307d4a08d5e7a8341627e",
+                "responses": {
+                    "200": {
+                        "description": "Listado de sedes encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "cod": {
+                                                "type": "string",
+                                                "example": "001"
+                                            },
+                                            "nombre": {
+                                                "type": "string",
+                                                "example": "Sede Principal"
+                                            },
+                                            "direccion": {
+                                                "type": "string",
+                                                "example": "Calle 123 #45-67, Ciudad"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron sedes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No se encontraron sedes"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/citas/create_citas": {
+            "post": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Crear un grupo de citas",
+                "description": "Crea un grupo de citas con los datos del usuario, del profesional, de la sede y otros detalles relacionados a la cita. Retorna el número de citas creadas exitosamente.",
+                "operationId": "97302bd94725e4126cf555070e156adb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "ced_usu",
+                                    "registro",
+                                    "cedprof",
+                                    "sede",
+                                    "direccion_cita",
+                                    "nro_hist",
+                                    "codent",
+                                    "codent2",
+                                    "n_autoriza",
+                                    "procedim",
+                                    "tiempo",
+                                    "procedipro",
+                                    "duration_session",
+                                    "start_date",
+                                    "week_days",
+                                    "num_citas",
+                                    "num_sessions",
+                                    "all_sessions",
+                                    "saved_sessions"
+                                ],
+                                "properties": {
+                                    "ced_usu": {
+                                        "type": "string",
+                                        "example": "1098707063"
+                                    },
+                                    "registro": {
+                                        "type": "string",
+                                        "example": "Sergio Avila"
+                                    },
+                                    "cedprof": {
+                                        "type": "string",
+                                        "example": "1029384756"
+                                    },
+                                    "sede": {
+                                        "type": "string",
+                                        "example": "001"
+                                    },
+                                    "direccion_cita": {
+                                        "type": "string",
+                                        "example": "Calle 123 #45-67, Ciudad"
+                                    },
+                                    "nro_hist": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "codent": {
+                                        "type": "string",
+                                        "example": "ABC001"
+                                    },
+                                    "codent2": {
+                                        "type": "string",
+                                        "example": "CONV001"
+                                    },
+                                    "n_autoriza": {
+                                        "type": "string",
+                                        "example": "AUT123456"
+                                    },
+                                    "procedim": {
+                                        "type": "string",
+                                        "example": "Procedimiento A"
+                                    },
+                                    "tiempo": {
+                                        "type": "string",
+                                        "example": "pro028"
+                                    },
+                                    "procedipro": {
+                                        "type": "string",
+                                        "example": "Terapia Física"
+                                    },
+                                    "recordatorio_wsp": {
+                                        "description": "Opcional",
+                                        "type": "boolean",
+                                        "example": true
+                                    },
+                                    "duration_session": {
+                                        "type": "integer",
+                                        "example": 45
+                                    },
+                                    "regobserva": {
+                                        "description": "Opcional",
+                                        "type": "string",
+                                        "example": "Observaciones de la cita"
+                                    },
+                                    "start_date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-09-10T15:30:00Z"
+                                    },
+                                    "week_days": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": [
+                                            "Lunes",
+                                            "Miércoles"
+                                        ]
+                                    },
+                                    "num_citas": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "num_sessions": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "all_sessions": {
+                                        "type": "integer",
+                                        "example": 20
+                                    },
+                                    "saved_sessions": {
+                                        "type": "integer",
+                                        "example": 10
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Cita creada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "created"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "description": "Número de citas creadas",
+                                            "type": "integer",
+                                            "example": 50
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Datos incorrectos proporcionados"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/citas/get_num_citas/{authorization}/{procedim}": {
+            "get": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Obtener número de citas por autorización y procedimiento que no han sido canceladas",
+                "description": "Obtiene el número de citas registradas para una autorización específica y un procedimiento determinado.",
+                "operationId": "147b4a3b51bcab23867de23dc3b9c892",
+                "parameters": [
+                    {
+                        "name": "authorization",
+                        "in": "path",
+                        "description": "Número de autorización",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "AUT123456"
+                        }
+                    },
+                    {
+                        "name": "procedim",
+                        "in": "path",
+                        "description": "Código o nombre del procedimiento",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Procedimiento A"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Número de citas encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "description": "Número de citas encontradas",
+                                            "type": "integer",
+                                            "example": 5
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No se encontraron citas"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/citas/get_citas_client": {
+            "post": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Obtener citas de un cliente en un rango de tiempo",
+                "description": "Recupera todas las citas de un cliente específico dentro de un rango de tiempo proporcionado.",
+                "operationId": "3e8aa5496b8d139287d7106d809191a2",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "codigo",
+                                    "startDate",
+                                    "endDate"
+                                ],
+                                "properties": {
+                                    "codigo": {
+                                        "description": "Código del cliente",
+                                        "type": "string",
+                                        "example": "123456"
+                                    },
+                                    "startDate": {
+                                        "description": "Fecha de inicio del rango en formato Y-m-d",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-09-01"
+                                    },
+                                    "endDate": {
+                                        "description": "Fecha de fin del rango en formato Y-m-d",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-09-30"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Citas encontradas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "fecha": {
+                                                        "type": "string",
+                                                        "example": "2023-09-05"
+                                                    },
+                                                    "hora": {
+                                                        "type": "string",
+                                                        "example": "10:00 AM"
+                                                    },
+                                                    "procedimiento": {
+                                                        "type": "string",
+                                                        "example": "Consulta médica"
+                                                    },
+                                                    "sede": {
+                                                        "type": "string",
+                                                        "example": "Sede Central"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Rango de fechas no válido o faltan parámetros",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "El rango de fechas no es válido"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas para el cliente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No se encontraron citas para el cliente en el rango de tiempo especificado"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/citas/{id}": {
+            "get": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Obtener detalles de una cita por ID",
+                "description": "Recupera los detalles de una cita específica utilizando su ID. La respuesta incluye información como fecha, hora, procedimiento, observaciones, y más.",
+                "operationId": "86183714c61e3afdf809772ccd965a7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la cita",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Detalles de la cita recuperados exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 123
+                                                },
+                                                "fecha": {
+                                                    "type": "string",
+                                                    "format": "date",
+                                                    "example": "2024-09-10"
+                                                },
+                                                "hora": {
+                                                    "type": "string",
+                                                    "format": "time",
+                                                    "example": "15:00"
+                                                },
+                                                "hora_asignacion": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2024-09-10T14:00:00Z"
+                                                },
+                                                "procedimiento": {
+                                                    "type": "string",
+                                                    "example": "Consulta General"
+                                                },
+                                                "observaciones": {
+                                                    "type": "string",
+                                                    "example": "Llevar cedula y orden"
+                                                },
+                                                "asistida": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "cancelada": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "no_asistida": {
+                                                    "type": "boolean",
+                                                    "example": false
+                                                },
+                                                "orden": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "duracion": {
+                                                    "type": "string",
+                                                    "example": "60"
+                                                },
+                                                "direccion": {
+                                                    "type": "string",
+                                                    "example": "Calle 123 #45-67, Ciudad"
+                                                },
+                                                "usuario": {
+                                                    "type": "string",
+                                                    "example": "Juan Pérez"
+                                                },
+                                                "profesional": {
+                                                    "type": "string",
+                                                    "example": "Dr. María López"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Cita no encontrada"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Cancelar una cita por ID",
+                "description": "Cancela una cita específica por su ID si es cancelable. El campo 'data' en la respuesta es null.",
+                "operationId": "8216b1c6b29ec0d42076174e0dba7ccd",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la cita a cancelar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cita cancelada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "cita no encontrada"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Eliminar una cita por su ID",
+                "description": "Elimina una cita específica por su ID si esta no ha sido marcada como cancelada, asistida o no asistida.",
+                "operationId": "d46d3578504d092c2b84eb208849ca11",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID de la cita",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 123
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Cita eliminada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "cita con id 123 was deleted successfully"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "No es posible eliminar la cita",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "no es posible eliminar esta sección"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Cita no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Cita no encontrada"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/citas/delete_all_citas": {
+            "post": {
+                "tags": [
+                    "Citas"
+                ],
+                "summary": "Eliminar todas las citas de un profesional en un día específico",
+                "description": "Elimina todas las citas eliminables de un profesional especificado por su cédula en una fecha determinada. La fecha debe estar en formato Y-m-d.",
+                "operationId": "79c10bbd97d5d67560f86607721788aa",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "profesional_identity",
+                                    "day"
+                                ],
+                                "properties": {
+                                    "profesional_identity": {
+                                        "description": "Cédula del profesional",
+                                        "type": "string",
+                                        "example": "1098707063"
+                                    },
+                                    "day": {
+                                        "description": "Fecha en formato Y-m-d",
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2023-09-15"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Citas eliminadas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "description": "Número de citas eliminadas",
+                                            "type": "integer",
+                                            "example": 10
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta o parámetros inválidos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Parámetros inválidos o falta de datos"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron citas para eliminar",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No se encontraron citas para eliminar en la fecha y cédula especificadas"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            },
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/get_clients/{string}": {
             "get": {
                 "tags": [
@@ -778,6 +1922,349 @@
                                         "error": {
                                             "type": "string",
                                             "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/get_authorizations/{clientCode}": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Obtener autorizaciones por código de cliente",
+                "description": "Obtiene las primeras 20 autorizaciones activas de un cliente específico, excluyendo aquellas anuladas o suspendidas.",
+                "operationId": "1148387a04c7cac613490d037c24f67d",
+                "parameters": [
+                    {
+                        "name": "clientCode",
+                        "in": "path",
+                        "description": "Código del cliente para buscar sus autorizaciones",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "123456"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Autorizaciones encontradas exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "n_autoriza": {
+                                                "type": "string",
+                                                "example": "AUT123"
+                                            },
+                                            "fecha": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2024-09-10"
+                                            },
+                                            "f_vence": {
+                                                "type": "string",
+                                                "format": "date",
+                                                "example": "2025-09-10"
+                                            },
+                                            "codent": {
+                                                "type": "string",
+                                                "example": "ENT001"
+                                            },
+                                            "codent2": {
+                                                "type": "string",
+                                                "example": "PAQ001"
+                                            },
+                                            "observa": {
+                                                "type": "string",
+                                                "example": "Observaciones adicionales"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "El código de cliente es inválido o está vacío",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "el parametro de búsqueda debe ser válido"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "El cliente no registra autorizaciones",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El usuario no registra autorizaciones"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/clients/get_authorization_data/{authorizationCode}": {
+            "get": {
+                "tags": [
+                    "Clientes"
+                ],
+                "summary": "Obtener datos de autorización por código",
+                "description": "Obtiene los detalles de una autorización específica usando el código de autorización.",
+                "operationId": "04996e544cd0404f9ff2e3ef41cc5957",
+                "parameters": [
+                    {
+                        "name": "authorizationCode",
+                        "in": "path",
+                        "description": "Código de la autorización",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "AUTH123456"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos de la autorización obtenidos exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "n_autoriza": {
+                                                "type": "string",
+                                                "example": "AUTH123456"
+                                            },
+                                            "tiempo": {
+                                                "type": "string",
+                                                "example": "30"
+                                            },
+                                            "procedim": {
+                                                "type": "string",
+                                                "example": "Consulta médica"
+                                            },
+                                            "cantidad": {
+                                                "type": "integer",
+                                                "example": 1
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "El código de autorización es inválido o está vacío",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "el codigo de authorization debe ser un codigo valido"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get_procedures": {
+            "get": {
+                "tags": [
+                    "Procedimientos"
+                ],
+                "summary": "Obtener lista de procedimientos",
+                "description": "Recupera todos los procedimientos disponibles, incluyendo el nombre, duración y si se envía recordatorio por WhatsApp.",
+                "operationId": "bf45726d56be0288451b570801be237e",
+                "responses": {
+                    "200": {
+                        "description": "Lista de procedimientos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "nombre": {
+                                                "type": "string",
+                                                "example": "Consulta médica"
+                                            },
+                                            "duraccion": {
+                                                "type": "integer",
+                                                "example": 30
+                                            },
+                                            "recordatorio_whatsapp": {
+                                                "type": "boolean",
+                                                "example": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Lista de procedimientos no encontrada",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Lista de procesos no encontrada"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
                                         }
                                     },
                                     "type": "object"
@@ -1343,8 +2830,20 @@
             "description": "Authentication"
         },
         {
+            "name": "Sedes",
+            "description": "Sedes"
+        },
+        {
+            "name": "Citas",
+            "description": "Citas"
+        },
+        {
             "name": "Clientes",
             "description": "Clientes"
+        },
+        {
+            "name": "Procedimientos",
+            "description": "Procedimientos"
         },
         {
             "name": "Profesionales",

@@ -10,6 +10,7 @@ use App\Requests\AuthRequest;
 Use App\Models\User;
 use App\utils\ResponseManager;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthService{
 
@@ -24,14 +25,19 @@ class AuthService{
         AuthRequest::loginRequestValidate( $request);
 
         $user = $this->userService::where('cedula', $request['cedula'])
-                    ->select('cedula','usuario','password','estado')
+                    ->select('cedula','usuario','password','estado','permisomc')
                     ->first();
 
-        if (!$user ||   $user->password !=$request['password']){
-            
-            throw new BadRequestException("credenciales incorrectas",400);
+        if ($user->estado=='INACTIVO'){
+            throw new BadRequestException( "El usuario no se encuentra activo",400);
         }
- 
+        if ($user->permisomc=='0'){
+            throw new BadRequestException( "El usuario no tiene permisos para esta acción",400);
+        }
+
+        if (!$user || !Hash::check($request['password'], $user->password)) {
+            throw new BadRequestException("Credenciales incorrectas", 400);
+        }
 
         $token = JWTAuth::fromUser($user);
         $response=['message'=>'succes',
