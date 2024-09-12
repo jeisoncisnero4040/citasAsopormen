@@ -3,8 +3,7 @@ import axios from 'axios';
 class ApiRequestManager {
  
     getToken = () => {
-        
-        return localStorage.getItem('authToken');
+        return localStorage.getItem('authToken')
     }
 
  
@@ -15,14 +14,10 @@ class ApiRequestManager {
  
     handleAuthError = (error) => {
         if (error.response && error.response.status === 401) {
-             
             window.location.href = '/';
-            return
+            throw error.response.data.message;
         } else {
-            
             throw error.response.data.error?error.response.data.error:'error al hacer la peticion'
-             
-
         }
     }
 
@@ -37,14 +32,14 @@ class ApiRequestManager {
             });
 
  
-            const newToken = response.headers['authorization'];
+            const newToken = response.config.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
  
                 this.setToken(newToken.replace('Bearer ', ''));
             }
 
              
-            return response.data;
+            return response;
 
         } catch (error) {
              
@@ -55,8 +50,6 @@ class ApiRequestManager {
      
     getMethod = async (url) => {
         const token = this.getToken();
- 
-
         try {
             const response = await axios.get(url, {
                 headers: {
@@ -65,14 +58,14 @@ class ApiRequestManager {
             });
 
              
-            const newToken = response.headers['authorization'];
+            const newToken = response.config.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
-                 
+                
                 this.setToken(newToken.replace('Bearer ', ''));
             }
 
              
-            return response.data;
+            return response;
 
         } catch (error) {
              
@@ -87,12 +80,12 @@ class ApiRequestManager {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            const newToken = response.headers['authorization'];
+            const newToken = response.config.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
                  
                 this.setToken(newToken.replace('Bearer ', ''));
             }
-            return response.data;
+            return response;
         } catch (error) {
             return this.handleAuthError(error);
         }

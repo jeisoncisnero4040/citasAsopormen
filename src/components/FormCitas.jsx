@@ -1,12 +1,20 @@
-import React from "react";
-import { useLocation } from 'react-router-dom';
+import React, { useEffect } from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import '../styles/formCitas.css';
 import NavbarCitas from "./NavbarCitas";
 import FormCitasForm from "./FormCitasForm";
- 
 
 function FormCitas() {
-    const userData = useLocation().state || {};
+    const location = useLocation();
+    const navigate = useNavigate();   
+    const userData = location.state || {};
+
+    useEffect(() => {
+        if (!userData || !userData.usuario) {
+             
+            navigate('/');   
+        }
+    }, [userData, navigate]);
 
     return (
         <div className="container">
@@ -14,7 +22,7 @@ function FormCitas() {
                 <NavbarCitas userName={userData.usuario} />
             </div>
             <div className="form-citas">
-                <FormCitasForm user={userData}/>
+                <FormCitasForm user={userData} />
             </div>
         </div>
     );

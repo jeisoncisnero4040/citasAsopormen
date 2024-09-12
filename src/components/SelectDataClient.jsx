@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 import Constants from '../js/Constans.jsx';
 import '../styles/SelectDataClient.css';
 import Warning from "./Warning";
+import ApiRequestManager from '../util/ApiRequestMamager.js';
 
 class SelectDataClient extends Component {
+    requestManager=new ApiRequestManager();
     constructor(props) {
         super(props);
         this.state = {
@@ -25,7 +26,7 @@ class SelectDataClient extends Component {
             this.setState({ loading: true });
 
             const url = `${Constants.apiUrl()}get_clients/${this.state.searchQuery}/`;
-            axios.get(url)
+            this.requestManager.getMethod(url)
                 .then(response => {
                     if (response.status === 200) {
                         const clientList = response.data.data;
@@ -53,14 +54,10 @@ class SelectDataClient extends Component {
                     }
                 })
                 .catch(error => {
-                    if (error.response ) {
-                        const errorData = error.response.data;
-                        this.setState({
-                            errorMessage: errorData.error ? errorData.error : 'Error al hacer la petición',
-                            warningIsOpen: true,
-                        });
-                         
-                    } 
+                    this.setState({
+                        errorMessage: error ? error : 'Error al hacer la petición',
+                        warningIsOpen: true,
+                    });
                 });
         }
     }
@@ -91,33 +88,20 @@ class SelectDataClient extends Component {
         const url = `${Constants.apiUrl()}client_info`;
 
  
-        axios.post(url, {
+        this.requestManager.postMethod(url, {
             'historyId': codigo
         })
         .then(response => {
-            if (response.status === 200) {
-                
-                if (response.data && response.data.data && response.data.data.length > 0) {
-                    const clientData = response.data.data[0];
-                    const trimmedClientData = this.trimObjectValues(clientData);
-                    this.setState({ dataClient: trimmedClientData });
-                    this.handleClientSelection(trimmedClientData);  
-                }else {
-                    alert('Error: No se encontraron los datos del cliente');
-                }
-            } else {
-                alert('Error: No se encontraron los datos del cliente');
-            }
+            const clientData = response.data.data[0];
+            const trimmedClientData = this.trimObjectValues(clientData);
+            this.setState({ dataClient: trimmedClientData });
+            this.handleClientSelection(trimmedClientData);  
         })
-        .catch(error => {
-            if (error.response ) {
-                const errorData = error.response.data;
-                this.setState({
-                    errorMessage: errorData.error ? errorData.error : 'Error al hacer la petición',
-                    warningIsOpen: true,
-                });
-                 
-            } 
+        .catch(error => {  
+            this.setState({
+                errorMessage: error,
+                warningIsOpen: true,
+            });  
         })
         .finally(() => {
             this.setState({ loading: false });

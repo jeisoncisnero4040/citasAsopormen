@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import logo from "../assets/logo.png";
 import Warning from './Warning';
-import axios from 'axios';
 import Constans from '../js/Constans';
 import '../styles/formUpdatePassword.css'
+import ApiRequestManager from '../util/ApiRequestMamager';
 
 class UpdatePasswordForm extends Component {
+    ApiRequestManager=new ApiRequestManager();
     constructor(props) {
         super(props);
         this.state = {
@@ -40,26 +41,20 @@ class UpdatePasswordForm extends Component {
         }
     
         const url = `${Constans.apiUrl()}update_password`;
-        axios.post(url, {
+        this.ApiRequestManager.postMethod(url, {
             cedula,
             oldPassword,
             newPassword
         })
         .then(response => {
-            this.setState({
-                errorMessage: 'Contraseña reestablecida correctamente',
-                warningIsOpen: true
-            });
             window.location.href = '/';
         })
         .catch(error => {
-            if (error.response) {
-                const errorData = error.response.data;
-                this.setState({
-                    errorMessage: errorData.error ? errorData.error : 'Error al hacer la petición',
-                    warningIsOpen: true
-                });
-            }
+            this.setState({
+                errorMessage: error,
+                warningIsOpen: true
+            });
+        
         });
     }
      

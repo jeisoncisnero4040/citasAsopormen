@@ -5,17 +5,24 @@ import interactionPlugin from '@fullcalendar/interaction';
 import Modal from 'react-modal';  
 import '../styles/CalerdarProfesional.css';
 import eliminar from '../assets/eliminar.png'
-import axios from 'axios';
+import ApiRequestManager from '../util/ApiRequestMamager.js';
 import Constants from '../js/Constans.jsx';
+import buscar from "../assets/buscar.jpg";
+import Warning from './Warning.jsx';
 
  
 Modal.setAppElement('#root');
 
 class ProfesionalCalendar extends Component {
+    requestManager=new ApiRequestManager();
+    
     constructor(props) {
         super(props);
-    }
-    state = {
+    
+    const today = new Date().toISOString().split('T')[0]; 
+    this.state = {
+        startDate: today,
+        endDate: today,
         modalIsOpen: false,
         eventDetails: [],
         selectedday: new Date().toISOString().split('T')[0],
@@ -27,13 +34,87 @@ class ProfesionalCalendar extends Component {
         idToDelete:'',
         tiempoCitaSelected:'',
         error:'',
-        showError:false
+        showError:false,
+        showAgreeButtons:false,
+        idSelected:'',
+        loading:false
     }
+    }
+    handleStartDateChange = (event) => {
+        this.setState({ startDate: event.target.value });
+    };
+
+    handleEndDateChange = (event) => {
+        this.setState({ endDate: event.target.value });
+    };
+    getBody = () => {
+        return {
+            'cedula': this.props.cedulaProfesional,
+            'startDate': this.state.startDate,
+            'endDate': this.state.endDate
+        };
+    }
+    
+    getCalendarProfesional = () => {
+        const body = this.getBody();
+        this.setState({ loading: true });
+        const url = `${Constants.apiUrl()}citas/get_citas_profesional`;
+    
+        this.requestManager.postMethod(url, body)
+            .then(response => {
+                this.setState(
+                    () => this.props.getUpdateCalendarPro(response.data.data)
+                );
+            })
+            .catch(error => {
+                this.setState({
+                    errorMessage: error,
+                    warningIsOpen: true
+                });
+            })
+            .finally(() => { 
+                this.setState({ loading: false });
+            });
+    }
+    insertCitasInTable = () => {
+        return (
+            <tbody className='body-table'>
+                {this.state.eventDetails.map((event, index) => {
+                    
+                    const estado = event.asistida === '1'
+                        ? 'Asistida'
+                        : event.cancelada === '1'
+                        ? 'Cancelada'
+                        : event.no_asistida === '1'
+                        ? 'NoAsistio'
+                        : 'Programada';
+    
+                    return (
+                        <tr className={estado} key={index}>
+                             
+                            <td>
+                                {`${new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
+                            </td> 
+                            <td>{event.usuario ? event.usuario : 'N/A'}</td>
+                            <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
+                            <td className='iconos-cita-cli'>
+                                 
+                                <a onClick={() => this.handleDeleteClick(event.id,event.tiempo)}>
+                                    <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
+                                </a>
+                            </td>
+                        </tr>
+                    );
+                })}
+            </tbody>
+        );
+    };
+
 
     deleteCitaById=(id)=> {
 
         const url = `${Constants.apiUrl()}citas/${id}/`;
-        axios.delete(url)
+        this.requestManager.deleteMethod(url)
             .then(response => {
                 this.closeModal();
                 const newFilteredEvents=this.state.eventDetails.filter(event=>event.id !==id);
@@ -43,7 +124,7 @@ class ProfesionalCalendar extends Component {
                 );
 
                  
-                this.setState({ tiempoCitaSelected: '' });
+                this.setState({ tiempoCitaSelected: '',idSelected:'' });
                 if (newFilteredEvents.length > 0){
                     this.openModal(newFilteredEvents,this.state.selectedday);
                 }
@@ -51,10 +132,10 @@ class ProfesionalCalendar extends Component {
 
             })
             .catch(error => {
-                if (error.response) {
-                    const errorData = error.response.data;
+                if (error) {
+                    
                     this.setState({
-                        error: errorData.error ? errorData.error : 'Error al hacer la petición',
+                        error: error,
                         showError: true
                     }, () => {
                          
@@ -79,8 +160,6 @@ class ProfesionalCalendar extends Component {
         const { start } = info.event;
         const eventDate = new Date(start);
 
-
-
         const filteredEvents = this.props.events.filter(event => {
             const eventDay = new Date(event.start);
             return eventDay.getDate() === eventDate.getDate() &&
@@ -94,17 +173,11 @@ class ProfesionalCalendar extends Component {
 
         
     }
-    handleDeleteClick = (id, tiempo) => {
-         
-        this.setState({ tiempoCitaSelected: tiempo }, () => {
-            this.deleteCitaById(id);
-        });
-    };
+    
     deleteCitasByday = () => {
         const citasDeletables = this.filterDeletablesCitas();
         const citasNotDeletables = this.filterCitasNotDeletables(citasDeletables);
         const citasByTiempo = this.getCitasByTiempo(citasDeletables);
-
         this.deleteCitas(citasDeletables,citasNotDeletables,citasByTiempo);
     }
     filterDeletablesCitas = () => {
@@ -136,7 +209,7 @@ class ProfesionalCalendar extends Component {
          
         const url = `${Constants.apiUrl()}citas/delete_all_citas`;
     
-        axios.post(url, {
+        this.requestManager.postMethod(url, {
             'profesional_identity': this.props.cedulaProfesional,
             'day': this.state.selectedday
         })
@@ -157,15 +230,54 @@ class ProfesionalCalendar extends Component {
                 this.openModal(citasNotDeletables, this.state.selectedday);
             }
         })
-        .catch(error => {
-            if (error.response) {
-                const errorData = error.response.data;
-                this.setState({
-                    errorMessage: errorData.error ? errorData.error : 'Error al hacer la petición',
-                    warningIsOpen: true,
-                });
-            }
+        .catch(error => {    
+            this.setState({
+                errorMessage: error,
+                warningIsOpen: true,
+            });
         });
+    }
+    handleDeleteAllCitasClick=()=>{
+        this.openAgreeButtons()
+    }
+
+    handleDeleteClick= (id, tiempo) =>{
+        this.setState({
+            tiempoCitaSelected:tiempo,
+            idSelected:id
+        }
+        )
+        this.openAgreeButtons()
+        
+
+    }
+    openAgreeButtons = () => {
+        this.setState({ showAgreeButtons: true });
+    }
+    
+    closeAgreeButtons = () => {
+        this.setState({ showAgreeButtons: false });
+    }
+    
+    acceptWarnings = () => {
+        
+        if (this.state.tiempoCitaSelected) {
+            this.deleteCitaById(this.state.idSelected);
+        } else {
+            this.deleteCitasByday(); 
+        }
+        this.closeAgreeButtons(); 
+    }
+    insertAgreeField = (id, tiempo) => {
+        return (
+            <div className='agree'>
+                <p>Esta acción es irreversible, ¿estás seguro de que deseas continuar?</p>
+                <div className='agree-buttons'>
+                    <button className='agree-button' onClick={this.closeAgreeButtons}>No</button>
+                    <button className='agree-button' onClick={() => this.acceptWarnings(id, tiempo)}>Sí</button>
+                </div>
+            </div>
+        );
     }
 
 
@@ -176,6 +288,33 @@ class ProfesionalCalendar extends Component {
         return (
             <div className="calendar-container">
                 <p>{this.props.nameProfesional}</p>
+                <div className="inputs-date">
+                    <div className="get-date">
+                        <label>Fecha inicial</label>
+                        <input
+                            type="date"
+                            value={this.state.startDate}
+                            onChange={this.handleStartDateChange}
+                        />
+                    </div>
+                    <div className="get-date">
+                        <label>Fecha final</label>
+                        <input
+                            type="date"
+                            value={this.state.endDate}
+                            onChange={this.handleEndDateChange}
+                        />
+                    </div>
+                    <div className="get-schedule-client">
+                        {this.state.loading?<img src={buscar} alt="buscar" />:<a onClick={this.getCalendarProfesional}><img src={buscar} alt="buscar" /></a>}
+                    </div>
+                    <div className='get-pdf'>
+                        {this.state.loading ? (
+                            <p className='search'>Buscando...</p>
+                        ) :null}
+                    </div>
+                    
+                </div>
                 <FullCalendar
                     plugins={[dayGridPlugin, interactionPlugin]}
                     events={this.props.events}
@@ -193,52 +332,41 @@ class ProfesionalCalendar extends Component {
                         <div className="modal-content">
                             <div className='header-t-p'>
                                 <h4>{`Estado de horario de ${this.props.nameProfesional}`}</h4>
-                                <a onClick={this.deleteCitasByday}>
+                                <a onClick={this.handleDeleteAllCitasClick}>
                                     <img className='delete-citas' src={eliminar} alt="eliminar" />
                                 </a>
                                  
                              </div>  
                             
-                            
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th className='date'>Hora</th>
-                                        <th>Paciente</th>
-                                        <th>Procedimiento</th>
-                                        <th>Opciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {eventDetails.map((event, index) => {
-                                        
-                                        const [paciente, procedimiento] = event.title.split('-');  
+                            <div className='table-pro'>
+                                <table>
+                                    <thead >
+                                        <tr>
+                                            <th className='date'>Hora</th>
+                                            <th>Paciente</th>
+                                            <th>Procedimiento</th>
+                                            <th>Opciones</th>
+                                        </tr>
+                                    </thead>
 
-                                        return (
-                                            <tr key={index} id={event.id}>
-                                                <td>
-                                                    {`${new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
-                                                </td>
-                                                <td>{paciente ? paciente.trim() : 'N/A'}</td>
-                                                <td>{procedimiento ? procedimiento.trim() : 'N/A'}</td>
-                                                <td className='iconos'>
-                                                    <a onClick={() => this.handleDeleteClick(event.id,event.tiempo)}>
-                                                        <img className='icono-table' src={eliminar} alt="eliminar" />
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        );
-                                    })}
-                                </tbody>
-                            </table>
-                            <button className="close-button" onClick={this.closeModal}>Cerrar</button>
-                                
-                            <p>{this.state.showError?this.state.error:null}</p>
+                                        {this.insertCitasInTable()} 
 
                                     
+                                </table>
+                            </div>
                             
+                            <button className="close-button" onClick={this.closeModal}>Cerrar</button>  
+                            <p className='p-error'>{this.state.showError?this.state.error:null}</p>
+                            {this.state.showAgreeButtons?this.insertAgreeField():null}
                         </div>
                     </Modal>
+                </div>
+                <div>
+                    <Warning
+                        isOpen={this.state.warningIsOpen}
+                        onClose={() => this.setState({ warningIsOpen: false })}
+                        errorMessage={this.state.errorMessage}
+                    />
                 </div>
             </div>
         );

@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import '../styles/TableOrders.css';
 import Constans from '../js/Constans.jsx';
-import axios from "axios";
 import Warning from "./Warning.jsx";
+import ApiRequestManager from "../util/ApiRequestMamager.js";
 
 class TableOrders extends Component {
+    requestManager=new ApiRequestManager();
     constructor(props) {
         super(props);
         this.state = {
@@ -26,7 +27,7 @@ class TableOrders extends Component {
 
     fetchAuthorizations = () => {
         const url = `${Constans.apiUrl()}clients/get_authorizations/${this.props.historyNumber}/`;
-        axios.get(url)
+        this.requestManager.getMethod(url)
             .then(response => {
                 this.handleAuthorizationsSuccess(response.data.data);
             })
@@ -41,22 +42,22 @@ class TableOrders extends Component {
 
     fetchDataAuthorization = (n_autoriza) => {
         const url = `${Constans.apiUrl()}clients/get_authorization_data/${n_autoriza}/`;
-        axios.get(url)
+        this.requestManager.getMethod(url)
             .then(response => {
                 this.handleAuthorizationDataSuccess(response.data.data);
             })
-            .catch(() => {
-                this.handleAuthorizationsError("Ha ocurrido un error inesperado al hacer la solicitud");
+            .catch(error => {
+                this.handleAuthorizationsError(error);
             });
     }
     fetchCounNumCitas = (n_autoriza, tiempo) => {
         const url = `${Constans.apiUrl()}citas/get_num_citas/${n_autoriza}/${tiempo}/`;
-        return axios.get(url)  
+        return this.requestManager.getMethod(url)  
             .then(response => {
                 return response.data.data;
             })
-            .catch(() => {
-                this.handleAuthorizationsError("Ha ocurrido un error inesperado al hacer la solicitud");
+            .catch(error=> {
+                this.handleAuthorizationsError(error);
                  
             });
     }
@@ -77,14 +78,11 @@ class TableOrders extends Component {
         });
     }
 
-    handleAuthorizationsError = (error) => {
-        if (error.response) {
-            const errorData = error.response.data;
-            this.setState({
-                errorMessage: errorData.error ? JSON.stringify(errorData.error) : 'Error al hacer la petición',
-                warningIsOpen: true,
-            });
-        }
+    handleAuthorizationsError = (error) => {     
+        this.setState({
+            errorMessage: error,
+            warningIsOpen: true,
+        });  
     }
     handleRowClick = (rowData) => {
         this.setState({ 
