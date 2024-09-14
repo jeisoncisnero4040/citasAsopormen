@@ -40,7 +40,10 @@ const LoginForm = () => {
         const errorData = error.response.data;
         setErrorMessage(errorData.error ? errorData.error : 'Error al hacer la petición');
         setWarningIsOpen(true);
-      } 
+      } else{
+        setErrorMessage("error al ingresar al sistema");
+        setWarningIsOpen(true);
+      }
     } finally {
       setLoading(false);
     }

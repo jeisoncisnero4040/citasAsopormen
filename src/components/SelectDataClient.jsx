@@ -28,7 +28,7 @@ class SelectDataClient extends Component {
             const url = `${Constants.apiUrl()}get_clients/${this.state.searchQuery}/`;
             this.requestManager.getMethod(url)
                 .then(response => {
-                    if (response.status === 200) {
+                     
                         const clientList = response.data.data;
  
                         if (clientList.length > 0) {
@@ -46,19 +46,28 @@ class SelectDataClient extends Component {
                             this.getClientInfo(firstClient.codigo);
                         } else {
                             this.setState({ clientList: [], loading: false });
-                            alert('No se encontraron coincidencias');
+                             
                         }
-                    } else {
-                        this.setState({ loading: false });
-                        alert('Error: No se encontraron coincidencias');
-                    }
+                     
                 })
                 .catch(error => {
                     this.setState({
-                        errorMessage: error ? error : 'Error al hacer la petición',
+                        errorMessage: error ,
                         warningIsOpen: true,
+                        loading:false
                     });
                 });
+        }
+    }
+    renderClients() {
+        if (this.state.clientList.length > 0) {
+            return this.state.clientList.map((client, index) => (
+                <option key={index} value={client.codigo}>
+                    {client.nombre}
+                </option>
+            ));
+        } else {
+            return <option>No se encontraron clientes</option>;
         }
     }
 
@@ -128,7 +137,7 @@ class SelectDataClient extends Component {
                     <div className="input-name-profesional">
                         <label>Buscar Cliente</label>
                         <input 
-                            type="text"
+                            type="search"
                             placeholder="Buscar por nombre"
                             value={this.state.searchQuery} 
                             onChange={this.handleInputChange} 
@@ -142,11 +151,7 @@ class SelectDataClient extends Component {
                             value={this.state.selectedOption}
                             onChange={this.handleSelectChange}
                         >
-                            {this.state.clientList.map((client, index) => (
-                                <option key={index} value={client.codigo}>
-                                    {client.nombre}
-                                </option>
-                            ))}
+                            {this.renderClients()}
                         </select>
                     </div>
                 </div>

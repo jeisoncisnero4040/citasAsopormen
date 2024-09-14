@@ -314,13 +314,13 @@ class FormCitasForm extends Component {
                 },()=>this.getCalendarProfesional(body['cedprof'])) 
             })
             .catch(error => {
-                if (error.response) {
-                    const errorData = error.response.data;
+
+
                     this.setState({
-                        errorMessage: errorData.error ? JSON.stringify(errorData.error) : 'Error al hacer la petición',
+                        errorMessage: error,
                         warningIsOpen: true,
                     });
-                }
+
             })
             .finally(() => {
                 this.setState({
@@ -371,7 +371,7 @@ class FormCitasForm extends Component {
                                         <div className="input-name-profesional">
                                             <label>Buscar Profesional</label>
                                             <input 
-                                                type="text"
+                                                type="search"
                                                 placeholder="Buscar por nombre"
                                                 value={this.state.searchQuery} 
                                                 onChange={this.handleInputChange} 
