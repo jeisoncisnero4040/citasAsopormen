@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clínico Asopormen</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: white; /* Fondo blanco */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Asegura que el cuerpo ocupe toda la altura de la vista */
+        }
+        .msg {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+
+        }
+        .header {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .header img {
+            max-width: 100px; 
+            height: auto;
+        }
+        .header .info {
+            margin-top: 10px;
+        }
+        .header .info strong {
+            display: block;
+            font-size: 36px;
+
+        }
+        .header .info p {
+            margin: 0;
+            font-size: 20px;
+
+        }
+        .body.msm h1 {
+            font-size: 100px;
+            color: #d9534f; /* Color rojo para el mensaje de error */
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="msg">
+        <div class="header">
+            <img src="logo.png" alt="Logo">
+            <div class="info">
+                <strong>Asopormen dice:</strong>
+                <p>Página no encontrada</p>
+            </div>
+        </div>
+        <div class="body.msm">
+            <h1>La ruta ingresada no fue encontrada</h1>
+        </div>
+    </div>
+</body>
+</html>
