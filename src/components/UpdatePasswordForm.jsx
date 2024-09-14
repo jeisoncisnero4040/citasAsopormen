@@ -64,9 +64,15 @@ class UpdatePasswordForm extends Component {
 
         return (
              
-            <div className="update-container-recover">
-                <img src={logo} alt="Logo" className="logo" />
-                <p className="title">Cambiar Contraseña</p>
+            <div className="login-container">
+                    <div className="login-image">
+                        <img src={logo} alt="Logo" className="logo" />
+                        <div className="clinic-asopormen">
+                            <strong>Actualizar</strong>
+                            <p>Contraseña</p>
+                        </div>
+                    </div>
+                 
                 <form onSubmit={this.handleSubmit}>
                     <div className="form-group">
                         <input

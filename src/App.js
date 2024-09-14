@@ -19,8 +19,10 @@ function App() {
           <Route path="/" element={<HomePage />} />
           <Route element={<ProtectedRoute/> }>
               <Route path="/formcitas" element={<FormCitas />} />
+              <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
           </Route>
-          <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
+          
+           
           
         </Routes>
       </div>

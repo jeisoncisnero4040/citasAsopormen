@@ -13,11 +13,14 @@ class ApiRequestManager {
 
  
     handleAuthError = (error) => {
+        if (error.code){
+            throw "Error de Cors, por favor verifica la configuracion del servidor"
+        }
         if (error.response && error.response.status === 401) {
             window.location.href = '/';
             throw error.response.data.message;
         } else {
-            throw error.response.data.error?error.response.data.error:'error al hacer la peticion'
+            throw error?.response?.data?.error?error.response.data.error:'error al hacer la peticion'
         }
     }
 

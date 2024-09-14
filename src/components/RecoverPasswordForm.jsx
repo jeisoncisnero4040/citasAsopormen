@@ -66,9 +66,14 @@ class RecoverPasswordForm extends Component {
 
     render() {
         return (
-            <div className="login-container-recover">
-                <img src={logo} alt="Logo" className="logo" />
-                <p className="title">Recuperar contraseña</p>
+            <div className="login-container">
+                    <div className="login-image">
+                        <img src={logo} alt="Logo" className="logo" />
+                        <div className="clinic-asopormen">
+                            <strong>Recuperar</strong>
+                            <p>Contraseña</p>
+                        </div>
+                    </div>
                 
                 <form onSubmit={this.retrievePassword}>
                     <div className="form-group">
