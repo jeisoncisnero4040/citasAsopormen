@@ -19,6 +19,9 @@ class LoginCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
+        if ($request->getMethod() == 'OPTIONS') {
+            return response()->json(['status' => 200],200);
+        }
          
         $token = $request->header('Authorization');
 
