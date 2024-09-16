@@ -27,6 +27,9 @@ class AuthService{
         $user = $this->userService::where('cedula', $request['cedula'])
                     ->select('cedula','usuario','password','estado','permisomc')
                     ->first();
+        if (!$user || !Hash::check($request['password'], $user->password)) {
+            throw new BadRequestException("Credenciales incorrectas", 400);
+        }
 
         if ($user->estado=='INACTIVO'){
             throw new BadRequestException( "El usuario no se encuentra activo",400);
@@ -35,9 +38,7 @@ class AuthService{
             throw new BadRequestException( "El usuario no tiene permisos para esta acción",400);
         }
 
-        if (!$user || !Hash::check($request['password'], $user->password)) {
-            throw new BadRequestException("Credenciales incorrectas", 400);
-        }
+
 
         $token = JWTAuth::fromUser($user);
         $response=['message'=>'succes',
@@ -77,7 +78,7 @@ class AuthService{
         }
         $token = str_replace('Bearer ', '', $token);     
         try {
-            $newToken = JWTAuth::setToken($token)->refresh();
+            $newToken = JWTAuth::setToken($token)->refresh  ();
             return $this->responseManager->success($newToken);
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(),500);
@@ -92,13 +93,11 @@ class AuthService{
         }
         $token = str_replace('Bearer ', '', $token);     
         try {
-            $user = JWTAuth::setToken($token)->authenticate();
+            list($header, $payload, $signature) = explode('.', $token);
 
-            if (!$user) {
-                throw new NotFoundException('User not found', 404);
-            }
-    
-            return $this->responseManager->success($user);
+ 
+            $decodedPayload = json_decode(base64_decode($payload), true);
+            return $this->responseManager->success($decodedPayload['sub']);
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }
