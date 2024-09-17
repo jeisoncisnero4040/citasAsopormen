@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Models\ProcedureModel;
 use App\utils\ResponseManager;
+use Illuminate\Support\Facades\DB;
 
 class ProcedureService{
     private $procedureModel;
@@ -35,6 +37,29 @@ class ProcedureService{
         });
     
         return $procedures;
+    }
+    public function searchProcedureByString($string){
+        $string = trim($string);
+        if (empty($string)) {
+            throw new BadRequestException("el parametro de búsqueda debe ser válido",400);
+        }
+        
+
+        $string=strtoupper($string);
+
+        $procedures = DB::select("
+            SELECT TOP 10 pro.id, pro.nombre, pro.duraccion,pro.recordatorio_whatsapp
+            FROM procedipro pro
+            WHERE pro.nombre LIKE ?
+            ORDER BY pro.nombre
+        ", ["%{$string}%"]);
+
+        if (empty($procedures)) {
+            throw new NotFoundException("no se han encontado registros",404);
+        }
+
+        return  $this->responseManager->success($procedures);
+         
     }
     
 }       

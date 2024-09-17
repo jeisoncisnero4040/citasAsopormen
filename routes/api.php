@@ -19,23 +19,25 @@ Route::post('update_password',[UserController::class,'updatePasswordByUserCedula
 Route::get('encriptar_passwords',[UserController::class,'encryptPAsswords']);
 //Route::get('{cp}/',[UserController::class,'f']);
 
-Route::get('get_profesionals/{string}/',[ProfesionalController::class,'getAllProfesionalByStringSearch'])
+Route::get('get_profesionals/{string}',[ProfesionalController::class,'getAllProfesionalByStringSearch'])
     ->middleware('login.check');
     
-Route::get('get_profesional_calendar/{cedula}/',[ProfesionalController::class,'getProfesionalCalendarByCedula'])
+Route::get('get_profesional_calendar/{cedula}',[ProfesionalController::class,'getProfesionalCalendarByCedula'])
     ->middleware('login.check');
 
-Route::get('get_clients/{string}/',[ClientController::class,'getAllClientByStringSearch'])->middleware('login.check');
+Route::get('get_clients/{string}',[ClientController::class,'getAllClientByStringSearch'])->middleware('login.check');
 Route::post('client_info',[ClientController::class,'showDataClientByIdHistory'])->middleware('login.check');
-Route::get('clients/get_authorizations/{clientCode}/',[ClientController::class,'getAuthorizationByClientCode'])->middleware('login.check');
-Route::get('clients/get_authorization_data/{authorizationCode}/',[ClientController::class,'getDataFromAuthorization'])->middleware('login.check');
+Route::get('clients/get_authorizations/{clientCode}',[ClientController::class,'getAuthorizationByClientCode'])->middleware('login.check');
+Route::get('clients/get_authorization_data/{authorizationCode}',[ClientController::class,'getDataFromAuthorization'])->middleware('login.check');
 
 Route::get('get_centrals_office',[CentralOfficeController::class,'getCentralsOffice']);
 
 Route::get('get_procedures',[ProcedureController::class,'getAllProcedures']);
+Route::get('get_procedures/{string}',[ProcedureController::class,'searchProceduresByString']);
+
 
 Route::post('citas/create_citas',[CitasController::class, 'createGroupCitas'])->middleware('login.check');
-Route::get('citas/get_num_citas/{authorization}/{procedim}/',[CitasController::class,'GetNumCitasFromOrder'])->middleware('login.check');
+Route::get('citas/get_num_citas/{authorization}/{procedim}',[CitasController::class,'GetNumCitasFromOrder'])->middleware('login.check');
 Route::post('citas/get_citas_client',[CitasController::class,'GetCalendarClient'])->middleware('login.check');
 Route::post('citas/get_citas_profesional',[CitasController::class,'getCalendarProfesional']);
 Route::delete('citas/{id}', [CitasController::class, 'deleteCitaById'])->where('id', '\d+')->middleware('login.check');

@@ -80,11 +80,11 @@ return [
 
         'sqlsrv' => [
         'driver' => 'sqlsrv',
-        'host' => 'localhost',
+        'host' => '192.168.39.150',
         'port' => '1433',
-        'database' => 'citasAsopormen',
-        'username' => 'root',
-        'password' => 'cb7327dd',
+        'database' => 'Baseconta',
+        'username' => 'sa',
+        'password' => 'Avances2012',
         'charset' => 'utf8',
         'prefix' => '',
         'schema' => '',

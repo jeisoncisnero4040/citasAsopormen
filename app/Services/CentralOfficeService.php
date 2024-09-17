@@ -23,14 +23,20 @@ class CentralOfficeService
         return $this->responseManager->success($allOffices);
     }
 
-    private function getCentralsOffice()
-    {
-        $offices = $this->centralOfficeModel::select('cod', 'nombre', 'direccion')->get();
-
+    
+    private function getCentralsOffice(){
+        $offices = $this->centralOfficeModel::select('cod', 'nombre', 'direccion', 'barrio')->get();
+    
         if ($offices->isEmpty()) {
             throw new NotFoundException('No se encontraron sedes', 404);
         }
-
+    
+        foreach($offices as $office){
+             
+            $office->direccion = trim($office->direccion) . ' BARRIO ' . trim($office->barrio);
+        }
+    
         return $offices;
     }
+    
 }
