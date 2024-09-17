@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/clinico/static/css/main.11023b41.css",
-    "main.js": "/clinico/static/js/main.77b5e9bf.js",
+    "main.js": "/clinico/static/js/main.9b09525a.js",
     "static/media/pdf.webp": "/clinico/static/media/pdf.d87b702f454e18a064b8.webp",
     "static/media/logo.png": "/clinico/static/media/logo.587d7c3b8edfbd91b697.png",
     "static/media/alerta.png": "/clinico/static/media/alerta.2219adb811cd300b8132.png",
@@ -9,10 +9,10 @@
     "static/media/buscar.jpg": "/clinico/static/media/buscar.3d092628296bf625ea7f.jpg",
     "index.html": "/clinico/index.html",
     "main.11023b41.css.map": "/clinico/static/css/main.11023b41.css.map",
-    "main.77b5e9bf.js.map": "/clinico/static/js/main.77b5e9bf.js.map"
+    "main.9b09525a.js.map": "/clinico/static/js/main.9b09525a.js.map"
   },
   "entrypoints": [
     "static/css/main.11023b41.css",
-    "static/js/main.77b5e9bf.js"
+    "static/js/main.9b09525a.js"
   ]
 }
