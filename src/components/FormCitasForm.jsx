@@ -12,6 +12,7 @@ import SelectCentral from "./SelectCentral.jsx"
 import CreateCitaForm from "./CreateCitaForm.jsx";
 import AlertSchedule from "./AlertSchedule.jsx";
 import ApiRequestManager from "../util/ApiRequestMamager.js";
+import axios from "axios";
 
 
 
@@ -61,7 +62,7 @@ class FormCitasForm extends Component {
         if (event.key === 'Enter') {
             this.setState({ loading: true });
     
-            const url = `${Constants.apiUrl()}get_profesionals/${this.state.searchQuery}/`;
+            const url = `${Constants.apiUrl()}get_profesionals/${this.state.searchQuery}`;
              
     
             this.requestManager.getMethod(url)
@@ -85,7 +86,8 @@ class FormCitasForm extends Component {
                         this.setState({ profesional_list: profesionalList });
                     }
                 })
-                .catch(error => {
+                .catch(error=> {
+                    
                     this.setState({
                         errorMessage: error ? error : 'Error al hacer la petición',
                         warningIsOpen: true,
@@ -121,7 +123,7 @@ class FormCitasForm extends Component {
     getCalendarProfesional = (cedulaProfesional) => {
         this.setState({ loading: true });
 
-        const url = `${Constants.apiUrl()}get_profesional_calendar/${cedulaProfesional}/`;
+        const url = `${Constants.apiUrl()}get_profesional_calendar/${cedulaProfesional}`;
 
         this.requestManager.getMethod(url)
             .then(response => {
@@ -226,10 +228,9 @@ class FormCitasForm extends Component {
         this.setState({ schedule: updatedSchedule });
     }
 
-
     checkSchedule = () => {
         const weekdays = this.state.schedule.weekDays;
-
+    
         let startDate = new Date(this.state.schedule.startDate);
         startDate.setHours(startDate.getHours());
         let startDateInColombia = startDate;
@@ -242,25 +243,30 @@ class FormCitasForm extends Component {
         
         const hourStart = startDateInColombia.getHours();
         const hourFinish = hourStart + durationCita;
-
-        
-        let alertMessage = 'ASTAROSHNA\n';
     
-        if (weekdays.includes("sabado") && (hourStart>=12 || hourFinish>=12 )) {
-            alertMessage += 'El horario seleccionado es el sábado después de las 12pm. \n';
-        }
-    
+        let alertMessage = 'Alerta\n';
         if (weekdays.includes("domingo")) {
             alertMessage += 'Has seleccionado el día domingo que no es día laborable.\n';
         }
     
-        if (alertMessage !=='ASTAROSHNA\n' ) {
-            alertMessage += '¿seguro que deseas continuar?';
+        if (weekdays.includes("sabado") && (hourStart >= 12 || hourFinish >= 12)) {
+            alertMessage += 'El horario seleccionado es el sábado después de las 12pm. \n';
+        }
+    
+        if (hourStart < 5) {
+            alertMessage += "El horario seleccionado es antes de las 5am.\n";
+        } else if (hourFinish > 19) {
+            alertMessage += "El horario seleccionado es después de las 7pm.\n";
+        }
+    
+        if (alertMessage !== 'Alerta\n') {
+            alertMessage += '¿Seguro que deseas continuar?';
             return alertMessage.trim();
         } else {
             return null;
         }
     }
+    
     getBodyRequests = () => {
         let startDate = new Date(this.state.schedule.startDate);
         startDate.setHours(startDate.getHours()-5);

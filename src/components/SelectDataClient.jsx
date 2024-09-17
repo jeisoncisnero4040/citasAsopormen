@@ -25,7 +25,7 @@ class SelectDataClient extends Component {
         if (event.key === 'Enter') {
             this.setState({ loading: true });
 
-            const url = `${Constants.apiUrl()}get_clients/${this.state.searchQuery}/`;
+            const url = `${Constants.apiUrl()}get_clients/${this.state.searchQuery}`;
             this.requestManager.getMethod(url)
                 .then(response => {
                      

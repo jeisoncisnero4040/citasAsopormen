@@ -26,7 +26,7 @@ class TableOrders extends Component {
 
 
     fetchAuthorizations = () => {
-        const url = `${Constans.apiUrl()}clients/get_authorizations/${this.props.historyNumber}/`;
+        const url = `${Constans.apiUrl()}clients/get_authorizations/${this.props.historyNumber}`;
         this.requestManager.getMethod(url)
             .then(response => {
                 this.handleAuthorizationsSuccess(response.data.data);
@@ -41,7 +41,7 @@ class TableOrders extends Component {
     }
 
     fetchDataAuthorization = (n_autoriza) => {
-        const url = `${Constans.apiUrl()}clients/get_authorization_data/${n_autoriza}/`;
+        const url = `${Constans.apiUrl()}clients/get_authorization_data/${n_autoriza}`;
         this.requestManager.getMethod(url)
             .then(response => {
                 this.handleAuthorizationDataSuccess(response.data.data);
@@ -51,7 +51,7 @@ class TableOrders extends Component {
             });
     }
     fetchCounNumCitas = (n_autoriza, tiempo) => {
-        const url = `${Constans.apiUrl()}citas/get_num_citas/${n_autoriza}/${tiempo}/`;
+        const url = `${Constans.apiUrl()}citas/get_num_citas/${n_autoriza}/${tiempo}`;
         return this.requestManager.getMethod(url)  
             .then(response => {
                 return response.data.data;

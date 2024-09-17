@@ -113,7 +113,7 @@ class ProfesionalCalendar extends Component {
 
     deleteCitaById=(id)=> {
 
-        const url = `${Constants.apiUrl()}citas/${id}/`;
+        const url = `${Constants.apiUrl()}citas/${id}`;
         this.requestManager.deleteMethod(url)
             .then(response => {
                 this.closeModal();

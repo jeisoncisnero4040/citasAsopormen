@@ -233,13 +233,13 @@ class ClientCalendar extends Component {
     }
     
     getCitaById = async (id) => {
-        const url = `${Constants.apiUrl()}citas/${id}/`;
+        const url = `${Constants.apiUrl()}citas/${id}`;
         try {
             const response = await this.requestManager.getMethod(url);
             return response.data.data[0];
         } catch (error) {
            
-            throw new Error(error);
+            throw new error;
         }
     }
     
