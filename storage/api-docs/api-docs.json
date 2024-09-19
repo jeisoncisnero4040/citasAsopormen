@@ -1245,7 +1245,7 @@
                 ],
                 "summary": "Cancelar una cita por ID",
                 "description": "Cancela una cita específica por su ID si es cancelable. El campo 'data' en la respuesta es null.",
-                "operationId": "8216b1c6b29ec0d42076174e0dba7ccd",
+                "operationId": "2f578adea4d4e89bcc4296876876d8ea",
                 "parameters": [
                     {
                         "name": "id",
@@ -2257,6 +2257,133 @@
                                         "error": {
                                             "type": "string",
                                             "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/get_procedures/{string}": {
+            "get": {
+                "tags": [
+                    "Procedimientos"
+                ],
+                "summary": "Buscar procedimientos por cadena de texto",
+                "description": "Permite buscar procedimientos cuyo nombre coincida parcialmente con la cadena proporcionada. Retorna los primeros 10 procedimientos encontrados.",
+                "operationId": "ee9fe3945b471272745acfc207e2f88d",
+                "parameters": [
+                    {
+                        "name": "string",
+                        "in": "path",
+                        "description": "Cadena de texto para buscar procedimientos",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "Consulta"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Procedimientos encontrados exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer",
+                                                "example": 1
+                                            },
+                                            "nombre": {
+                                                "type": "string",
+                                                "example": "Consulta médica"
+                                            },
+                                            "duraccion": {
+                                                "type": "integer",
+                                                "example": 30
+                                            },
+                                            "recordatorio_whatsapp": {
+                                                "type": "boolean",
+                                                "example": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Parámetro de búsqueda inválido",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "El parámetro de búsqueda debe ser válido"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron procedimientos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "No se han encontrado registros"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "null",
+                                            "example": null
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Error del servidor"
                                         },
                                         "status": {
                                             "type": "integer",

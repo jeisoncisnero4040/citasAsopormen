@@ -385,7 +385,8 @@ class CitasService{
 
     private function sendQuerydeleteCitaById($id){
         try{
-            $rowsDeleted=DB::delete("DELETE FROM citas WHERE id = ? AND cancelada = '0' AND asistio = '0' AND na = '0'", [$id]);
+            $rowsDeleted=DB::delete("DELETE FROM citas WHERE id = ? AND cancelada = '0' AND asistio = '0' AND na = '0'
+                                    AND autoriz !=''", [$id]);
             return $rowsDeleted;
         }catch(\Exception  $e){
             throw new ServerErrorException($e->getMessage(),500);
@@ -401,7 +402,8 @@ class CitasService{
                 (cedprof = ?) AND
                 (cancelada=0) AND
                 (asistio=0) AND
-                (na = 0)
+                (na = 0) AND
+                (autoriz != '')
                 ",[$day,$cedulaPro]
             );
             return ['citas_eliminadas'=>$numCitasDeletes];
@@ -453,6 +455,7 @@ class CitasService{
                     ci.id,
                     ci.fecha,
                     ci.hora AS hora,
+                    ci.autoriz AS autorizacion,
                     ci.tiempo AS tiempo,
                     asistio AS asistida,
                     cancelada,
@@ -484,7 +487,7 @@ class CitasService{
       }
     private function checkObservations($observations){
         $arrayWords=explode(" ",$observations);
-        count($arrayWords)<=5? throw new BadRequestException('La observacion no es valida',400):null;
+        count($arrayWords)<=3? throw new BadRequestException('La observacion no es valida',400):null;
 
     }
     private function sendQueryToCancelCita($id,$observations){
