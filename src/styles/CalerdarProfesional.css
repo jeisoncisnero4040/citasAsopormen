@@ -5,12 +5,13 @@
 }
 
  
-.calendar-container p {
+.search{
     margin: 3%;
     font-size: 16px;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
 }
+
 
 
 /* Estilo para la barra de herramientas del encabezado */

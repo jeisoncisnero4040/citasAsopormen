@@ -35,9 +35,8 @@ class ApiRequestManager {
             });
 
  
-            const newToken = response.config.headers.Authorization;
+            const newToken = response.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
- 
                 this.setToken(newToken.replace('Bearer ', ''));
             }
 
@@ -62,7 +61,8 @@ class ApiRequestManager {
             });
 
              
-            const newToken = response.config.headers.Authorization;
+            const newToken = response.headers.Authorization;
+             
             if (newToken && newToken !== `Bearer ${token}`) {
                 
                 this.setToken(newToken.replace('Bearer ', ''));
@@ -84,7 +84,7 @@ class ApiRequestManager {
                     'Authorization': `Bearer ${token}`,
                 },
             });
-            const newToken = response.config.headers.Authorization;
+            const newToken = response.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
                  
                 this.setToken(newToken.replace('Bearer ', ''));

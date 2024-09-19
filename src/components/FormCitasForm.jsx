@@ -453,11 +453,12 @@ class FormCitasForm extends Component {
                                 </div>
 
                                 <div className="get-order">
-                                    <SelectCentral getCentralInfo={this.getCentralInfo}/> 
+                                    <Procedures getProcedureName={this.getProcedureName}/> 
+                                    
                                 </div>
                             </div>
                             <div className="create-cita">
-                                <Procedures getProcedureName={this.getProcedureName}/> 
+                                <SelectCentral getCentralInfo={this.getCentralInfo}/> 
                                 <CreateCitaForm 
                                     getScheduleCitas={this.getScheduleCitas}
                                     numCitas={this.state.AuthorizationcounterCitas}

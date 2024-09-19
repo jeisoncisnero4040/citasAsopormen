@@ -31,7 +31,6 @@ const LoginForm = () => {
 
       const token = response?.data?.access_token;
       const userData = response?.data?.data;
-      
       localStorage.setItem('authToken', token);
       navigate('/formcitas', { state: userData });
       

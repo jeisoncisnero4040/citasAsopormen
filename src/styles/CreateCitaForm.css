@@ -4,13 +4,13 @@
     border: 1px solid #ccc;
     padding: 1%;
     margin: 2%;
- 
     border-radius: 5px;
     position: relative;  
 }
 
 .get-schedule-cita {
     display: flex;
+    align-items: center;
     position: relative; 
     width: 100%; 
 }
@@ -41,7 +41,6 @@
 }
 
 .custom-dropdown {
-    margin-top: 3%;
     position: relative;
 }
 

@@ -47,7 +47,7 @@ class UpdatePasswordForm extends Component {
             newPassword
         })
         .then(response => {
-            window.location.href = '/';
+            window.location.href = '/clinico';
         })
         .catch(error => {
             this.setState({

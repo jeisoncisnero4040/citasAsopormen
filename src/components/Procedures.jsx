@@ -11,17 +11,34 @@ class Procedures extends Component {
             procedures: [],
             procedureSelected: {},  
             errorMessage: '',
-            warningIsOpen: false
+            warningIsOpen: false,
+            stringToSearch:'',
+            isSearch:false
         };
     }
+    handleProcedureToSearch=(event)=>{
+        this.setState(
+            {
+                stringToSearch:event.target.value
+            }
+        )
+    }
+    GetProcedure=(event)=>{
+        if(event.key==='Enter'){
+            this.setState({isSearch:true})
+            this.serachProcedureByQuery()
 
-    componentDidMount() {
-        const urlForProcedures = `${Constants.apiUrl()}get_procedures`;
+
+        }
+    }
+    serachProcedureByQuery=()=>{
+        const urlForProcedures = `${Constants.apiUrl()}get_procedures/${this.state.stringToSearch}`;
         axios.get(urlForProcedures)
             .then(response => {
                 this.setState({
                     procedures: response.data.data,
-                    procedureSelected: response.data.data[0]
+                    procedureSelected: response.data.data[0],
+                    isSearch:false,
                 }, () => {
                     this.props.getProcedureName(this.state.procedureSelected)
                 });
@@ -32,10 +49,12 @@ class Procedures extends Component {
                     this.setState({
                         errorMessage: errorData.error ? errorData.error : 'Error al hacer la petición',
                         warningIsOpen: true,
+                        isSearch:false,
                     });
                 } 
             });
     }
+
 
     handleProcedureChange = (event) => {
         const nameProcedure = event.target.value;
@@ -71,10 +90,46 @@ class Procedures extends Component {
     render() {
         return (
             <div className="procedures-container">
-                <label>Seleccionar procedimiento interno</label>
-                <select onChange={this.handleProcedureChange}>  
-                    {this.renderProcedures()}  
-                </select>
+                <div className="search-select-procedure">
+                    <div className="input-name-profesional">
+                        <label>Buscar Procedimiento</label>
+                        <input 
+                            type="search"
+                            placeholder="Buscar procedimiento"
+                            value={this.state.searchQuery} 
+                            onChange={this.handleProcedureToSearch} 
+                            onKeyDown={this.GetProcedure} 
+                        />
+                    </div>
+                    <div className="input-name-profesional">
+                        <label>Seleccionar procedimiento interno</label>
+                        <select onChange={this.handleProcedureChange}>  
+                            {this.renderProcedures()}  
+                        </select>
+                    </div>
+
+                </div>
+                <div className="info-procedure">
+                    <div className="read-info-p">
+                        <label>Nombre:</label>
+                        <input
+                            type="text"
+                            placeholder={this.state.isSearch? 'Buscando...' : this.state.procedureSelected.nombre}
+                            readOnly
+                        />
+                    </div>
+                    <div className="read-info-p">
+                        <label>Duracion:</label>
+                        <input
+                            type="text"
+                            placeholder={this.state.isSearch ? 'Buscando...' : (this.state.procedureSelected.duraccion?this.state.procedureSelected.duraccion+' minutos':null)}
+                            readOnly
+                        />
+                    </div>
+
+                </div>
+
+
 
                 <label>
                     <input

@@ -41,7 +41,8 @@ class ClientCalendar extends Component {
             idSelected:'',
             actionType:'',
             showLabelObservations:false,
-            cancelObservations:''
+            cancelObservations:'',
+            working:false,
         };
     }
     handleStartDateChange = (event) => {
@@ -198,17 +199,23 @@ class ClientCalendar extends Component {
                             <td>{event.profesional ? event.profesional : 'N/A'}</td>
                             <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
                             <td className='iconos-cita-cli'>
-                                 
-                                <a onClick={() => this.handleDeleteClick(event.id, event.tiempo)}>
-                                    <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
-                                </a>
-                                <a onClick={()=>this.handleCancelClick(event.id, event.tiempo)}>
-                                    <img className='icono-citas-cli' src={cancelar} alt="cancelar" />
-                                </a>
-                                <a onClick={()=>this.createPdfByCitaId(event.id)}>
-                                    <img className='icono-citas-cli' src={pdf} alt="pdf" />
-                                </a>
+                                {(this.state.working && this.state.idSelected === event.id) ? (
+                                    <p className='search'>Trabajando en ello</p>
+                                ) : (
+                                    <>
+                                        <a onClick={() => this.handleDeleteClick(event.id, event.tiempo)}>
+                                            <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
+                                        </a>
+                                        <a onClick={() => this.handleCancelClick(event.id, event.tiempo)}>
+                                            <img className='icono-citas-cli' src={cancelar} alt="cancelar" />
+                                        </a>
+                                        <a onClick={() => this.createPdfByCitaId(event.id)}>
+                                            <img className='icono-citas-cli' src={pdf} alt="pdf" />
+                                        </a>
+                                    </>
+                                )}
                             </td>
+
                         </tr>
                     );
                 })}
@@ -216,6 +223,7 @@ class ClientCalendar extends Component {
         );
     };
     createPdfByCitaId = async (id) => {
+        this.setState({idSelected:id})
         try {
             const dataCita = await this.getCitaById(id);
             this.showPdfInBrowser(dataCita);
@@ -229,17 +237,21 @@ class ClientCalendar extends Component {
                     this.setState({ showError: false });
                 }, 3000); 
             });
-        }
+        } finally{this.setState({idSelected:''})}
     }
     
     getCitaById = async (id) => {
+        
         const url = `${Constants.apiUrl()}citas/${id}`;
+        this.setState({working:true});
         try {
             const response = await this.requestManager.getMethod(url);
             return response.data.data[0];
         } catch (error) {
            
             throw new error;
+        }finally{
+            this.setState({working:false});
         }
     }
     
@@ -253,34 +265,38 @@ class ClientCalendar extends Component {
             : 'Programada';
     
         const docDefinition = {
-            pageSize: 'A8',
-            pageMargins: [10, 10, 10, 10],
+            pageSize: {
+                width: 396,  
+                height: 612  
+            },
+            pageMargins: [20, 20, 20, 20],
             content: [
                 { text: 'Info cita ' + data.id, alignment: 'center', style: 'header' },
-                { text: 'Detalle de Citas', style: 'subheader' },
-                { text: 'Fecha: ' + data.fecha, style: 'text' },
-                { text: 'Hora: ' + data.hora, style: 'text' },
-                { text: 'Duración: ' + data.duracion + ' Mins', style: 'text' },
-                { text: 'Estado: ' + estado, style: 'text' },
-                { text: 'Usuario: ' + data.usuario, style: 'text' },
-                { text: 'Profesional: ' + data.profesional, style: 'text' },
-                { text: 'Orden: ' + data.orden, style: 'text' },
-                { text: 'Procedimiento: ' + data.procedimiento, style: 'text' },
-                { text: 'Observaciones: ' + (data.observaciones || 'No registra observaciones'), style: 'text' },
-                { text: 'Dirección: ' + data.direcion, style: 'text' },
-                { text: 'Fecha de Asignación: ' + data.hora_asignacion, style: 'text' }
+                { text: 'Detalle de Cita:', style: 'subheader' },
+                { text: ' ', margin: [0, 8] },
+                { text: '• Fecha: ' + data.fecha, style: 'text' },
+                { text: '• Hora: ' + data.hora, style: 'text' },
+                { text: '• Duración: ' + data.duracion + ' Mins', style: 'text' },
+                { text: '• Estado: ' + estado, style: 'text' },
+                { text: '• Usuario: ' + data.usuario, style: 'text' },
+                { text: '• Profesional: ' + data.profesional, style: 'text' },
+                { text: '• Orden: ' + data.orden, style: 'text' },
+                { text: '• Procedimiento: ' + data.procedimiento, style: 'text' },
+                { text: '• Observaciones: ' + (data.observaciones || 'No registra observaciones'), style: 'text' },
+                { text: '• Dirección: ' + data.direcion, style: 'text' },
+                { text: '• Fecha de Asignación: ' + data.hora_asignacion, style: 'text' }
             ],
             styles: {
                 header: {
-                    fontSize: 6,
+                    fontSize: 18,
                     bold: true,
                 },
                 subheader: {
-                    fontSize: 5,
+                    fontSize: 14,
                     bold: true,
                 },
                 text: {
-                    fontSize: 4,
+                    fontSize: 12,
                 }
             }
         };
@@ -299,6 +315,7 @@ class ClientCalendar extends Component {
     }
     deleteCitaById=(id)=> {
         const url = `${Constants.apiUrl()}citas/${id}`;
+        this.setState({working:true})
         this.requestManager.deleteMethod(url)
             .then(response => {
                 this.closeModal();
@@ -325,7 +342,7 @@ class ClientCalendar extends Component {
                         this.setState({ showError: false });
                     }, 3000); 
                 });
-            });
+            }).finally(this.setState({working:true}));
     }
 
     handleCancelClick=(id,tiempo)=>{
@@ -344,6 +361,7 @@ class ClientCalendar extends Component {
             'id':id
         }
         const url = `${Constants.apiUrl()}citas/cancel_cita`;
+        this.setState({working:true});
         this.requestManager.postMethod(url,body)
             .then(response => {
                 this.closeModal();
@@ -377,7 +395,7 @@ class ClientCalendar extends Component {
                         this.setState({ showError: false });
                     }, 3000);
                 });
-            });
+            }).finally(this.setState({working:false}));
     }
     
     openAgreeButtons = () => {

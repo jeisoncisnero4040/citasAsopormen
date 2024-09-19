@@ -2,6 +2,7 @@
     width: 100;
     display: flex;
     flex-direction: column;
+    margin:2%;
 }
 .select-central{
     width: 100%;

@@ -3,6 +3,12 @@
     flex-direction: column;
     border: 1px solid #ccc;
     padding: 1%;
-    margin: 2%;
+
     border-radius: 5px;
+}
+.search-select-procedure{
+    display:flex;
+}
+.info-procedure{
+    display:flex;
 }
