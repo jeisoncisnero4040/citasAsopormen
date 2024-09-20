@@ -1,0 +1,18 @@
+{
+  "files": {
+    "main.css": "/clinico/static/css/main.ae45b744.css",
+    "main.js": "/clinico/static/js/main.f74126c3.js",
+    "static/media/pdf.webp": "/clinico/static/media/pdf.d87b702f454e18a064b8.webp",
+    "static/media/logo.png": "/clinico/static/media/logo.587d7c3b8edfbd91b697.png",
+    "static/media/alerta.png": "/clinico/static/media/alerta.2219adb811cd300b8132.png",
+    "static/media/cancelar.png": "/clinico/static/media/cancelar.5c0dbacd64c7bd58251f.png",
+    "static/media/buscar.jpg": "/clinico/static/media/buscar.3d092628296bf625ea7f.jpg",
+    "index.html": "/clinico/index.html",
+    "main.ae45b744.css.map": "/clinico/static/css/main.ae45b744.css.map",
+    "main.f74126c3.js.map": "/clinico/static/js/main.f74126c3.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ae45b744.css",
+    "static/js/main.f74126c3.js"
+  ]
+}
