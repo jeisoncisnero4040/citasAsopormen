@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\CitasService;
+use Illuminate\Support\Facades\DB;
 
 
 class CitasController extends Controller
@@ -478,4 +479,5 @@ class CitasController extends Controller
         $calendar=$this->citasService->getCitasByProfesionalInRangeTime($request->all());
         return response()->json($calendar,200);
     }
+
 }

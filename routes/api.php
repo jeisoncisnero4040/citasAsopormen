@@ -36,7 +36,7 @@ Route::get('get_procedures',[ProcedureController::class,'getAllProcedures']);
 Route::get('get_procedures/{string}',[ProcedureController::class,'searchProceduresByString']);
 
 
-Route::post('citas/create_citas',[CitasController::class, 'createGroupCitas'])->middleware('login.check');
+Route::post('citas/create_citas',[CitasController::class, 'createGroupCitas']);
 Route::get('citas/get_num_citas/{authorization}/{procedim}',[CitasController::class,'GetNumCitasFromOrder'])->middleware('login.check');
 Route::post('citas/get_citas_client',[CitasController::class,'GetCalendarClient'])->middleware('login.check');
 Route::post('citas/get_citas_profesional',[CitasController::class,'getCalendarProfesional']);

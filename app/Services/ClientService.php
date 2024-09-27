@@ -80,7 +80,7 @@ class ClientService{
     {
         try {
             $clientInfo = DB::select("
-                SELECT 
+SELECT 
                 cli.codigo, 
                 cli.nombre, 
                 cli.nit_cli, 
@@ -91,11 +91,11 @@ class ClientService{
                 cli.cel,
                 cli.codent AS cod_entidad,
                 cli.codent2 AS convenio,
-                ccb.ciudad AS municipio, 
+                mun.nombre AS municipio, 
                 ent.clase AS entidad 
                 FROM cliente cli 
                 INNER JOIN entidades ent ON ent.codigo = cli.codent2 
-                INNER JOIN codigosciudadesdebancos ccb ON ccb.codigociudad = cli.cod_ciudad 
+                INNER JOIN municipio mun ON mun.codigo = cli.cod_ciudad 
                 WHERE cli.codigo = ?
             ", [$historyId]);
 

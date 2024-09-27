@@ -28,6 +28,7 @@ class CitasService{
 
     public function createGroupCitas($request){
         
+        $this->validateCitas($request);
 
         $schedule=$this->getSchedule($request);
         $citaInDto=$this->getCitasInDto($request);
@@ -39,8 +40,7 @@ class CitasService{
         $numCitas=$schedule['num_citas'];
         $sessionDuration=$schedule['duration_session'];
 
-        $this->checkStartDateInFuture($startDate->copy());
-        $this->validateCitas($request);
+        $this->checkStartDateLaterToday($startDate->copy());
         $this->checkStartDateInDaysWeek($startDate,$weekDays);
         $this->checkLimitSessionsToSave($dataNumSessions);
         $this->checkRememberWhatsWhitObservations($citaInDto);
@@ -162,14 +162,13 @@ class CitasService{
         }
     }
   
-    private function checkStartDateInFuture(Carbon $startDate) {
-         
-        $now = Carbon::now('America/Bogota')->subHours(1);
-        
-        if ($startDate->isBefore($now)) {
-            throw new BadRequestException("La fecha de inicio no puede ser anterior a la hora actual por mas de una hora.", 400);
+    private function checkStartDateLaterToday(Carbon $startDate) {
+        $now = Carbon::now('America/Bogota');
+        if ($startDate->isBefore($now->startOfDay())) {
+            throw new BadRequestException("La fecha de inicio solo puede ser después de hoy.", 400);
         }
     }
+    
     
     
     

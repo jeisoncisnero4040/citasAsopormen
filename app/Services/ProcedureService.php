@@ -58,7 +58,11 @@ class ProcedureService{
             throw new NotFoundException("no se han encontado registros",404);
         }
 
-        return  $this->responseManager->success($procedures);
+        foreach($procedures as $procedure){
+            $procedure->recordatorio_whatsapp=(bool)(int)$procedure->recordatorio_whatsapp;
+        }
+        
+        return $procedures;
          
     }
     
