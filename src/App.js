@@ -7,6 +7,7 @@ import ProtectedRoute from "./util/ProtectedRout";
 import RecoverPasswordPage from "./components/RecoverPasswordPage";
 import UpdatePasswordPage from "./components/UpdatePassword";
 import "./styles/app.css";
+import ProfesionalSchedule from "./components/ProfesionalSchedule";
 
 
 function App() {
@@ -17,6 +18,8 @@ function App() {
           
           <Route path="/recover_password" element={<RecoverPasswordPage/>} />
           <Route path="/" element={<HomePage />} />
+          <Route path="/calendario" element={<ProfesionalSchedule  />} />
+
           <Route element={<ProtectedRoute/> }>
               <Route path="/formcitas" element={<FormCitas />} />
               <Route path="/update_password" element={<UpdatePasswordPage/>}/> 

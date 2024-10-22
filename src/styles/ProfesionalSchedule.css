@@ -1,0 +1,66 @@
+.profesional-schedule{
+     
+    width: 100%;
+    margin: 1%;
+   
+}
+.schedule-profesional-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.schedule-profesional-header p{
+    font-size: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bold;
+}  
+.calendar-iconos{
+    display: flex;
+}
+.schedule-profesional-footer{
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+}
+.calendar-iconos img{
+    
+    height: 25px;
+    width: 40px;
+
+}
+/* Aplica estilos a los botones del encabezado para que se muestren en bloque */
+.rbc-toolbar {
+    display: flex;
+    justify-content: flex-end; /* Alinea los botones a la derecha */
+    align-items: center; /* Alinea verticalmente los elementos */
+}
+
+.rbc-toolbar-label {
+    display: flex; /* Oculta el label si es necesario */
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 150%;
+}
+
+.rbc-btn-group {
+    display: flex;
+    gap: 10px; /* Añade espacio entre los botones */
+}
+
+.rbc-btn {
+    padding: 5px 10px; /* Ajusta el padding de los botones si es necesario */
+}
+.rbc-header {
+    height: 30px; /* Ajusta este valor según el alto que desees */
+    font-size: 14px; /* Reduce el tamaño de la fuente si es necesario */
+    padding: 0px; /* Opcional: Ajusta el espaciado interno */
+     
+}
+.rbc-time-header-content {
+    height: 30px; /* Ajusta el alto según tus necesidades */
+     
+
+}
+ 

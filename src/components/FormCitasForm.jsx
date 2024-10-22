@@ -12,7 +12,7 @@ import SelectCentral from "./SelectCentral.jsx"
 import CreateCitaForm from "./CreateCitaForm.jsx";
 import AlertSchedule from "./AlertSchedule.jsx";
 import ApiRequestManager from "../util/ApiRequestMamager.js";
-import axios from "axios";
+import ProfesionalSchedule from "./ProfesionalSchedule.jsx";
 
 
 
@@ -33,6 +33,8 @@ class FormCitasForm extends Component {
             procedure:{},
             client:{},
             profesional_calendar: [],
+            profesional_schedule: [],
+
             client_calendar:[],
             profesional_list: [],
             profesional: {
@@ -46,6 +48,7 @@ class FormCitasForm extends Component {
             loading: false,
             sendingCitas:false,
             showClientCalendar:false,
+            showScheduleProfesional:false,
             searchQuery: "",
             selectedOption: "",
             errorMessage:'',
@@ -80,7 +83,9 @@ class FormCitasForm extends Component {
                                 cedula: selectedEcc
                             },
                             selectedOption: selectedEcc,
-                            profesional_calendar:[]
+                            profesional_calendar:[],
+                            ProfesionalSchedule:[],
+                            showClientCalendar:false
                         });
                     } else {
                         this.setState({ profesional_list: profesionalList });
@@ -98,6 +103,68 @@ class FormCitasForm extends Component {
                 });
         }
     }
+    renderProfesionalForm = () => {
+        const { showScheduleProfesional, searchQuery, selectedOption, loading, profesional } = this.state;
+    
+        return (
+            <div className="get-all-data-pro">
+                <div>
+                    
+                    <div className="input-name-pro">
+                        <div className="input-name-profesional">
+                            <label htmlFor="search-profesional">Buscar Profesional</label>
+                            <input
+                                id="search-profesional"
+                                type="search"
+                                placeholder="Buscar por nombre"
+                                value={searchQuery}
+                                onChange={this.handleInputChange}
+                                onKeyDown={this.handleKeyDown}
+                            />
+                        </div>
+
+                        <div className="select-profesional">
+                            <label htmlFor="select-profesional">Seleccionar Profesional</label>
+                            <select
+                                id="select-profesional"
+                                name="select-profesional"
+                                value={selectedOption}
+                                onChange={this.handleSelectChange}
+                            >
+                                {this.renderProfesionales()}
+                            </select>
+                        </div>
+                    </div>
+
+                    {/* Información del Profesional */}
+                    <div className="info-profesional">
+                        <div className="read-info-p">
+                            <label htmlFor="profesional-name">Nombre:</label>
+                            <input
+                                id="profesional-name"
+                                type="text"
+                                value={loading ? 'Buscando...' : profesional?.name || ''}
+                                readOnly
+                            />
+                        </div>
+
+                        <div className="read-info-p">
+                            <label htmlFor="profesional-speciality">Especialidad:</label>
+                            <input
+                                id="profesional-speciality"
+                                type="text"
+                                value={loading ? 'Buscando...' : profesional?.speciality || ''}
+                                readOnly
+                            />
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        );
+    };
+    
+    
     
     handleInputChange = (event) => {
         this.setState({ searchQuery: event.target.value });
@@ -114,7 +181,9 @@ class FormCitasForm extends Component {
                     cedula: selectedProfesional.ecc.trim(),
                     
                 },
-                profesional_calendar:[]
+                profesional_calendar:[],
+                ProfesionalSchedule:[],
+                showScheduleProfesional:false
             });
 
         }
@@ -149,6 +218,9 @@ class FormCitasForm extends Component {
             client_calendar:calendarUpdated
         },()=>this.updateCounterCitas(tiempo))
     }
+    ChangeToSchedule=()=>{
+        this.setState({showScheduleProfesional:!this.state.showScheduleProfesional})
+    }
 
     
     getUpdateCalendarPro = (calendarUpdated, tiempo=null) => {
@@ -156,6 +228,9 @@ class FormCitasForm extends Component {
         this.setState({
             profesional_calendar: calendarUpdated
         }, tiempo?() => this.updateCounterCitas(tiempo):null);
+    }
+    getUpdateSchedulePro=(scheduleUpdate)=>{
+        this.setState({profesional_schedule:scheduleUpdate})
     }
     
     updateCounterCitas = (tiempo) => {
@@ -349,6 +424,7 @@ class FormCitasForm extends Component {
     
          
         const body = this.getBodyRequests();
+        
         this.sendCitas(body);
     }
 
@@ -372,48 +448,10 @@ class FormCitasForm extends Component {
                     <div className="body-form-citas">
                         <div className="select-data">
                             <div className="data-profesional">
-                                <div className="get-all-data-pro">
-                                    <div className="input-name-pro">
-                                        <div className="input-name-profesional">
-                                            <label>Buscar Profesional</label>
-                                            <input 
-                                                type="search"
-                                                placeholder="Buscar por nombre"
-                                                value={this.state.searchQuery} 
-                                                onChange={this.handleInputChange} 
-                                                onKeyDown={this.handleKeyDown} 
-                                            />
-                                        </div>
-                                        <div className="select-profesional">
-                                            <label>Seleccionar Profesional</label>
-                                            <select 
-                                                name="select-profesional" 
-                                                value={this.state.selectedOption}
-                                                onChange={this.handleSelectChange}
-                                            >
-                                                {this.renderProfesionales()}
-                                            </select>
-                                        </div>
-                                </div>
-                                    <div className="info-profesional">
-                                        <div className="read-info-p">
-                                            <label>Nombre:</label>
-                                            <input
-                                                type="text"
-                                                placeholder={this.state.loading ? 'Buscando...' : this.state.profesional.name}
-                                                readOnly
-                                            />
-                                        </div>
-                                        <div className="read-info-p">
-                                            <label>Especialidad:</label>
-                                            <input
-                                                type="text"
-                                                placeholder={this.state.loading ? 'Buscando...' : this.state.profesional.speciality}
-                                                readOnly
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+
+                                {this.renderProfesionalForm()}
+                                 
+
                                 <div className="calendar-small-screen">
                                     <a onClick={this.changeCalendar}>
                                         {this.state.showClientCalendar ? "Mostrar calendario Profesional" : "Mostrar calendario cliente"}
@@ -421,7 +459,7 @@ class FormCitasForm extends Component {
                                     {this.state.showClientCalendar ? (
                                         <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
                                     ) : (
-                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} cedulaProfesional={this.state.profesional.cedula.trim()} />
+                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro}   cedulaProfesional={this.state.profesional.cedula.trim()} />
                                     )}
                                 </div>
                                 <div className="get-client-info">
@@ -436,36 +474,40 @@ class FormCitasForm extends Component {
                                 {this.state.showClientCalendar ? (
                                     <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
                                 ) : (
-                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} cedulaProfesional={this.state.profesional.cedula.trim()} />
+                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} getUpdateSchedulePro={this.getUpdateSchedulePro} cedulaProfesional={this.state.profesional.cedula.trim()}  ChangeToSchedule={this.ChangeToSchedule}/>
                                 )}
                             </div>
 
                         </div>
                         <div className="select-orden">
-                            <div className="data-order">
-                                <div className="get-order">
-                                    <TableOrders 
-                                        historyNumber={this.state.historyNumber}
-                                        nameClient={this.state.client.nombre}
-                                        getAuthorizationInfo={this.getAuthorizationInfo}
-                                        getCounterCitas={this.getCounterCitas}
-                                    />
-                                </div>
+                            {this.state.showScheduleProfesional ? (
+                                <ProfesionalSchedule events={this.state.profesional_schedule} ChangeToSchedule={this.ChangeToSchedule} profesional={this.state.profesional.name} />
+                            ) : (
+                                <>
+                                    <div className="data-order">
+                                        <div className="get-order">
+                                            <TableOrders 
+                                                authorization={this.state.Authorization}
+                                                historyNumber={this.state.historyNumber}
+                                                nameClient={this.state.client.nombre}
+                                                getAuthorizationInfo={this.getAuthorizationInfo}
+                                                getCounterCitas={this.getCounterCitas}
+                                            />
+                                        </div>
+                                        <div className="get-order">
+                                            <Procedures getProcedureName={this.getProcedureName}/> 
+                                        </div>
+                                    </div>
 
-                                <div className="get-order">
-                                    <Procedures getProcedureName={this.getProcedureName}/> 
-                                    
-                                </div>
-                            </div>
-                            <div className="create-cita">
-                                <SelectCentral getCentralInfo={this.getCentralInfo}/> 
-                                <CreateCitaForm 
-                                    getScheduleCitas={this.getScheduleCitas}
-                                    numCitas={this.state.AuthorizationcounterCitas}
-                                /> 
-                            </div>
-                            
-
+                                    <div className="create-cita">
+                                        <SelectCentral getCentralInfo={this.getCentralInfo}/> 
+                                        <CreateCitaForm 
+                                            getScheduleCitas={this.getScheduleCitas}
+                                            numCitas={this.state.AuthorizationcounterCitas}
+                                        /> 
+                                    </div>
+                                </>
+                            )}
                         </div>
 
                         <div className="send-citas">

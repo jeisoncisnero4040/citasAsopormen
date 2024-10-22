@@ -17,6 +17,12 @@ class TableOrders extends Component {
             warningIsOpen: false,
         };
     }
+    componentDidMount(){
+        if(this.props.historyNumber!==''){
+            this.fetchAuthorizations();
+             
+        }
+    }
 
     componentDidUpdate(prevProps) {
         if (prevProps.historyNumber !== this.props.historyNumber) {
@@ -72,7 +78,7 @@ class TableOrders extends Component {
         }
     }
 
-    handleAuthorizationDataSuccess = (data) => {
+    handleAuthorizationDataSuccess = (data) => { 
         this.setState({
             authorizationData: Array.isArray(data) ? data : [],
         });
@@ -85,6 +91,7 @@ class TableOrders extends Component {
         });  
     }
     handleRowClick = (rowData) => {
+         
         this.setState({ 
             selectedRow: rowData,
             dataExport: {

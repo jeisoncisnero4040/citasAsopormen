@@ -26,7 +26,6 @@ class ApiRequestManager {
 
     postMethod = async (url, payload) => {
         const token = this.getToken();
-
         try {
             const response = await axios.post(url, payload, {
                 headers: {

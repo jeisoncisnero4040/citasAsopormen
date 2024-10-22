@@ -10,7 +10,6 @@ import buscar from "../assets/buscar.jpg";
 import pdf from "../assets/pdf.webp";
 import eliminar from "../assets/eliminar.png";
 import cancelar from "../assets/cancelar.png"
-import axios from 'axios';
 import Modal from 'react-modal';  
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
@@ -108,8 +107,11 @@ class ClientCalendar extends Component {
                    eventDay.getMonth() === eventDate.getMonth() &&
                    eventDay.getFullYear() === eventDate.getFullYear();
         });
+        const sortedFilteredEvents = filteredEvents.sort((a, b) => {
+            return new Date(a.start) - new Date(b.start);   
+        });
 
-        this.openModal(filteredEvents); 
+        this.openModal(sortedFilteredEvents); 
     }
 
     openModal = (filteredEvents) => {
@@ -196,7 +198,9 @@ class ClientCalendar extends Component {
                             <td>
                                 {`${new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
                             </td> 
+                            <td>{event.fecha.split(' ')[0]}</td>
                             <td>{event.profesional ? event.profesional : 'N/A'}</td>
+                            <td>{event.autorizacion}</td>
                             <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
                             <td className='iconos-cita-cli'>
                                 {(this.state.working && this.state.idSelected === event.id) ? (
@@ -514,8 +518,10 @@ class ClientCalendar extends Component {
                         <table>
                             <thead>
                                 <tr>
-                                    <th className="date">Hora</th>
+                                    <th>Hora</th>
+                                    <th>Fecha</th>
                                     <th>Profesional</th>
+                                    <th>Autorizacion</th>
                                     <th>Procedimiento</th>
                                     <th>Opciones</th>
                                 </tr>

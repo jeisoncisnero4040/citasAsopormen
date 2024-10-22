@@ -9,7 +9,7 @@ import ApiRequestManager from '../util/ApiRequestMamager.js';
 import Constants from '../js/Constans.jsx';
 import buscar from "../assets/buscar.jpg";
 import Warning from './Warning.jsx';
-
+import horario from "../assets/horario.png";
  
 Modal.setAppElement('#root');
 
@@ -63,8 +63,10 @@ class ProfesionalCalendar extends Component {
     
         this.requestManager.postMethod(url, body)
             .then(response => {
+                
                 this.setState(
-                    () => this.props.getUpdateCalendarPro(response.data.data)
+                    () => this.props.getUpdateCalendarPro(response.data.data.calendar),
+                    () => this.props.getUpdateSchedulePro(response.data.data.schedule)
                 );
             })
             .catch(error => {
@@ -96,6 +98,8 @@ class ProfesionalCalendar extends Component {
                             <td>
                                 {`${new Date(event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`}
                             </td> 
+                            <td>{event.fecha.split(' ')[0]}</td>
+                            <td>{event.autorizacion}</td>
                             <td>{event.usuario ? event.usuario : 'N/A'}</td>
                             <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
                             <td className='iconos-cita-cli'>
@@ -162,19 +166,22 @@ class ProfesionalCalendar extends Component {
     filterCitasByDay = (info) => {
         const { start } = info.event;
         const eventDate = new Date(start);
-
+    
         const filteredEvents = this.props.events.filter(event => {
             const eventDay = new Date(event.start);
             return eventDay.getDate() === eventDate.getDate() &&
                    eventDay.getMonth() === eventDate.getMonth() &&
                    eventDay.getFullYear() === eventDate.getFullYear();
         });
+     
+        const sortedFilteredEvents = filteredEvents.sort((a, b) => {
+            return new Date(a.start) - new Date(b.start);   
+        });
+     
         this.setState(
-            {selectedday:eventDate.toISOString().split('T')[0]},
-            ()=>this.openModal(filteredEvents,eventDate)
-        )
-
-        
+            { selectedday: eventDate.toISOString().split('T')[0] },
+            () => this.openModal(sortedFilteredEvents, eventDate)
+        );
     }
     
     deleteCitasByday = () => {
@@ -211,13 +218,11 @@ class ProfesionalCalendar extends Component {
     deleteCitas = (citasDeletables, citasNotDeletables, citasByTiempo) => {
          
         const url = `${Constants.apiUrl()}citas/delete_all_citas`;
-        this.setState({deletingCitas:true})
         this.requestManager.postMethod(url, {
             'profesional_identity': this.props.cedulaProfesional,
             'day': this.state.selectedday
         })
         .then(response => {
-
             this.closeModal();
 
             this.props.getUpdateCalendarPro(
@@ -273,6 +278,9 @@ class ProfesionalCalendar extends Component {
         }
         this.closeAgreeButtons(); 
     }
+    ChangeToSchedule=()=>{
+        this.props.ChangeToSchedule()
+    }
     insertAgreeField = (id, tiempo) => {
         return (
             <div className='agree'>
@@ -318,7 +326,13 @@ class ProfesionalCalendar extends Component {
                     <div className='get-pdf'>
                         {this.state.loading ? (
                             <p className='search'>Buscando...</p>
-                        ) :null}
+                        ) : (
+                            this.props.events.length > 0 ? (
+                                <a onClick={() => this.ChangeToSchedule()}><img src={horario} alt="horario" /></a>
+                            ) : (
+                                null
+                            )
+                        )}
                     </div>
                     
                 </div>
@@ -351,7 +365,9 @@ class ProfesionalCalendar extends Component {
                                 <table>
                                     <thead >
                                         <tr>
-                                            <th className='date'>Hora</th>
+                                            <th>Hora</th>
+                                            <th>Fecha</th>
+                                            <th>Autorizacion</th>
                                             <th>Paciente</th>
                                             <th>Procedimiento</th>
                                             <th>Opciones</th>

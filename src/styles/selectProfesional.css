@@ -48,6 +48,7 @@
     border: 1px solid #ccc;
     padding: 1%;
     border-radius: 5px;
+    max-height: 400PX;
 }
 .input-name-pro{
     display: flex;

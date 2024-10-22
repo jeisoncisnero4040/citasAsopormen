@@ -4,6 +4,7 @@ import Constants from '../js/Constans.jsx';
 import Warning from "./Warning";
 import '../styles/Procedures.css'
 
+
 class Procedures extends Component {  
     constructor(props) {
         super(props);
@@ -35,12 +36,14 @@ class Procedures extends Component {
         const urlForProcedures = `${Constants.apiUrl()}get_procedures/${this.state.stringToSearch}`;
         axios.get(urlForProcedures)
             .then(response => {
+                
                 this.setState({
                     procedures: response.data.data,
                     procedureSelected: response.data.data[0],
                     isSearch:false,
                 }, () => {
                     this.props.getProcedureName(this.state.procedureSelected)
+                     
                 });
             })
             .catch(error => {
