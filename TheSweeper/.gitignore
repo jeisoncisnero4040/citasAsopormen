@@ -1,0 +1,5 @@
+# Ignorar la carpeta Lib
+Lib/
+
+# Ignorar la carpeta Scripts
+Scripts/
