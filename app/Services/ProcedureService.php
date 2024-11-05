@@ -62,7 +62,7 @@ class ProcedureService{
             $procedure->recordatorio_whatsapp=(bool)(int)$procedure->recordatorio_whatsapp;
         }
         
-        return $procedures;
+        return $this->responseManager->success($procedures);
          
     }
     

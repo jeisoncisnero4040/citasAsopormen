@@ -472,12 +472,31 @@ class CitasController extends Controller
      */
 
     public function cancelCita(Request $request){
+       
         $cita=$this->citasService->cancelCita($request->all());
         return response() ->json($cita,200);
     }
     public function getCalendarProfesional(Request $request){
         $calendar=$this->citasService->getCitasByProfesionalInRangeTime($request->all());
         return response()->json($calendar,200);
+    }
+    public function confirmateCitaBySessionIds(Request $request){
+        
+        $citas=$this->citasService->corfirmateGroupSessions($request->all());
+        return response()->json($citas,200);
+    }
+    public function GetAllCitasCanceled(){
+        $citasCanceled=$this->citasService->getAllCitasCanceled();
+        return response()->json($citasCanceled,200);
+    }
+    public function CancelCitaBySessionsIds(Request $request){
+        $dataCitasCanceled=$this->citasService->CancelGroupSsessions($request->all());
+        return response()->json($dataCitasCanceled,200);
+    }
+    
+    public function unactivateCita(Request $request){
+        $dataCitaUnactivate=$this->citasService->unactivateCitaCanceledById($request->all());
+        return response()->json($dataCitaUnactivate,200);
     }
 
 }

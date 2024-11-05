@@ -1,19 +1,30 @@
-/.phpunit.cache
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/vendor
+10.150.0.2
 
-.env.backup
-.env.production
-.phpunit.result.cache
-Homestead.json
-Homestead.yaml
-auth.json
-npm-debug.log
-yarn-error.log
-/.fleet
-/.idea
-/.vscode
+34.85.252.184  e
+
+34.48.9.23 pbd
+
+qwiklabs-gcp-00-ae97ddb3410d:us-east4:databaseejemplo1 conn bd
+
+<html>
+<head><title>Bienvenido a mi excelente blog</title></head>
+<body>
+<h1>Bienvenido a mi excelente blog</h1>
+¿<?php
+ $dbserver = "34.48.9.23";
+$dbuser = "bloguser";
+$dbpassword = "cb7327dd";
+// En un blog de producción, no almacenaríamos el MySQL
+// contraseña en la raíz del documento. En cambio, almacenaríamos
+//es en un Secret Manger. Para obtener más información, consulte 
+// https://cloud.google.com/sql/docs/postgres/use-secret-manager
+
+$conn = nuevo mysqli($dbserver, $dbuser, $dbpassword);
+
+if (mysqli_connect_error()) {
+        echo ("Falló la conexión de base de datos: " . mysqli_connect_error());
+} más {
+        echo ("Conexión de base de datos tuvo éxito.");
+}
+¿?>
+</body></html>

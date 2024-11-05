@@ -43,4 +43,9 @@ Route::post('citas/get_citas_profesional',[CitasController::class,'getCalendarPr
 Route::delete('citas/{id}', [CitasController::class, 'deleteCitaById'])->where('id', '\d+')->middleware('login.check');
 Route::post('citas/delete_all_citas',[CitasController::class, 'deleteAllCitasByProfesionalDay'])->middleware('login.check');
 Route::get('citas/{id}',[CitasController::class, 'getCitaById'])->where('id', '\d+')->middleware('login.check');
-Route::post('citas/cancel_cita',[CitasController::class, 'cancelCita'])->where('id', '\d+')->middleware('login.check');
+Route::post('citas/cancel_cita',[CitasController::class, 'cancelCita'])->middleware('login.check');
+Route::post('citas/confirm_all_sessions_cita',[CitasController::class, 'confirmateCitaBySessionIds']);
+Route::get('citas/get_citas_canceled',[CitasController::class,'GetAllCitasCanceled']);
+Route::post('citas/cancel_all_sessions_cita',[CitasController::class, 'CancelCitaBySessionsIds']);
+Route::post('citas/Unactivate_cita_canceled',[CitasController::class, 'unactivateCita']);
+

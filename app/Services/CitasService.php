@@ -13,7 +13,7 @@ use App\utils\ResponseManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
-
+use Illuminate\Auth\Events\Attempting;
 
 class CitasService{
     private $citasModel;
@@ -48,8 +48,12 @@ class CitasService{
 
         $diferenceBeetwenDays=$this->getDifBeetwenDays($weekDays);
         $scheduleCitas=$this->CreateSchedule($numSessions,$numCitas,$sessionDuration,$startDate,$weekDays,$diferenceBeetwenDays);
-        $numSessionsSaved=$this->saveCitas($scheduleCitas,$citaInDto);
-        return $this->responseManager->success($numSessionsSaved,200);
+        $citasIds=$this->saveCitas($scheduleCitas,$citaInDto);
+        if($this->CheckReassingCitasRequests($request)){
+            $idCitasCanceledRegister=$request['id'];
+            $this->saveNewsIdsInCitaCanceledRegister($idCitasCanceledRegister,$citasIds);
+        }
+        return $this->responseManager->success(count($citasIds),200);
     }
 
     public function getNumCitasFromOrder($authorization, $codProcedim)
@@ -93,7 +97,13 @@ class CitasService{
 
         $calendarClient=$this->sendQueryToGetCalendarProfesional($cedula,$startDate,$endDate);
         $calendarMapped=$this->mapCalendarClient($calendarClient);
-        return $this->responseManager->success($calendarMapped);
+
+        $citasFiltered=$this->filterCitasAvaibles($calendarMapped);
+        $CitasByProcedureAndDate=$this->countCitasByTime($citasFiltered);
+        $response=['calendar'=>$calendarMapped,
+                    'schedule'=>$CitasByProcedureAndDate
+        ];
+        return $this->responseManager->success($response);
 
     }
     public function deleteCitaById($id){
@@ -118,6 +128,7 @@ class CitasService{
         return $this->responseManager->success($cita);
     }
     public function cancelCita($request){
+
         citasRequests::ValidateRealizarField($request);
         $id=$request['id'];
         $observations=$request['realizar'];
@@ -127,6 +138,42 @@ class CitasService{
 
 
     }
+    public function corfirmateGroupSessions($request){
+
+        citasRequests::ValidateCitaSessionsIds($request,'confirmar');
+        $DateConfirmation=Carbon::now()->format('Y-m-d H:i:s');
+        $sessionConfirmate=$this->sendQueryToConfirmGroupSessions($request,$DateConfirmation);
+        return $this->responseManager->success($sessionConfirmate);
+        
+    }
+    public function getAllCitasCanceled(){
+        $citasCanceled=$this->sendQueryByGetAllCitasCanceled();
+        if(empty($citasCanceled)){
+            throw new NotFoundException("no hay citas canceladas",404);
+
+        }
+        return $this->responseManager->success($citasCanceled);
+    }
+    public function CancelGroupSsessions($request){
+        citasRequests::ValidateCitaSessionsIds($request,"cancelar");
+        $citasCanceled=$this->sendQueryToCancelGroupSessions($request);
+        return $this->responseManager->success($citasCanceled);
+    }
+
+    public function unactivateCitaCanceledById($request) {
+        if (empty($request['id'])) {
+            throw new BadRequestException("Cita's ID is required", 400);
+        }
+        $idCitaCanceled = $request['id'];
+        $citaUnactivate = $this->sendQueryToUnactivateCitaCanceled($idCitaCanceled);
+
+        if($citaUnactivate==0){
+            throw new NotFoundException("cita canceled not found", 404);
+        }
+
+        return $this->responseManager->success($citaUnactivate);
+    }
+    
 
     private function validateCitas($request){
         citasRequests::validateCitasClient($request);
@@ -136,6 +183,9 @@ class CitasService{
         citasRequests::validateCitasProcedure($request);
         citasRequests::validateCitasSchedule($request);
         citasRequests::validateCitasAuthorization($request);
+    }
+    private function CheckReassingCitasRequests($request){
+        return CitasRequests::checkIsReassingCitas($request);
     }
     private function getSchedule(array $request) {
         $keysToExtract = ['start_date', 'week_days', 'num_sessions', 'num_citas', 'duration_session'];
@@ -265,7 +315,7 @@ class CitasService{
             }
         }
     
-        return count($citas); 
+        return $citas; 
     }
     
     
@@ -315,6 +365,7 @@ class CitasService{
             return $id;
         } catch (\Exception $e) {
             if ($cont >= 4) {
+
                 throw new ErrorSavingCitas();
             }
             return $this->saveCitasInBd($cita, $cont + 1);
@@ -343,6 +394,7 @@ class CitasService{
                 ci.id,
                 ci.fecha,
                 ci.hora AS hora,
+                ci.autoriz AS autorizacion,
                 ci.procedim AS procedimiento,
                 ci.regobserva AS observaciones,
                 ci.asistio AS asistida,
@@ -456,6 +508,7 @@ class CitasService{
                     ci.hora AS hora,
                     ci.autoriz AS autorizacion,
                     ci.tiempo AS tiempo,
+                    ci.procedipro,
                     asistio AS asistida,
                     cancelada,
                     na AS no_asistida,
@@ -479,11 +532,61 @@ class CitasService{
            if (empty($calendar)){
                throw new NotFoundException("El profesional no registra citas en este periodo de tiempo",404);
            }
+
            return $calendar;
         }catch(\Exception $e){
            throw new ServerErrorException($e->getMessage(),500);
         }
       }
+      private function filterCitasAvaibles($calendar) {
+        $citasAvaibles = [];
+        foreach ($calendar as $cita) {
+            
+            if ($cita->asistida == '0' && $cita->no_asistida == '0' && $cita->cancelada == '0') {
+                $citasAvaibles[] = $cita;
+            }
+        }
+        return $citasAvaibles;
+    }
+    
+    private function countCitasByTime($citas) {
+        $citasByDate = [];
+        foreach ($citas as $cita) {
+             
+            $title = "$cita->start ** $cita->end ** $cita->procedipro";
+            
+             
+            if (isset($citasByDate[$title])) {
+                $citasByDate[$title] += 1;
+            } else {
+                $citasByDate[$title] = 1;
+            }
+        }
+    
+        $citasCounted = [];
+        foreach ($citasByDate as $key => $value) {
+            
+            $dataCita = explode(' ** ', $key);
+    
+             
+            if (count($dataCita) === 3) {
+                $start = $dataCita[0];
+                $end = $dataCita[1];
+                $procedimiento = $dataCita[2];
+                $numCitas = $value;  
+    
+                 
+                $citasCounted[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'title' => "$procedimiento",
+                    'color'=>$numCitas==1?'#FF5733':($numCitas==2?'#33FF57':'#1b0dd3')
+                ];
+            }
+        }
+    
+        return $citasCounted;
+    }
     private function checkObservations($observations){
         $arrayWords=explode(" ",$observations);
         count($arrayWords)<=3? throw new BadRequestException('La observacion no es valida',400):null;
@@ -500,4 +603,146 @@ class CitasService{
             throw new ServerErrorException($e->getMessage(),500);
         }
     }
+    private function sendQueryToConfirmGroupSessions($request,$date) {
+        $idsListInString =(string)$request['ids'];  
+        $idsArray = explode(',', $idsListInString);  
+        $idsForQuery = array_map('intval', $idsArray);  
+    
+        try {
+             
+            $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
+    
+            $cita = DB::update(
+                "
+                UPDATE citas SET confirma = '1', 
+                fconfir = CONVERT(smalldatetime, ?, 120) 
+                WHERE id IN ($placeholders) 
+                AND asistio = '0' 
+                AND na = '0'",
+                array_merge([$date], $idsForQuery)
+            );
+    
+            if (!$cita) {
+                throw new BadRequestException("No es posible cancelar esta cita", 400);
+            }
+            return $cita;
+        } catch (\Exception $e) {
+            throw new ServerErrorException($e->getMessage(), 500);
+        }
+    }
+    private function sendQueryByGetAllCitasCanceled(){
+        try{
+            $citas=DB::select(
+                "
+                    SELECT 
+                        cica.id,
+                        cica.num_sessions_canceled AS cantidad,
+                        cica.num_sessions_reassing AS reasignadas, 
+                        cica.ids_sessions AS ids, 
+                        ci.direccion_cita,
+                        ci.nro_hist,
+                        ci.codent,
+                        ci.codent2,
+                        ci.autoriz,
+                        ci.procedim,
+                        ci.tiempo,
+                        ci.procedipro AS procedimiento,
+                        ci.realizar AS razon,
+                        pro.recordatorio_whatsapp,
+                        pro.duraccion AS duracion,
+                        se.nombre AS sede,
+						em.enombre AS profesional,
+						cli.nombre AS cliente
+                    FROM citas_canceladas cica
+                    INNER JOIN citas ci ON ci.id = cica.id_example
+                    INNER JOIN procedipro pro ON pro.nombre=ci.procedipro
+                    INNER JOIN sede se ON se.cod=ci.sede
+                    INNER JOIN emplea em ON em.ecc = ci.cedprof
+                    INNER JOIN cliente cli ON cli.codigo =ci.nro_hist
+                    WHERE cica.num_sessions_canceled >= cica.num_sessions_reassing;
+    
+                "
+            );
+            return $citas;
+
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+    private function sendQueryToCancelGroupSessions($request){
+        $dateCita = $request['fecha_cita'];
+        $dateCancelation = Carbon::now()->format('Y-m-d H:i:s');
+        $idsToCancel = $request['ids'];
+        $idExample = $this->getIdExample($idsToCancel);
+        $razon = $request['razon'];
+        $numSessionsCanceled = count(explode('|||', $idsToCancel));
+    
+        $idsArray = explode('|||', $idsToCancel);  
+        $idsForQuery = array_map('intval', $idsArray);  
+        $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
+    
+        try {
+            DB::transaction(function() use ($razon, $dateCancelation, $placeholders, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled,$dateCita) {
+                DB::update(
+                    "
+                    UPDATE citas 
+                    SET na = '1', 
+                        realizar = ?, 
+                        fec_can = CONVERT(smalldatetime, ?, 120) 
+                    WHERE id IN ($placeholders) 
+                    AND asistio = '0' 
+                    AND na = '0'",
+                    array_merge([$razon, $dateCancelation], $idsForQuery)
+                );
+    
+                DB::insert(
+                    "
+                    INSERT INTO citas_canceladas 
+                    (ids_sessions, id_example, num_sessions_canceled, date_cita_canceled)
+                    VALUES (?, ?, ?, CONVERT(smalldatetime, ?, 120))",
+                    [$idsToCancel, $idExample, $numSessionsCanceled, $dateCita]
+                );
+            });
+    
+            return $numSessionsCanceled;
+        } catch (\Exception $e) {
+            throw new ServerErrorException($e->getMessage(), 500);
+        }
+    }
+    
+    private function getIdExample($ids){
+        return explode('|||', $ids)[0];
+    }
+    private function saveNewsIdsInCitaCanceledRegister($idCitaCanceled, $ids) {
+        $idsToString = join('|||', $ids);
+    
+        try {
+            DB::update("
+            UPDATE citas_Canceladas
+            SET new_session_ids = CONCAT(
+                COALESCE(new_session_ids, ''), '', ?
+            ),
+            num_sessions_reassing = num_sessions_reassing + ?
+            WHERE id = ?
+        ", [$idsToString, count($ids), $idCitaCanceled]);
+        } catch (\Exception $e) {
+            error_log($e->getMessage());
+            return null;
+        }
+    }
+    private function sendQueryToUnactivateCitaCanceled($idCitaCanceled) {
+        try {
+            $citasUnactivates = DB::update("
+                UPDATE citas_canceladas
+                SET activa = '0'
+                WHERE id = ?
+            ", [$idCitaCanceled]);
+            
+            return $citasUnactivates;
+        } catch (\Exception $e) {
+            throw new ServerErrorException($e->getMessage(), 500);
+        }
+    }
+    
+    
 }

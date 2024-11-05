@@ -136,4 +136,23 @@ class CitasRequests
             throw new BadRequestException($validator->errors(), 400);
         }
     }
+    public static function ValidateCitaSessionsIds($request, $action){
+        $rules = ['ids' => 'required|string'];
+        if ($action == 'cancelar') {
+            $rules['razon'] = 'required|string';
+            $rules['fecha_cita'] = 'required|date_format:Y-m-d H:i';
+        }
+        
+        $validator = Validator::make($request, $rules);
+        if ($validator->fails()) {
+            throw new BadRequestException($validator->errors(), 400);
+        }
+    }
+    public static function checkIsReassingCitas($request){
+        $validator = Validator::make($request, [
+            'id'=>'required|numeric'
+        ]);
+        return !$validator->fails();
+    }
+    
 }
