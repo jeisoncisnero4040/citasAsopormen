@@ -13,7 +13,7 @@ use App\utils\ResponseManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
-use Illuminate\Auth\Events\Attempting;
+
 
 class CitasService{
     private $citasModel;
@@ -173,7 +173,12 @@ class CitasService{
 
         return $this->responseManager->success($citaUnactivate);
     }
-    
+    public function ChangeProfesionalToCitaIdsGroup($request){
+        citasRequests::validateDataToChangeProfesional($request);
+        $citasChanged=$this->sendQueryToChangeProfesionalsCitas($request);
+        return $this->responseManager->success($citasChanged);
+        
+    }
 
     private function validateCitas($request){
         citasRequests::validateCitasClient($request);
@@ -605,7 +610,7 @@ class CitasService{
     }
     private function sendQueryToConfirmGroupSessions($request,$date) {
         $idsListInString =(string)$request['ids'];  
-        $idsArray = explode(',', $idsListInString);  
+        $idsArray = explode('|||', $idsListInString);  
         $idsForQuery = array_map('intval', $idsArray);  
     
         try {
@@ -638,7 +643,8 @@ class CitasService{
                         cica.id,
                         cica.num_sessions_canceled AS cantidad,
                         cica.num_sessions_reassing AS reasignadas, 
-                        cica.ids_sessions AS ids, 
+                        cica.ids_sessions AS ids,
+                        cica.date_cita_canceled AS fecha, 
                         ci.direccion_cita,
                         ci.nro_hist,
                         ci.codent,
@@ -648,6 +654,7 @@ class CitasService{
                         ci.tiempo,
                         ci.procedipro AS procedimiento,
                         ci.realizar AS razon,
+                        ci.sede AS cod_sede,
                         pro.recordatorio_whatsapp,
                         pro.duraccion AS duracion,
                         se.nombre AS sede,
@@ -726,7 +733,6 @@ class CitasService{
             WHERE id = ?
         ", [$idsToString, count($ids), $idCitaCanceled]);
         } catch (\Exception $e) {
-            error_log($e->getMessage());
             return null;
         }
     }
@@ -743,6 +749,25 @@ class CitasService{
             throw new ServerErrorException($e->getMessage(), 500);
         }
     }
+    private function sendQueryToChangeProfesionalsCitas($request) {
+        $ids = $request['ids'];
+        $newProfesionalIdentity = $request['cedprof'];
     
+        $idsForQuery = array_map('intval', $ids);
+        $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
     
+        try {
+            $citasChangedProfesional = DB::update("
+                UPDATE citas
+                SET cedprof = ?
+                WHERE id IN ($placeholders)
+            ", array_merge([$newProfesionalIdentity], $idsForQuery));
+            
+            return $citasChangedProfesional;
+        } catch (\Exception $e) {
+            throw new ServerErrorException($e->getMessage(), 500);
+        }
+    }
+
+
 }

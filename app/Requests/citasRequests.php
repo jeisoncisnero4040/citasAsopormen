@@ -154,5 +154,14 @@ class CitasRequests
         ]);
         return !$validator->fails();
     }
+    public static function validateDataToChangeProfesional($request){
+        $validator=Validator::make($request,[
+            'ids'=>'required|array',
+            'cedprof'=>'required|regex:/^\d+$/'
+        ]);
+        if ($validator->fails()){
+            throw new BadRequestException($validator->errors(),400);
+        }
+    }
     
 }

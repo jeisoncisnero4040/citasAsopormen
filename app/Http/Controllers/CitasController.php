@@ -499,4 +499,9 @@ class CitasController extends Controller
         return response()->json($dataCitaUnactivate,200);
     }
 
+    public Function ChangeProfesionalCitas(Request $request){
+        $citasChangedProfesional=$this->citasService->ChangeProfesionalToCitaIdsGroup($request->all());
+        return response()->json($citasChangedProfesional,200);
+    }
+
 }

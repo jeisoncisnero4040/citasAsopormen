@@ -48,4 +48,5 @@ Route::post('citas/confirm_all_sessions_cita',[CitasController::class, 'confirma
 Route::get('citas/get_citas_canceled',[CitasController::class,'GetAllCitasCanceled']);
 Route::post('citas/cancel_all_sessions_cita',[CitasController::class, 'CancelCitaBySessionsIds']);
 Route::post('citas/Unactivate_cita_canceled',[CitasController::class, 'unactivateCita']);
+Route::post('citas/change_profesional',[CitasController::class,'ChangeProfesionalCitas']);
 
