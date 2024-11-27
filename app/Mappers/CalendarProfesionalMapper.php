@@ -15,11 +15,13 @@ class CalendarProfesionalMapper{
             $startFechaHora = $fechaHora->copy()->addMinutes($this->calculateMinutesSinceStartOfDay($hora24));
             $minutesToAdd = $cita->duracion;
             $endFechaHora = $startFechaHora->copy()->addMinutes($minutesToAdd);
-
-             
-            $cita->title = trim($cita->usuario) . ' - ' . trim($cita->procedimiento);
             $cita->start = $startFechaHora->toIso8601String();
             $cita->end = $endFechaHora->toIso8601String();
+
+            if (isset($cita->usuario) && trim($cita->usuario)) {
+                $cita->title = trim($cita->usuario) . ' - ' . trim($cita->procedimiento);
+            }
+            
         }
 
         return $calendar;

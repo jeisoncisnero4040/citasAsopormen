@@ -6,6 +6,7 @@ use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Exceptions\CustomExceptions\UnAuthorizateException;
+use App\Models\ClientModel;
 use App\Requests\AuthRequest;
 Use App\Models\User;
 use App\utils\ResponseManager;
@@ -16,10 +17,12 @@ class AuthService{
 
 
     private $userService;
+    private $clientModel;
     private $responseManager;
-    public function __construct(User $userService, ResponseManager $responseManager){
+    public function __construct(User $userService, ResponseManager $responseManager, ClientModel $clientModel){
         $this->userService=$userService;
         $this->responseManager=$responseManager;
+        $this->clientModel=$clientModel;
     }
     public function login($request){
         AuthRequest::loginRequestValidate( $request);
@@ -49,6 +52,28 @@ class AuthService{
                     
         return $response;
     }
+    public function loginClient($request){
+        AuthRequest::loginRequestValidate( $request);
+        $client=$this->clientModel::select('nombre','codigo','password')
+                            ->where('nit_cli',$request['cedula'])
+                            ->first();
+
+        if (!$client || !Hash::check($request['password'], $client->password)) {
+            throw new BadRequestException("Credenciales incorrectas", 400);
+        }
+        $token = JWTAuth::fromUser($client);
+
+         
+        $response = [
+            'message' => 'success',
+            'status' => 200,
+            'access_token' => $token,
+            'data' => $client
+        ];
+    
+        return $response;
+    }
+
     public function logout ($request)  {
  
             $token = $request->header('Authorization');

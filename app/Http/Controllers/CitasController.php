@@ -503,5 +503,9 @@ class CitasController extends Controller
         $citasChangedProfesional=$this->citasService->ChangeProfesionalToCitaIdsGroup($request->all());
         return response()->json($citasChangedProfesional,200);
     }
+    public function GetCitasClient(string $clientCode){
+        $resposne=$this->citasService->getCitasClient($clientCode);
+        return response()->json($resposne,200);
+   }   
 
 }

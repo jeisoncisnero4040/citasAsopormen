@@ -290,11 +290,14 @@ class ClientController extends Controller{
         $dataAuthorization=$this->clientService->getDataFromAuthorizationCode($authorizationCode);
         return response()->json($dataAuthorization,200);
     }
-   
-   
-    
 
+    public function GenerateNewPasswordClient(Request $request){
+        $password=$this->clientService->GnerateNewPasswordClient($request->all());
+        return response()->json($password,200);
+    }
+   public function UpdatePasswordClient(Request $request){
+        $response=$this->clientService->setPasswordClient($request->all());
+        return response()->json($response,200);
+   }
 
-    
-    
 }

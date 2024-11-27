@@ -6,6 +6,7 @@ use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Exceptions\CustomExceptions\ErrorSavingCitas;
+use App\Mappers\CalendarClientMapper;
 use App\Models\CitasModel;
 use App\Requests\citasRequests;
 use App\utils\DateManager;
@@ -143,6 +144,9 @@ class CitasService{
         citasRequests::ValidateCitaSessionsIds($request,'confirmar');
         $DateConfirmation=Carbon::now()->format('Y-m-d H:i:s');
         $sessionConfirmate=$this->sendQueryToConfirmGroupSessions($request,$DateConfirmation);
+        if (!$sessionConfirmate) {
+            throw new BadRequestException("No es posible cancelar esta cita", 400);
+        }
         return $this->responseManager->success($sessionConfirmate);
         
     }
@@ -178,6 +182,16 @@ class CitasService{
         $citasChanged=$this->sendQueryToChangeProfesionalsCitas($request);
         return $this->responseManager->success($citasChanged);
         
+    }
+    public function getCitasClient($clientCode){
+        if(empty(trim($clientCode))){
+            throw new BadRequestException("El código de clente debe ser valido",400);
+        }
+        $citas=$this->sendQueryToGetCitasClient($clientCode);
+        $calendarMapped=$this->mapCalendarClient($citas);
+        $citasGroupedBySessions=$this->GroupCitasBysessions($calendarMapped);
+
+        return $this->responseManager->success(($citasGroupedBySessions));
     }
 
     private function validateCitas($request){
@@ -223,8 +237,6 @@ class CitasService{
             throw new BadRequestException("La fecha de inicio solo puede ser después de hoy.", 400);
         }
     }
-    
-    
     
     
     private function checkLimitSessionsToSave($dataSesions){
@@ -626,10 +638,6 @@ class CitasService{
                 AND na = '0'",
                 array_merge([$date], $idsForQuery)
             );
-    
-            if (!$cita) {
-                throw new BadRequestException("No es posible cancelar esta cita", 400);
-            }
             return $cita;
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
@@ -689,8 +697,9 @@ class CitasService{
         $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
     
         try {
-            DB::transaction(function() use ($razon, $dateCancelation, $placeholders, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled,$dateCita) {
-                DB::update(
+            $citasCanceled = DB::transaction(function () use ($razon, $dateCancelation, $placeholders, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled, $dateCita) {
+                
+                $citasCanceled = DB::update(
                     "
                     UPDATE citas 
                     SET na = '1', 
@@ -701,17 +710,23 @@ class CitasService{
                     AND na = '0'",
                     array_merge([$razon, $dateCancelation], $idsForQuery)
                 );
-    
-                DB::insert(
-                    "
-                    INSERT INTO citas_canceladas 
-                    (ids_sessions, id_example, num_sessions_canceled, date_cita_canceled)
-                    VALUES (?, ?, ?, CONVERT(smalldatetime, ?, 120))",
-                    [$idsToCancel, $idExample, $numSessionsCanceled, $dateCita]
-                );
+        
+                
+                if ($citasCanceled > 0) {
+                    DB::insert(
+                        "
+                        INSERT INTO citas_canceladas 
+                        (ids_sessions, id_example, num_sessions_canceled, date_cita_canceled)
+                        VALUES (?, ?, ?, CONVERT(smalldatetime, ?, 120))",
+                        [$idsToCancel, $idExample, $numSessionsCanceled, $dateCita]
+                    );
+                }
+        
+                
+                return $citasCanceled;
             });
-    
-            return $numSessionsCanceled;
+        
+            return $citasCanceled;
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }
@@ -767,6 +782,47 @@ class CitasService{
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }
+    }
+    private function sendQueryToGetCitasClient(string $ClientCod){
+        try{
+            $citas=DB::select(
+                "
+                SELECT 
+                    ci.id,
+                    ci.fecha,
+                    ci.hora AS hora,
+                    ci.autoriz AS autorizacion,
+                    ci.procedim AS procedimiento,
+                    ci.regobserva AS observaciones,
+                    ci.asistio AS asistida,
+                    ci.cancelada AS cancelada,
+                    ci.tiempo,
+                    ci.na as no_asistida,
+                    pro.duraccion AS duracion,
+                    em.enombre AS profesional
+                FROM 
+                    citas ci
+                INNER JOIN 
+                    cliente cli ON cli.codigo LIKE '%' +ci.nro_hist  + '%'
+                INNER JOIN 
+                    procedipro pro ON pro.nombre = ci.procedipro
+                INNER JOIN 
+                    emplea em ON em.ecc = ci.cedprof
+                WHERE 
+                    ci.nro_hist = ?
+                    AND ci.fecha >= GETDATE()
+
+                ORDER BY 
+                    ci.fecha ASC;
+                ",[$ClientCod]);
+            return $citas;
+         }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+         }
+    }
+    private function GroupCitasBysessions($citas){
+        $citasMapper=new CalendarClientMapper();
+        return $citasMapper->groupCitasBySessions($citas);
     }
 
 

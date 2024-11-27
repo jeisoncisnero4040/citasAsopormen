@@ -10,6 +10,7 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
+Route::post('login_client', [AuthController::class, 'loginClient']);
 Route::post('logout', [AuthController::class, 'logout']);
 Route::post('refresh', [AuthController::class, 'refresh']);
 Route::get('me', [AuthController::class, 'me']);
@@ -29,6 +30,9 @@ Route::get('get_clients/{string}',[ClientController::class,'getAllClientByString
 Route::post('client_info',[ClientController::class,'showDataClientByIdHistory'])->middleware('login.check');
 Route::get('clients/get_authorizations/{clientCode}',[ClientController::class,'getAuthorizationByClientCode'])->middleware('login.check');
 Route::get('clients/get_authorization_data/{authorizationCode}',[ClientController::class,'getDataFromAuthorization'])->middleware('login.check');
+Route::post('clients/request_password',[ClientController::class,'GenerateNewPasswordClient']);
+Route::post('clients/update_password',[ClientController::class,'UpdatePasswordClient']);
+
 
 Route::get('get_centrals_office',[CentralOfficeController::class,'getCentralsOffice']);
 
@@ -49,4 +53,5 @@ Route::get('citas/get_citas_canceled',[CitasController::class,'GetAllCitasCancel
 Route::post('citas/cancel_all_sessions_cita',[CitasController::class, 'CancelCitaBySessionsIds']);
 Route::post('citas/Unactivate_cita_canceled',[CitasController::class, 'unactivateCita']);
 Route::post('citas/change_profesional',[CitasController::class,'ChangeProfesionalCitas']);
+Route::get('citas/get_citas_client/{clientCode}',[CitasController::class, 'GetCitasClient']);
 

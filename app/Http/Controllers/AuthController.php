@@ -256,4 +256,9 @@ class AuthController extends Controller
         return response()->json($response, 200);
     }
 
+    public function loginClient(Request $request){
+        $response = $this->authService->loginClient($request->all());
+        return response()->json($response, 200);
+    }
+
 }
