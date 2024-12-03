@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CentralOfficeController;
 use App\Http\Controllers\CitasController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\ObservaCitasController;
 use App\Http\Controllers\ProcedureController;
 use App\Http\Controllers\ProfesionalController;
 use App\Http\Controllers\UserController;
@@ -46,7 +47,7 @@ Route::post('citas/get_citas_client',[CitasController::class,'GetCalendarClient'
 Route::post('citas/get_citas_profesional',[CitasController::class,'getCalendarProfesional']);
 Route::delete('citas/{id}', [CitasController::class, 'deleteCitaById'])->where('id', '\d+')->middleware('login.check');
 Route::post('citas/delete_all_citas',[CitasController::class, 'deleteAllCitasByProfesionalDay'])->middleware('login.check');
-Route::get('citas/{id}',[CitasController::class, 'getCitaById'])->where('id', '\d+')->middleware('login.check');
+Route::get('citas/{id}',[CitasController::class, 'getCitaById'])->where('id', '\d+');
 Route::post('citas/cancel_cita',[CitasController::class, 'cancelCita'])->middleware('login.check');
 Route::post('citas/confirm_all_sessions_cita',[CitasController::class, 'confirmateCitaBySessionIds']);
 Route::get('citas/get_citas_canceled',[CitasController::class,'GetAllCitasCanceled']);
@@ -55,3 +56,5 @@ Route::post('citas/Unactivate_cita_canceled',[CitasController::class, 'unactivat
 Route::post('citas/change_profesional',[CitasController::class,'ChangeProfesionalCitas']);
 Route::get('citas/get_citas_client/{clientCode}',[CitasController::class, 'GetCitasClient']);
 
+Route::get('observa_citas',[ObservaCitasController::class,'getAllObservaCitas']);
+Route::get('observation/get_observation/{name}', [ObservaCitasController::class, 'getContentObservation']);

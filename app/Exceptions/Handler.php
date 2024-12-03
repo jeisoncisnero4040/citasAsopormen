@@ -40,7 +40,7 @@ class Handler extends ExceptionHandler
         $this->renderable(function (NotFoundException $e, $request) {
             $responseManager = app(ResponseManager::class);
             $response = $responseManager->NotFound(($e->getMessage()));
-            return response()->json($response,400);
+            return response()->json($response,404);
         });
     }
 }

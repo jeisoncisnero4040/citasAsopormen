@@ -89,16 +89,20 @@ class ClientService{
         ClientRequest::ValidateDataToRequestPassword($request);
         $this->CheckWayToSendPasswordIsSelected($request);
         $client=$this->getClientByIdentiy($request);
-        if((empty($client))){
+        if(empty($client)){
             throw new NotFoundException('No se han encontrado usuarios',404);
+        }
+
+        if($request['sendPasswordToEmail'] && !$client[0]->email){
+            throw new BadRequestException("el usuario no registra Email",400);
+        }
+        if($request['sendPasswordToMobile'] && !$client[0]->thelephoneNumber){
+            throw new BadRequestException("el usuario no registra contacto",400);
         }
         $password=PasswordGenerator::generatePassword();
         $this->saveNewPassword($password,$request);
         $this->sendMesaggeWithNewPassword($request,$client[0],$password);
         return $this->responseManager->success($client);
-        
-
-
     }
     public function setPasswordClient($request){
         ClientRequest::ValidateNewPassword($request);

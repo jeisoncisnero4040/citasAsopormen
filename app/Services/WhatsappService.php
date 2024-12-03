@@ -12,7 +12,7 @@ class WhatsappService
     public function sendMessageToRetrievePassword(array $payload)
     {
         try {
-            $url = $this->buildRequestUrl(); 
+            $url = $this->buildRequestUrl('/whatsapp/retrieve_password'); 
 
             
             $client = new Client();
@@ -29,8 +29,31 @@ class WhatsappService
             throw new ServerErrorException( $e->getMessage(), 500);
         }
     }
+    public function sendNotificationOrdenProgramed($data){
+        error_log("aqui en w1") ;
+    }
+    public function rememberFisrtCita($data){
+        
+        try {
+            $url = $this->buildRequestUrl('/whatsapp/start_chat'); 
 
-    private function buildRequestUrl()
+            
+            $client = new Client();
+
+            
+            $response = $client->post($url, [
+                'json' => $data, 
+            ]);
+
+            
+            return json_decode($response->getBody()->getContents(), true);
+        } catch (RequestException $e) {
+            
+            throw new ServerErrorException( $e->getMessage(), 500);
+        }
+    }
+
+    private function buildRequestUrl($endpoint)
     {
         
         $baseUrl = env(self::URL_WHATSAPP_SERVICE);
@@ -40,6 +63,6 @@ class WhatsappService
         }
 
          
-        return rtrim($baseUrl, '/') . "/whatsapp/retrieve_password";
+        return rtrim($baseUrl, '/') . $endpoint;
     }
 }
