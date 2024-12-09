@@ -2,6 +2,7 @@ from settings.ServiceWhatsappSettings import WHATSAPP_ADMIND_NUMBER
 import datetime
 from src.Utils.ApiRequestManager import ApiRequestManager
 
+
 class WhatsappService:
     def __init__(self,request_manager:ApiRequestManager) -> None:
         self.requests_manager=request_manager
@@ -9,10 +10,16 @@ class WhatsappService:
 
     def sendFailedConnection(self, error: Exception):
         body = self.__createPayload(error)
-        self.requests_manager.postMethod(body=body, endpoint='whatsapp/failed')
+        self.requests_manager.post_method(body=body, endpoint='whatsapp/failed')
     
     def sendMessageConfirmation(self, dataMessage:dict):
-        return self.requests_manager.postMethod(body=dataMessage,endpoint='whatsapp/start_chat')
+        try:
+            return self.requests_manager.post_method(body=dataMessage,endpoint='whatsapp/start_chat')
+        except Exception:
+            return False
+        
+
+        
 
     def __createPayload(self, error: Exception) -> dict:
         return {

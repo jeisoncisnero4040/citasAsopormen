@@ -1,6 +1,7 @@
 from datetime import timedelta,date
 from settings.AppSettings import MODE,WHATSAPP_PRUEBAS
 import pandas as pd
+import re
 
 class CitasMapper:
 
@@ -9,9 +10,7 @@ class CitasMapper:
         citas_mapped = []
         for cita in citas:
             
-            cita_cleaned = {key: (value.strip() if isinstance(value, str) else value) 
-                            for key, value in cita.items()}
-            
+            cita_cleaned = CitasMapper.__clean_cita_values(cita)
            
             day = cita_cleaned.get('fecha')
             hour = cita_cleaned.get('hora')
@@ -30,6 +29,10 @@ class CitasMapper:
            
             cita_cleaned['date'] = day_with_hour_str
             cita_cleaned['end_date']=end_date_as_str
+
+            telephoneNumber=cita_cleaned['telephone_number']
+            telephoneNumberCleaned = CitasMapper.__choice_telephone_number(telephoneNumber)
+            cita_cleaned['telephone_number']=telephoneNumberCleaned
 
             del cita_cleaned['fecha']
             del cita_cleaned['hora']
@@ -68,7 +71,64 @@ class CitasMapper:
             citas_ready_for_send.append(cita)
         
         return citas_ready_for_send
+    
+    @staticmethod
+    def group_notified_by_sessions(citas_notified:list)->list:
+        if not citas_notified:
+            return []
+        df:pd.DataFrame=pd.DataFrame(citas_notified)
 
+        df_clean = CitasMapper.__delete_citas_duplicates(df)
+        df_clean['date'] = pd.to_datetime(df_clean['date'])
+        df_clean['end_date'] = pd.to_datetime(df_clean['end_date'])
+        
+       
+        df_clean_and_ordered = df_clean.sort_values(by=['date', 'end_date'], ascending=True)
+        
+        
+        grouped = df_clean_and_ordered.groupby(
+            ['procedim', 'autoriz']
+        )
+
+       
+        result_list = []
+
+        
+        for _, group in grouped:
+           
+            group = group.reset_index(drop=True)
+            session_ids = []
+            session_time_ranges = []  
+            
+            
+            current_session_id = [group.loc[0, 'id']]
+            start_time = group.loc[0, 'date'] 
+            
+            for i in range(1, len(group)):
+                if group.loc[i, 'date'] == group.loc[i - 1, 'end_date']: 
+                    current_session_id.append(group.loc[i, 'id'])
+                else:
+                    current_session_id = [group.loc[i, 'id']]
+                    start_time = group.loc[i, 'date']  
+            
+            
+            session_ids.extend([f"{'|||'.join(map(str, current_session_id))}"] * len(current_session_id))
+            session_time_ranges.extend([f"{start_time} - {group.loc[len(group) - 1, 'end_date']}"] * len(current_session_id))
+            
+            
+
+            result_list.append(group)
+
+        # Concatenar todos los grupos nuevamente en un solo DataFrame
+        final_df = pd.concat(result_list)
+        df_only_citas= CitasMapper.__get_citas_by_group_sessions(final_df)
+        return df_only_citas.to_dict(orient='records')
+
+    @staticmethod
+    def __clean_cita_values(cita: dict) -> dict:
+        return {key: (value.strip() if isinstance(value, str) else value) 
+                for key, value in cita.items()}
+    
     @staticmethod
     def __map_hour_to_24_format(hour: str):
          
@@ -95,7 +155,7 @@ class CitasMapper:
         
         
         grouped = df_clean_and_ordered.groupby(
-            ['procedim', 'direction', 'observations', 'client', 'telephone_number', 'profesional']
+            ['procedim', 'direction', 'observation_id', 'client', 'telephone_number', 'profesional','copago']
         )
 
        
@@ -147,12 +207,27 @@ class CitasMapper:
         return Citas_ready_in_df
 
     
-
+    @staticmethod
+    def __get_minute(hour: str): 
+        return int(hour[3:5])
     
     @staticmethod
-    def __get_minute(hour: str):
+    def __choice_telephone_number(telephone_numbers: str):
          
-        return int(hour[3:5])
+        telephone_only_whithout_indicative = telephone_numbers.replace('+57', '')
+        telephone_number_only_numerics_chars = re.sub(r'\D', '', telephone_only_whithout_indicative)
+        if len(telephone_number_only_numerics_chars) < 10:
+            return None
+        firstTelephoneNumber = telephone_number_only_numerics_chars[:10]
+        if firstTelephoneNumber.startswith('3'):
+            return firstTelephoneNumber
+        if len(telephone_number_only_numerics_chars) >= 20 and len(telephone_number_only_numerics_chars) % 10 == 0:
+            secondTelephoneNumber = telephone_number_only_numerics_chars[10:20]   
+            if secondTelephoneNumber.startswith('3'):
+                return secondTelephoneNumber
 
+         
+        laterTelephoneNumber = telephone_number_only_numerics_chars[-10:]
+        return laterTelephoneNumber
 
-    
+        
