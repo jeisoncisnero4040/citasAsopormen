@@ -32,7 +32,7 @@ Route::post('client_info',[ClientController::class,'showDataClientByIdHistory'])
 Route::get('clients/get_authorizations/{clientCode}',[ClientController::class,'getAuthorizationByClientCode'])->middleware('login.check');
 Route::get('clients/get_authorization_data/{authorizationCode}',[ClientController::class,'getDataFromAuthorization'])->middleware('login.check');
 Route::post('clients/request_password',[ClientController::class,'GenerateNewPasswordClient']);
-Route::post('clients/update_password',[ClientController::class,'UpdatePasswordClient']);
+Route::post('clients/update',[ClientController::class,'UpdateClient']);
 
 
 Route::get('get_centrals_office',[CentralOfficeController::class,'getCentralsOffice']);

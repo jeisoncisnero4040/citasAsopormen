@@ -13,16 +13,10 @@ class WhatsappService
     {
         try {
             $url = $this->buildRequestUrl('/whatsapp/retrieve_password'); 
-
-            
             $client = new Client();
-
-            
             $response = $client->post($url, [
                 'json' => $payload, 
             ]);
-
-            
             return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
             
@@ -30,23 +24,14 @@ class WhatsappService
         }
     }
     public function sendNotificationOrdenProgramed($data){
-        error_log("aqui en w1") ;
     }
     public function rememberFisrtCita($data){
         
         try {
             $url = $this->buildRequestUrl('/whatsapp/start_chat'); 
-
-            
-            $client = new Client();
-
-            
-            $response = $client->post($url, [
-                'json' => $data, 
-            ]);
-
-            
-            return json_decode($response->getBody()->getContents(), true);
+            //$client = new Client();
+            //$response = $client->post($url, ['json' => $data, ]);
+            //return json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
             
             throw new ServerErrorException( $e->getMessage(), 500);

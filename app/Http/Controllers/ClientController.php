@@ -299,5 +299,9 @@ class ClientController extends Controller{
         $response=$this->clientService->setPasswordClient($request->all());
         return response()->json($response,200);
    }
+   public function UpdateClient(Request $requets){
+        $response=$this->clientService->updateClient($requets->all());
+        return response()->json($response,200);
+   }
 
 }

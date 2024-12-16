@@ -14,7 +14,7 @@ use App\utils\ResponseManager;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
-
+use App\utils\CelNumberManager;
 
 class CitasService{
     private $citasModel;
@@ -63,11 +63,11 @@ class CitasService{
         if($this->checkCitasHasRememberMesssage($citaInDto)){
              
             $dataToSendMessage=$this->makeDataToSendMsm($scheduleCitas,$citaInDto,$weekDays);
-            //$this->whatsappService->sendNotificationOrdenProgramed($dataToSendMessage);
+            $this->whatsappService->sendNotificationOrdenProgramed($dataToSendMessage);
         }
         if($this->citasIsRememberebleAndFirstCitasIsNear($citaInDto,$scheduleCitas[0])){
             $dataToSendCitaToRemember=$this->CreateDataToRemeberCita($citasIds,$scheduleCitas,$sessionDuration,$citaInDto);
-            //$this->whatsappService->rememberFisrtCita($dataToSendCitaToRemember);
+            $this->whatsappService->rememberFisrtCita($dataToSendCitaToRemember);
         }
 
         
@@ -229,13 +229,14 @@ class CitasService{
     }
     private function makeDataToSendMsm($scheduleCitas,$citaInDto,$weekDays){
         $laterDay = $scheduleCitas[count($scheduleCitas) - 1];
+        $telephoneNumberClean=CelNumberManager::chooseTelephoneNumber($citaInDto['client_number_cel']);
 
         $dataToSendMessage=[
             'client'=>$citaInDto['clientName'],
             'week_days'=>$weekDays,
             'first_day'=>$scheduleCitas[0],
             'laterDay'=>$laterDay,
-            'telephone_number'=>$citaInDto['client_number_cel']
+            'telephone_number'=>$telephoneNumberClean
 
         ];
         return $dataToSendMessage;
@@ -347,7 +348,7 @@ class CitasService{
     }
     
     private function saveCitas($schedule, $citaInDto){
-        error_log($schedule[0]);
+
         $citas = [];
 
     
@@ -388,7 +389,7 @@ class CitasService{
         try {
             $cita = DB::insert("
                 INSERT INTO citas (
-                    nro_hist, cedprof, ced_usu, registro,sede, regobserva, codent, codent2,tiempo,direccion_cita,procedim, procedipro,autoriz, fecha, hora, fec_hora, recordatorio_wsp,copago
+                    nro_hist, cedprof, ced_usu, registro,sede,observaciones_mc, codent, codent2,tiempo,direccion_cita,procedim, procedipro,autoriz, fecha, hora, fec_hora, recordatorio_wsp,copago
                 )
                 VALUES (?,?,?,?,?,?, ?, ?, ?, ?, ?, ?, ?,  
                     CONVERT(smalldatetime, ?, 120), 
@@ -440,7 +441,7 @@ class CitasService{
         $direction=$citaInDto['direccion_cita'];
         $procedim=$citaInDto['procedim'];
         $date=$scheduleCita[0]->format('Y-m-d H:i');
-        $telephoneNumber=$citaInDto['client_number_cel'];
+        $telephoneNumber=CelNumberManager::chooseTelephoneNumber($citaInDto['client_number_cel']);
         $observation=$this->getObservation($citaInDto);
         return [
             'client'=>$client,
@@ -586,7 +587,7 @@ class CitasService{
                         ci.fecha,
                         ci.hora AS hora,
                         ci.fec_hora AS hora_asignacion,
-                        ci.procedim AS procedimiento,
+                        ci.observaciones_mc AS procedimiento,
                         ci.asistio AS asistida,
                         ci.cancelada AS cancelada,
                         ci.na AS no_asistida,
@@ -607,7 +608,7 @@ class CitasService{
                     INNER JOIN 
                         emplea em ON em.ecc = ci.cedprof
                     LEFT JOIN  
-                        observa_citas oc ON oc.id = CAST(ci.regobserva AS INT)
+                        observa_citas oc ON oc.id = CAST(ci.observaciones_mc AS INT)
                     WHERE 
                         ci.id = ?
            ",[$id]);
@@ -764,18 +765,22 @@ class CitasService{
                         ci.procedipro AS procedimiento,
                         ci.realizar AS razon,
                         ci.sede AS cod_sede,
+						ci.copago,
                         pro.recordatorio_whatsapp,
                         pro.duraccion AS duracion,
                         se.nombre AS sede,
 						em.enombre AS profesional,
-						cli.nombre AS cliente
+						cli.nombre AS cliente,
+                        cli.cel AS celular,
+						oc.nombre AS nombre_procedimiento
                     FROM citas_canceladas cica
                     INNER JOIN citas ci ON ci.id = cica.id_example
                     INNER JOIN procedipro pro ON pro.nombre=ci.procedipro
                     INNER JOIN sede se ON se.cod=ci.sede
                     INNER JOIN emplea em ON em.ecc = ci.cedprof
                     INNER JOIN cliente cli ON cli.codigo =ci.nro_hist
-                    WHERE cica.num_sessions_canceled >= cica.num_sessions_reassing
+					INNER JOIN observa_citas oc ON oc.id=CAST(ci.regobserva AS INT)
+                    WHERE cica.num_sessions_canceled > cica.num_sessions_reassing
                     AND cica.activa='1'
     
                 "
@@ -899,6 +904,7 @@ class CitasService{
                     ci.asistio AS asistida,
                     ci.cancelada AS cancelada,
                     ci.tiempo,
+                    ci.direccion_cita as direcion,
                     ci.na as no_asistida,
                     pro.duraccion AS duracion,
                     em.enombre AS profesional

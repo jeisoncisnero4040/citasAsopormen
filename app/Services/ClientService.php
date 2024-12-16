@@ -113,6 +113,15 @@ class ClientService{
         return $this->responseManager->success($clientUpdated);
         
     }
+    public function updateClient($request){
+        ClientRequest::validateDataToUpdateClient($request);
+        $clientUpdated=$this->sendQueryToUpdateClient($request);
+        if ($clientUpdated==0){
+            throw new NotFoundException("Cliente no encontrado",404);
+        }
+        return $this->responseManager->success($clientUpdated);
+
+    }
     private function getClientByHistoryId($historyId)
     {
         try {
@@ -128,11 +137,11 @@ class ClientService{
                 cli.cel,
                 cli.codent AS cod_entidad,
                 cli.codent2 AS convenio,
-                mun.nombre AS municipio, 
+
                 ent.clase AS entidad 
                 FROM cliente cli 
                 INNER JOIN entidades ent ON ent.codigo = cli.codent2 
-                INNER JOIN municipio mun ON mun.codigo = cli.cod_ciudad 
+
                 WHERE cli.codigo =  ?", [$historyId]);
             return $clientInfo;
 
@@ -209,7 +218,7 @@ class ClientService{
             $client = DB::select("
                 SELECT TOP 1 
                 nombre,
-                e_mail as email,
+                email as email,
                 cel AS thelephoneNumber
                 FROM cliente
                 WHERE nit_cli = ? 
@@ -292,6 +301,32 @@ class ClientService{
         }catch(\Exception $e){
             throw new ServerErrorException($e->getMessage(),500);
         }
+    }
+    private function sendQueryToUpdateClient($request)
+    {
+        // Extraer el código del cliente
+        $clientCod = $request['clientCod'];
+        unset($request['clientCod']);
+    
+        
+        $columnsToUpdate = array_keys($request);
+        $valuesToUpdate = array_values($request);
+    
+         
+        $placeholders = implode(', ', array_map(fn($column) => "$column = ?", $columnsToUpdate));
+    
+        try{
+            $clientsUpdate=DB::update(
+                "
+                UPDATE cliente SET $placeholders WHERE codigo = ?
+                ",
+                array_merge($valuesToUpdate, [$clientCod])
+            );
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+        return $clientsUpdate;
+
     }
     
     

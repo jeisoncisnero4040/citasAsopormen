@@ -38,5 +38,27 @@ class ClientRequest{
             throw new BadRequestException($validator->errors(),400);
         }
     }
+    public static function validateDataToUpdateClient($request)
+    {
+        // Validar los campos permitidos
+        $validator = Validator::make($request, [
+            'clientCod'=>'required|string',
+            'cel' => 'string|regex:/^3\d{9}$/',
+            'email' => 'email'
+        ]);
+    
+        
+        $allowedKeys = ['cel', 'email','clientCod'];
+        $extraKeys = array_diff(array_keys($request), $allowedKeys);
+    
+        if (!empty($extraKeys)) {
+            throw new BadRequestException(implode(', ', $extraKeys). " no son permitidas", 400);
+        }
+    
+        if ($validator->fails()) {
+            throw new BadRequestException($validator->errors(), 400);
+        }
+    }
+    
 
 }
