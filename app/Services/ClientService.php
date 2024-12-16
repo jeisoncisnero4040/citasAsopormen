@@ -137,12 +137,20 @@ class ClientService{
                 cli.cel,
                 cli.codent AS cod_entidad,
                 cli.codent2 AS convenio,
-
+                ccb.ciudad AS municipio, 
                 ent.clase AS entidad 
                 FROM cliente cli 
                 INNER JOIN entidades ent ON ent.codigo = cli.codent2 
+                INNER JOIN CodigosCiudadesdebancos ccb ON ccb.codigociudad = cli.cod_ciudad 
+                WHERE cli.codigo = ?
+            ", [$historyId]);
 
-                WHERE cli.codigo =  ?", [$historyId]);
+
+            if (empty($clientInfo)) {
+                throw new NotFoundException("Información de usuario no encontrada", 404);
+            }
+
+
             return $clientInfo;
 
         } catch (\Exception $e) {
