@@ -160,6 +160,7 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'F' => 
         array (
             'Fruitcake\\Cors\\' => 15,
+            'Firebase\\JWT\\' => 13,
             'Faker\\' => 6,
         ),
         'E' => 
@@ -523,6 +524,10 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         array (
             0 => __DIR__ . '/..' . '/fruitcake/php-cors/src',
         ),
+        'Firebase\\JWT\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/firebase/php-jwt/src',
+        ),
         'Faker\\' => 
         array (
             0 => __DIR__ . '/..' . '/fakerphp/faker/src/Faker',
@@ -618,6 +623,7 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'App\\Http\\Controllers\\CitasController' => __DIR__ . '/../..' . '/app/Http/Controllers/CitasController.php',
         'App\\Http\\Controllers\\ClientController' => __DIR__ . '/../..' . '/app/Http/Controllers/ClientController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\ObservaCitasController' => __DIR__ . '/../..' . '/app/Http/Controllers/ObservaCitasController.php',
         'App\\Http\\Controllers\\ProcedureController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProcedureController.php',
         'App\\Http\\Controllers\\ProfesionalController' => __DIR__ . '/../..' . '/app/Http/Controllers/ProfesionalController.php',
         'App\\Http\\Controllers\\UserController' => __DIR__ . '/../..' . '/app/Http/Controllers/UserController.php',
@@ -637,6 +643,7 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'App\\Mappers\\CalendarProfesionalMapper' => __DIR__ . '/../..' . '/app/Mappers/CalendarProfesionalMapper.php',
         'App\\Models\\CentralOfficeModel' => __DIR__ . '/../..' . '/app/Models/CentralOfficeModel.php',
         'App\\Models\\CitasModel' => __DIR__ . '/../..' . '/app/Models/CitasModel.php',
+        'App\\Models\\ClientModel' => __DIR__ . '/../..' . '/app/Models/ClientModel.php',
         'App\\Models\\EmployeeModel' => __DIR__ . '/../..' . '/app/Models/EmployeeModel.php',
         'App\\Models\\ProcedureModel' => __DIR__ . '/../..' . '/app/Models/ProcedureModel.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
@@ -652,10 +659,14 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'App\\Services\\CitasService' => __DIR__ . '/../..' . '/app/Services/CitasService.php',
         'App\\Services\\ClientService' => __DIR__ . '/../..' . '/app/Services/ClientService.php',
         'App\\Services\\EmailService' => __DIR__ . '/../..' . '/app/Services/EmailService.php',
+        'App\\Services\\ObservaCitasService' => __DIR__ . '/../..' . '/app/Services/ObservaCitasService.php',
         'App\\Services\\ProcedureService' => __DIR__ . '/../..' . '/app/Services/ProcedureService.php',
         'App\\Services\\ProfesionalService' => __DIR__ . '/../..' . '/app/Services/ProfesionalService.php',
         'App\\Services\\UserService' => __DIR__ . '/../..' . '/app/Services/UserService.php',
+        'App\\Services\\WhatsappService' => __DIR__ . '/../..' . '/app/Services/WhatsappService.php',
+        'App\\utils\\CelNumberManager' => __DIR__ . '/../..' . '/app/utils/CelNumberManager.php',
         'App\\utils\\DateManager' => __DIR__ . '/../..' . '/app/utils/DateManager.php',
+        'App\\utils\\JwtGenerator' => __DIR__ . '/../..' . '/app/utils/JwtGenerator.php',
         'App\\utils\\PasswordGenerator' => __DIR__ . '/../..' . '/app/utils/PasswordGenerator.php',
         'App\\utils\\ResponseManager' => __DIR__ . '/../..' . '/app/utils/ResponseManager.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
@@ -1861,6 +1872,14 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'Faker\\Provider\\zh_TW\\Text' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/Provider/zh_TW/Text.php',
         'Faker\\UniqueGenerator' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/UniqueGenerator.php',
         'Faker\\ValidGenerator' => __DIR__ . '/..' . '/fakerphp/faker/src/Faker/ValidGenerator.php',
+        'Firebase\\JWT\\BeforeValidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/BeforeValidException.php',
+        'Firebase\\JWT\\CachedKeySet' => __DIR__ . '/..' . '/firebase/php-jwt/src/CachedKeySet.php',
+        'Firebase\\JWT\\ExpiredException' => __DIR__ . '/..' . '/firebase/php-jwt/src/ExpiredException.php',
+        'Firebase\\JWT\\JWK' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWK.php',
+        'Firebase\\JWT\\JWT' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWT.php',
+        'Firebase\\JWT\\JWTExceptionWithPayloadInterface' => __DIR__ . '/..' . '/firebase/php-jwt/src/JWTExceptionWithPayloadInterface.php',
+        'Firebase\\JWT\\Key' => __DIR__ . '/..' . '/firebase/php-jwt/src/Key.php',
+        'Firebase\\JWT\\SignatureInvalidException' => __DIR__ . '/..' . '/firebase/php-jwt/src/SignatureInvalidException.php',
         'Fruitcake\\Cors\\CorsService' => __DIR__ . '/..' . '/fruitcake/php-cors/src/CorsService.php',
         'Fruitcake\\Cors\\Exceptions\\InvalidOptionException' => __DIR__ . '/..' . '/fruitcake/php-cors/src/Exceptions/InvalidOptionException.php',
         'GrahamCampbell\\ResultType\\Error' => __DIR__ . '/..' . '/graham-campbell/result-type/src/Error.php',

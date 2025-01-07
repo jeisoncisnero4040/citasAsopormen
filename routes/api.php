@@ -19,7 +19,7 @@ Route::get('me', [AuthController::class, 'me']);
 Route::post('recover_password', [UserController::class, 'recoverPassword']);
 Route::post('update_password',[UserController::class,'updatePasswordByUserCedula'])->middleware('login.check');
 Route::get('encriptar_passwords',[UserController::class,'encryptPAsswords']);
-//Route::get('{cp}/',[UserController::class,'f']);
+
 
 Route::get('get_profesionals/{string}',[ProfesionalController::class,'getAllProfesionalByStringSearch'])
     ->middleware('login.check');
@@ -31,8 +31,11 @@ Route::get('get_clients/{string}',[ClientController::class,'getAllClientByString
 Route::post('client_info',[ClientController::class,'showDataClientByIdHistory'])->middleware('login.check');
 Route::get('clients/get_authorizations/{clientCode}',[ClientController::class,'getAuthorizationByClientCode'])->middleware('login.check');
 Route::get('clients/get_authorization_data/{authorizationCode}',[ClientController::class,'getDataFromAuthorization'])->middleware('login.check');
+Route::post('clients/update_password',[ClientController::class,'UpdatePasswordClient']);
 Route::post('clients/request_password',[ClientController::class,'GenerateNewPasswordClient']);
 Route::post('clients/update',[ClientController::class,'UpdateClient']);
+Route::get('clients/history_chat_bot/{codigo}',[ClientController::class,'getHistoryClient']);
+Route::post('clients/get_forbiden_blocks',[ClientController::class,'getForbidensBlocks']);
 
 
 Route::get('get_centrals_office',[CentralOfficeController::class,'getCentralsOffice']);

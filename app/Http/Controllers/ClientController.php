@@ -303,5 +303,13 @@ class ClientController extends Controller{
         $response=$this->clientService->updateClient($requets->all());
         return response()->json($response,200);
    }
+   public function getHistoryClient($clientCode){
+        $response = $this->clientService->getHistoryChatBotByClientCod($clientCode);
+        return response()->json($response,200);
+   }
+   public function getForbidensBlocks(Request $request){
+        $response = $this->clientService->getForbidensBlocksClient($request->all());
+        return response()->json($response,200);
+   }
 
 }

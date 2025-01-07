@@ -46,7 +46,7 @@ class CitasService{
         $numCitas=$schedule['num_citas'];
         $sessionDuration=$schedule['duration_session'];
 
-        $this->checkStartDateLaterToday($startDate->copy());
+        //$this->checkStartDateLaterToday($startDate->copy());
         $this->checkStartDateInDaysWeek($startDate,$weekDays);
         $this->checkLimitSessionsToSave($dataNumSessions);
         $this->checkRememberWhatsWhitObservations($citaInDto);
@@ -67,7 +67,7 @@ class CitasService{
         }
         if($this->citasIsRememberebleAndFirstCitasIsNear($citaInDto,$scheduleCitas[0])){
             $dataToSendCitaToRemember=$this->CreateDataToRemeberCita($citasIds,$scheduleCitas,$sessionDuration,$citaInDto);
-            $this->whatsappService->rememberFisrtCita($dataToSendCitaToRemember);
+            //$this->whatsappService->rememberFisrtCita($dataToSendCitaToRemember);
         }
 
         
@@ -206,7 +206,7 @@ class CitasService{
     }
     public function getCitasClient($clientCode){
         if(empty(trim($clientCode))){
-            throw new BadRequestException("El código de clente debe ser valido",400);
+            throw new BadRequestException("El código de cliente debe ser valido",400);
         }
         $citas=$this->sendQueryToGetCitasClient($clientCode);
         $calendarMapped=$this->mapCalendarClient($citas);
@@ -230,12 +230,16 @@ class CitasService{
     private function makeDataToSendMsm($scheduleCitas,$citaInDto,$weekDays){
         $laterDay = $scheduleCitas[count($scheduleCitas) - 1];
         $telephoneNumberClean=CelNumberManager::chooseTelephoneNumber($citaInDto['client_number_cel']);
+        $weekDaysInString = implode(',', $weekDays);
+
+
 
         $dataToSendMessage=[
             'client'=>$citaInDto['clientName'],
-            'week_days'=>$weekDays,
-            'first_day'=>$scheduleCitas[0],
-            'laterDay'=>$laterDay,
+            'week_days'=>$weekDaysInString,
+            'first_day'=>DateManager::dateToStringFormat($scheduleCitas[0]),
+            'authorization'=>$citaInDto['n_autoriza'],
+            'laterDay'=>DateManager::dateToStringFormat($laterDay),
             'telephone_number'=>$telephoneNumberClean
 
         ];
@@ -362,10 +366,10 @@ class CitasService{
             } catch (ErrorSavingCitas $e) {
                 
                 if (!empty($ids)) {
-                    $idsString = implode(' AND id = ', $citas); 
-                    DB::delete("DELETE FROM citas WHERE id = {$idsString}");
+                    $idsString = implode(',', $citas); 
+                    DB::delete("DELETE FROM citas WHERE id in = ($idsString)");
                 }
-                throw new ServerErrorException("No fue posible guardar el paquete de citas", 500);
+                throw new ServerErrorException($e->getMessage(), 500);
             }
         }
     
@@ -421,7 +425,7 @@ class CitasService{
             return $id;
         } catch (\Exception $e) {
             if ($cont >= 4) {
-                throw new ErrorSavingCitas();
+                throw new ServerErrorException($e->getMessage(),500);
             }
             return $this->saveCitasInBd($cita, $cont + 1);
         }
@@ -553,8 +557,9 @@ class CitasService{
 
     private function sendQuerydeleteCitaById($id){
         try{
-            $rowsDeleted=DB::delete("DELETE FROM citas WHERE id = ? AND cancelada = '0' AND asistio = '0' AND na = '0'
-                                    AND autoriz !=''", [$id]);
+            $rowsDeleted=DB::delete("
+                    DELETE FROM citas WHERE id = ? AND cancelada = '0' AND asistio = '0' AND na = '0'
+                    AND autoriz !=''", [$id]);
             return $rowsDeleted;
         }catch(\Exception  $e){
             throw new ServerErrorException($e->getMessage(),500);
@@ -587,14 +592,14 @@ class CitasService{
                         ci.fecha,
                         ci.hora AS hora,
                         ci.fec_hora AS hora_asignacion,
-                        ci.observaciones_mc AS procedimiento,
+                        ci.procedim AS procedimiento,
                         ci.asistio AS asistida,
                         ci.cancelada AS cancelada,
                         ci.na AS no_asistida,
                         ci.tiempo AS orden,
                         ci.copago,
                         pro.duraccion AS duracion,
-                        ci.direccion_cita AS direccion,
+                        ci.direccion_cita AS direcion,
                         cli.nombre AS usuario,
                         em.enombre AS profesional,
                         oc.contenido AS observaciones,
@@ -766,20 +771,21 @@ class CitasService{
                         ci.realizar AS razon,
                         ci.sede AS cod_sede,
 						ci.copago,
+                        ci.mean_cancel as medio_cancelacion,
                         pro.recordatorio_whatsapp,
                         pro.duraccion AS duracion,
                         se.nombre AS sede,
 						em.enombre AS profesional,
 						cli.nombre AS cliente,
                         cli.cel AS celular,
-						oc.nombre AS nombre_procedimiento
+						oc.nombre AS nombre_plantilla_observacion
                     FROM citas_canceladas cica
                     INNER JOIN citas ci ON ci.id = cica.id_example
                     INNER JOIN procedipro pro ON pro.nombre=ci.procedipro
                     INNER JOIN sede se ON se.cod=ci.sede
                     INNER JOIN emplea em ON em.ecc = ci.cedprof
                     INNER JOIN cliente cli ON cli.codigo =ci.nro_hist
-					INNER JOIN observa_citas oc ON oc.id=CAST(ci.regobserva AS INT)
+					INNER JOIN observa_citas oc ON oc.id=CAST(ci.observaciones_mc AS INT)
                     WHERE cica.num_sessions_canceled > cica.num_sessions_reassing
                     AND cica.activa='1'
     
@@ -792,6 +798,7 @@ class CitasService{
         }
     }
     private function sendQueryToCancelGroupSessions($request){
+        $meanCancel=$request['meanCancel'];
         $dateCita = $request['fecha_cita'];
         $dateCancelation = Carbon::now()->format('Y-m-d H:i:s');
         $idsToCancel = $request['ids'];
@@ -804,22 +811,23 @@ class CitasService{
         $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
     
         try {
-            $citasCanceled = DB::transaction(function () use ($razon, $dateCancelation, $placeholders, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled, $dateCita) {
+            $citasCanceled = DB::transaction(function () use ($razon, $dateCancelation, $placeholders, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled, $dateCita,$meanCancel) {
                 
                 $citasCanceled = DB::update(
                     "
                     UPDATE citas 
-                    SET na = '1', 
+                    SET cancelada = '1', 
                         realizar = ?, 
-                        fec_can = CONVERT(smalldatetime, ?, 120) 
+                        fec_can = CONVERT(smalldatetime, ?, 120) ,
+                        mean_cancel=?
                     WHERE id IN ($placeholders) 
                     AND asistio = '0' 
                     AND na = '0'",
-                    array_merge([$razon, $dateCancelation], $idsForQuery)
+                    array_merge([$razon, $dateCancelation,$meanCancel], $idsForQuery)
                 );
         
                 
-                if ($citasCanceled > 0) {
+                if ($citasCanceled > 0 && $meanCancel !='mc' ) {
                     DB::insert(
                         "
                         INSERT INTO citas_canceladas 

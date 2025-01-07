@@ -5,7 +5,10 @@ namespace App\Services;
 use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
+use App\Mappers\HistoryChatBotMapper;
 use App\Requests\ClientRequest;
+use App\utils\CelNumberManager;
+use App\utils\DateManager;
 use App\utils\PasswordGenerator;
 use Illuminate\Support\Facades\DB;
 use App\utils\ResponseManager;
@@ -17,6 +20,7 @@ class ClientService{
     private $responseManager;
     private $emailService;
     private $whatsappService;
+
     public function __construct(ResponseManager $responseManager,EmailService $emailService, WhatsappService $whatsappService){
         $this->responseManager=$responseManager;
         $this->emailService=$emailService;
@@ -106,7 +110,7 @@ class ClientService{
     }
     public function setPasswordClient($request){
         ClientRequest::ValidateNewPassword($request);
-        $clientUpdated=$this->sendQueryToupdatePasswordClient($request);
+        $clientUpdated=$this->saveNewPassword($request['password'],$request);
         if ($clientUpdated==0){
             throw new NotFoundException("Cliente no encontrado",404);
         }
@@ -116,11 +120,45 @@ class ClientService{
     public function updateClient($request){
         ClientRequest::validateDataToUpdateClient($request);
         $clientUpdated=$this->sendQueryToUpdateClient($request);
-        if ($clientUpdated==0){
+        if (empty($clientUpdated)){
             throw new NotFoundException("Cliente no encontrado",404);
         }
         return $this->responseManager->success($clientUpdated);
 
+    }
+    public function getHistoryChatBotByClientCod($codigoClient){
+        if(empty($codigoClient)){
+            throw new BadRequestException("No se ha proporcionado ni un cliente",400);
+        }
+        $celClient=$this->GetNumberCelClient($codigoClient);
+        if (empty($celClient)){
+            throw new NotFoundException("El cliente no registra celular",404);
+        }
+        $celCleaned=$this->cleanerCels($celClient->cel);
+
+        $history=$this->getHistoryWhatsapp($celCleaned);
+        if (empty($history)){
+            throw new NotFoundException("El usuario no guarda registro de chat",404);
+        }
+
+        $historyMapped=$this->MapHistory($history);
+
+
+        return $this->responseManager->success($historyMapped);
+        
+    }
+    public function getForbidensBlocksClient($request)
+    {
+
+        $blocksProhibided = $this->getForbbidentsBlocks($request);
+        $events = [];
+        foreach ($blocksProhibided as $block) {
+            $mappedEvents = $this->mapBlocksAndDays($block, $request);
+            if (is_array($mappedEvents)) {
+                $events = array_merge($events, $mappedEvents);
+            }
+        }
+        return $this->responseManager->success($events);
     }
     private function getClientByHistoryId($historyId)
     {
@@ -137,12 +175,12 @@ class ClientService{
                 cli.cel,
                 cli.codent AS cod_entidad,
                 cli.codent2 AS convenio,
-                ccb.ciudad AS municipio, 
+                mun.nombre AS municipio, 
                 ent.clase AS entidad 
                 FROM cliente cli 
                 INNER JOIN entidades ent ON ent.codigo = cli.codent2 
-                INNER JOIN CodigosCiudadesdebancos ccb ON ccb.codigociudad = cli.cod_ciudad 
-                WHERE cli.codigo = ?
+                INNER JOIN municipio mun ON mun.codigo = cli.cod_ciudad 
+                WHERE cli.codigo = ?
             ", [$historyId]);
 
 
@@ -237,29 +275,33 @@ class ClientService{
             throw new ServerErrorException($e->getMessage(), 500);
         }
     }
-    private function saveNewPassword(string $newPassword,Array $request)
+    private function saveNewPassword(string $newPassword, array $request)
     {
-        $codigoClient=$request['clientIdentity'];
-        $newPasswordEncrypted=bcrypt($newPassword);
+        $codigoClient = $request['clientIdentity'];
+        $newPasswordEncrypted = bcrypt($newPassword);
     
         try {
-            
             $clientsWithNewPassword = DB::update(
                 "
-                UPDATE cliente 
-                SET password = ?
-                WHERE nit_cli = ?
-                ", [
-                    $newPasswordEncrypted,    
-                    $codigoClient 
+                UPDATE cl2
+                SET cl2.user_password_mc = ?
+                FROM cliente2 AS cl2
+                JOIN cliente AS cl ON cl2.codigo = cl.codigo
+                WHERE cl.codigo = ?
+                ",
+                [
+                    $newPasswordEncrypted,
+                    $codigoClient
                 ]
             );
     
-            return $clientsWithNewPassword !=0; 
+            return $clientsWithNewPassword != 0;
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }
     }
+    
+    
     private function sendMesaggeWithNewPassword(Array $request,$client,string $newPassword){
         $sendToEmail=$request['sendPasswordToEmail'];
         $email=$client->email;
@@ -293,23 +335,7 @@ class ClientService{
             'clientName'=>$username
         ];
     }
-    private function sendQueryToupdatePasswordClient($request){
-        $password=$request['password'];
-        $client=$request['clientCod'];
 
-        $passwordWithBycript=bcrypt($password);
-        try{
-            $clientUpdated=DB::update("
-                UPDATE cliente
-                SET password = ? 
-                WHERE  codigo = ?
-            ",[$passwordWithBycript,$client]);
-            return $clientUpdated;
-
-        }catch(\Exception $e){
-            throw new ServerErrorException($e->getMessage(),500);
-        }
-    }
     private function sendQueryToUpdateClient($request)
     {
         // Extraer el código del cliente
@@ -336,6 +362,99 @@ class ClientService{
         return $clientsUpdate;
 
     }
+    private function GetNumberCelClient($codigoClient){
+        try{
+            $cel=DB::select(
+                "
+                    select cel from cliente where codigo= ?
+                ",[$codigoClient]
+            );
+            return $cel[0];
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+    private function cleanerCels($dirttyCel){
+        $celCleaned= CelNumberManager::chooseTelephoneNumber($dirttyCel);
+        if(empty($celCleaned)){
+            throw new NotFoundException("El usuario no registra numero de celular valido",404);
+        }
+        return $celCleaned;
+    }
+    private function getHistoryWhatsapp($cel){
+        try{
+            return $this->whatsappService->getHistoryWhatsapCel($cel);
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+    private function MapHistory($history){
+        return HistoryChatBotMapper::map($history);
+    }
+    private function getForbbidentsBlocks($request){
+        $profesionalCed=$request['cedula'];
+        try{
+            $scheduleforbident=DB::select(
+                "
+                SELECT hora_inicio,hora_fin,dias 
+                FROM bloques_pro
+                WHERE profesional_ced = ?
+                ",[$profesionalCed]
+            );
+            return $scheduleforbident;
+
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+    private function mapBlocksAndDays($block, $request)
+    {   
+        $startDate = Carbon::parse($request['start']);
+        $endDate = Carbon::parse($request['end']);
+
+        $days = array_map(fn($day) => strtolower($day), explode('|||', $block->dias));
+    
+        $startDateCopy = $startDate->copy();
+         
+        $startHour = $this->getMinutesSinceStartDay($block->hora_inicio);
+        $endHour = $this->getMinutesSinceStartDay($block->hora_fin);
+    
+        $eventsToSchedule = [];
+        while ($startDateCopy->isBefore($endDate)) {
+ 
+            $dayDate = DateManager::getDayByDate($startDateCopy);
+
+            if (in_array(strtolower($dayDate), $days)) {
+                $dateDay = $startDateCopy->copy();
+                $dateDayOnly = DateManager::getDateInSmallDateTime($dateDay);
+                $dateDayOnly=Carbon::parse($dateDayOnly);
+
+
+                $event = [
+                    'start' => $dateDayOnly->copy()->addMinutes($startHour),   
+                    'end' => $dateDayOnly->copy()->addMinutes($endHour)     ,
+                    'title' => 'no disponible',
+                    'color' => '#ccc'
+                ];
+    
+                 
+                $eventsToSchedule[] = $event;  
+                $startDateCopy->addDay();
+            } else {
+                
+                $startDateCopy->addDay();
+            }
+        }
+    
+        return $eventsToSchedule;  
+    }
+    private function getMinutesSinceStartDay(string $hour){
+        $hornIn24Format=DateManager::ConvertHourTo24Format($hour);
+        return DateManager::CalculateMinutesSinceStartOfDay($hornIn24Format);
+    }
+    
+    
+    
     
     
 }

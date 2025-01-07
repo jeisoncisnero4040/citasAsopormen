@@ -140,7 +140,8 @@ class CitasRequests
         $rules = ['ids' => 'required|string'];
         if ($action == 'cancelar') {
             $rules['razon'] = 'required|string';
-            $rules['fecha_cita'] = 'required|date_format:Y-m-d H:i';
+            $rules['fecha_cita'] = 'date_format:Y-m-d H:i';
+            $rules['meanCancel']='required|string';
         }
         
         $validator = Validator::make($request, $rules);

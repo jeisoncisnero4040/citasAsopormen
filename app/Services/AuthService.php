@@ -9,9 +9,11 @@ use App\Exceptions\CustomExceptions\UnAuthorizateException;
 use App\Models\ClientModel;
 use App\Requests\AuthRequest;
 Use App\Models\User;
+use App\utils\JwtGenerator;
 use App\utils\ResponseManager;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class AuthService{
 
@@ -26,10 +28,10 @@ class AuthService{
     }
     public function login($request){
         AuthRequest::loginRequestValidate( $request);
-
         $user = $this->userService::where('cedula', $request['cedula'])
-                    ->select('cedula','usuario','password','estado','permisomc')
-                    ->first();
+        ->select('cedula','usuario','password','estado','permisomc')
+        ->first();
+
         if (!$user || !Hash::check($request['password'], $user->password)) {
             throw new BadRequestException("Credenciales incorrectas", 400);
         }
@@ -54,14 +56,13 @@ class AuthService{
     }
     public function loginClient($request){
         AuthRequest::loginRequestValidate( $request);
-        $client=$this->clientModel::select('nombre','codigo','password')
-                            ->where('nit_cli',$request['cedula'])
-                            ->first();
+        $clients=$this->sendQueryToGetClientWithPassword($request);
+        $client=$this->takeFirstClient($clients);
 
         if (!$client || !Hash::check($request['password'], $client->password)) {
             throw new BadRequestException("Credenciales incorrectas", 400);
         }
-        $token = JWTAuth::fromUser($client);
+        $token =$this->generateToken($request['cedula']);
 
          
         $response = [
@@ -128,4 +129,39 @@ class AuthService{
         }
 
     }
+    private function sendQueryToGetClientWithPassword(array $request){
+        $clientCedula=$request['cedula'];
+        try{
+            $client=DB::select("
+                SELECT TOP 1
+                cli.nombre,
+                cli.codigo,
+                cli2.user_password_mc AS password
+                from cliente cli 
+                INNER JOIN cliente2 cli2 ON cli.codigo=cli2.codigo
+                WHERE cli.nit_cli= ?
+
+            ",[$clientCedula]);
+            return $client;
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+    private function generateToken($cedula){
+        $JwtGenerator=new JwtGenerator($cedula);
+        return $JwtGenerator->jwt();
+    }
+    private function takeFirstClient(array $clientList)
+    {
+        if (empty($clientList)) {
+            throw new NotFoundException(
+                "No se ha encontrado un usuario con la cédula proporcionada. 
+                Por favor, inténtalo de nuevo con un número de identificación válido.",
+                404
+            );
+        }
+    
+        return $clientList[0];
+    }
+    
 }

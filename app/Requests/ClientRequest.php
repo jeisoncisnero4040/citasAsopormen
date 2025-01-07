@@ -32,7 +32,7 @@ class ClientRequest{
     public static function ValidateNewPassword($request){
         $validator=Validator::make($request,[
             'password'=>'required|min:6|string',
-            'clientCod'=>'required|regex:/^\d+$/'
+            'clientIdentity'=>'required|regex:/^\d+$/'
         ]);
         if ($validator->fails()){
             throw new BadRequestException($validator->errors(),400);
