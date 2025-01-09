@@ -40,10 +40,10 @@ class SelectDataClient extends Component {
                                     codigo: firstClient.codigo.trim()
                                 },
                                 loading: false
+                            },()=>{
+                                this._getAllInfoClient(firstClient.codigo)
                             });
-                            
-                             
-                            this.getClientInfo(firstClient.codigo);
+
                         } else {
                             this.setState({ clientList: [], loading: false });
                              
@@ -58,6 +58,9 @@ class SelectDataClient extends Component {
                     });
                 });
         }
+    }
+    _getAllInfoClient=(codigo)=>{
+        this.getClientInfo(codigo);
     }
     renderClients() {
         if (this.state.clientList.length > 0) {
@@ -86,17 +89,14 @@ class SelectDataClient extends Component {
                 },
                 selectedOption: selectedCodigo
             }, () => {
-                this.getClientInfo(selectedCodigo);
+                this._getAllInfoClient(selectedCodigo);
             });
         }
     }
 
     getClientInfo = (codigo) => {
         this.setState({ loading: true });
-
         const url = `${Constants.apiUrl()}client_info`;
-
- 
         this.requestManager.postMethod(url, {
             'historyId': codigo
         })

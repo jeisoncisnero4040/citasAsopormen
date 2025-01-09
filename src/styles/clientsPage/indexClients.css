@@ -1,0 +1,60 @@
+.index-clientsPage {
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+}
+
+.index-clientsPage-body {
+    width: 100%;
+    display: flex;
+    height: 90%;
+    background-color: #fff;
+}
+
+.index-clientsPage-left,
+.index-clientsPage-rigth {
+    height: 100%;
+    width: 33%;
+    background-color: #fff;
+}
+
+.index-clientsPage-center {
+    height: 100%;
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #fff; 
+}
+
+.index-clientsPage-footer {
+    width: 100%;
+    background: #1b0dd3;
+    text-align: center;
+    padding: 0;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    z-index: 1000; 
+    color: #f1f1f1;
+}
+.login-clients-checkbox-options{
+    display: flex;
+    flex-direction: column;
+}
+
+
+@media screen and (max-width: 760px) {
+    .index-clientsPage-left,
+    .index-clientsPage-rigth {
+        display: none;
+    }
+
+    .index-clientsPage-center {
+        flex: 1;
+        width: 100%; 
+        height: 100%;
+    }
+}
+

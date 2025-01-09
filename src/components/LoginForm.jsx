@@ -30,9 +30,9 @@ const LoginForm = () => {
       });
 
       const token = response?.data?.access_token;
-      const userData = response?.data?.data;
+      const user= response?.data?.data;
       localStorage.setItem('authToken', token);
-      navigate('/formcitas', { state: userData });
+      navigate('/formcitas', { state: user });
       
     } catch (error) {
       if (error.response) {
@@ -61,7 +61,7 @@ const LoginForm = () => {
               <p>Asopormen</p>
           </div>
       </div>
-      <p>Ingreso de usuarios</p>
+      <p>Ingreso de personal</p>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <input

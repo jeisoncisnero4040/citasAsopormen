@@ -93,6 +93,12 @@ table {
     border-collapse: collapse;
  
 }
+.render-client-name-and-cancel-buton{
+    display: flex;
+    justify-content:space-between;
+    margin:1%;
+    align-items:center;
+}
 
 table thead {
     background: #1b0dd3;

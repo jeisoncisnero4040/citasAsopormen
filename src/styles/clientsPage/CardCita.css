@@ -1,0 +1,253 @@
+.cita-card-wrapper {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: space-between; 
+    align-items: stretch; 
+    width: 100%; 
+    background-color: #f9f9f9; 
+    overflow: hidden; 
+    margin-top: 2%;
+    border-radius: 10px;
+    border: 1px solid #1b0dd3;
+}
+
+
+
+
+.info-cita-card {
+    width: 75%; 
+    background-color: #fff;
+    display: flex;
+}
+.static-info-cita{
+    width: 85%;
+    margin: 20px;
+}
+.name-profesional-cita{
+    display: flex;
+    align-items: center;
+}
+.name-profesional-cita img{
+    height: 30px;
+}
+.name-profesional-cita-and-procedim{
+    margin-left: 10px;
+}
+.profesional-name, 
+.procedim {
+    line-height: 0;
+    font-style: oblique;
+    font-weight: bold;
+    font-family: "Segoe UI", cursive;
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    max-width: 0px;
+ 
+}
+.direccion-cita,
+.duracion-cita{
+    line-height: 0;
+    font-style: oblique;
+    font-family: "Segoe UI", cursive;
+    margin-left: 10px;
+    text-transform: capitalize;
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    max-width: 0px;
+}
+
+
+.profesional-name {
+    font-size: 140%;
+    color: gray;
+}
+
+.procedim {
+    font-size: 10px;
+}
+.vertical-line{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    background-color: gray;
+    width: 1px;
+}
+.options{
+    width: 15%;
+    background-color: #fff;
+    margin-left:20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.info-date-card-asistida {
+    background-color: rgb(184, 235, 184);
+    width: 25%; 
+
+}
+
+.info-date-card-cancelada {
+    background-color:rgb(243, 240, 92);
+    width: 25%; 
+
+}
+
+.info-date-card-no-asistida {
+    background-color:rgb(247, 144, 97);
+    width: 25%; 
+
+}
+
+.info-date-card-programada {
+    background-color:rgb(220, 226, 233);
+    width: 25%; 
+
+}
+.wrapper-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.status-cita {
+    text-align: center;
+    font-size: 16px;
+    font-weight: 900;
+    border: 1px solid black;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 3px 10px;  
+    border-radius: 5px;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+.day-name,
+.fecha,
+.hour {
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 12px;
+    font-style: oblique;
+    font-weight: bold;
+    font-family: "Segoe UI", cursive;
+    margin: 0;
+}
+
+.hour {
+    font-size: 30px;  
+    padding-bottom: 10px;  
+}
+.camcel-cita{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.camcel-cita img{
+    height: 50px;
+    width: 50px;
+}
+.text-cancelar,
+.text-cancelar-small{
+    margin: 0%;
+    text-align: center;
+
+    font-style: oblique;
+    font-weight: bold;
+    font-family: "Segoe UI", cursive;
+    font-weight: 700;
+    color: #353434;
+
+}
+.text-cancelar{
+    font-size: 18px;
+}
+.text-cancelar-small{
+    font-size: 16px;
+}
+@media (max-width: 768px) {
+    .profesional-name, 
+.procedim {
+    line-height: 0;
+    font-style: oblique;
+    font-weight: bold;
+    font-family: "Segoe UI", cursive;
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    max-width: 0px;
+ 
+}
+.direccion-cita,
+.duracion-cita{
+    line-height: 0;
+    font-style: oblique;
+    font-family: "Segoe UI", cursive;
+    margin-left: 10px;
+    text-transform: capitalize;
+    white-space: nowrap;
+    display: block;
+    text-overflow: ellipsis;
+    max-width: 0px;
+}
+
+
+.profesional-name {
+    font-size: 100%;
+    color: gray;
+}
+
+.procedim {
+    font-size: 10px;
+}
+}
+@media (max-width: 480px) {
+    .cita-card-wrapper{
+        display: flex;
+        flex-direction: column;
+
+    }
+    .info-date-card-asistida, .info-date-card-cancelada, .info-date-card-no-asistida,.info-date-card-programada{
+        width: 100%;
+    }
+    .info-cita-card{
+        display: flex;
+        flex-direction: column;
+    }
+    .static-info-cita{
+        width: 100%;
+    }
+    .vertical-line{
+        margin-right: 20px;
+        margin-left: 20px;
+    }
+    .options{
+        width: 100%;
+        background-color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .direccion-cita{
+        font-size: 90%;
+    }
+    .profesional-name {
+        font-size: 140%;
+        color: gray;
+    }
+    .wrapper-button-cancel{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .camcel-cita{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+ 
+}
+

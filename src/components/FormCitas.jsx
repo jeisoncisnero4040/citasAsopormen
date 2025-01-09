@@ -7,22 +7,22 @@ import FormCitasForm from "./FormCitasForm";
 function FormCitas() {
     const location = useLocation();
     const navigate = useNavigate();   
-    const userData = location.state || {};
+    const user = location.state || {};
 
     useEffect(() => {
-        if (!userData || !userData.usuario) {
+        if (!user || !user.usuario) {
              
             navigate('/');   
         }
-    }, [userData, navigate]);
+    }, [user, navigate]);
 
     return (
         <div className="container">
             <div className="navbar">
-                <NavbarCitas userName={userData.usuario} />
+                <NavbarCitas user={user} />
             </div>
             <div className="form-citas">
-                <FormCitasForm user={userData} />
+                <FormCitasForm user={user} />
             </div>
         </div>
     );

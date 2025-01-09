@@ -1,0 +1,124 @@
+.reassing-citas-form{
+    width: 99%;
+    background: #f1f1f1;
+}
+.reassing-citas-form-header{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-color:#236db8 ;
+    width: 100%;
+    height: 10%;
+    margin: 0%;
+    padding: 0%;
+
+}
+.reassing-citas-form-header p{
+    color: #f1f1f1;
+    font-size: 120%;
+    font-weight: bold;
+}
+ 
+
+.reassing-citas-form-body{
+    height: 60%;
+    width: 100%;
+    background-color: #f1f1f1;
+}
+.insert-citas-canceled-avaiables-or-profesionals-form {
+    width: 100%;
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 1%; 
+    
+
+}
+.wrapper{
+    width: 100%;
+    display: flex;
+}
+.insert-profesional-form{
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    margin: 1%;
+}
+
+.insert-citas-canceled-available-table{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    margin: 1%;
+    
+}
+.insert-citas-canceled-avaible-show-info-cita-selected{
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+    margin: 1%;
+}
+.search-profesional-by-name-and-insert-calendar{
+    width: 100%;
+    display: flex;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 1%; 
+}
+.forrm-for-searh-profesional{
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    margin: 1%;
+}
+.insert-calendar-profesional-selected{
+    width: 40%;
+    height: auto;
+}
+.insert-schedule-profesional-selected{
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-top: 1%; 
+    padding-right: 2%;
+    
+}
+.reassing-citas-form-footer{
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    background-color:#236db8 ;
+    width: 100%;
+    height: 20%;
+    margin: 0%;
+    padding-top: 1%;
+    padding-bottom: 1%;
+    margin-top: 1%;
+
+}
+.reassing-citas-form-footer p, 
+.reassing-citas-form-footer a {
+    color: #f1f1f1;         
+    font-size: 150%;       
+    font-weight: bold;      
+}
+@media screen and (max-width: 768px) {
+    .wrapper{
+        display: flex;
+        flex-direction: column;
+    }
+    .insert-profesional-form{
+        width: 100%;
+    }
+    .insert-citas-canceled-available-table{
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+    }
+    .forrm-for-searh-profesional{
+        width: 100%;
+    }
+    .insert-citas-canceled-avaible-show-info-cita-selected{
+        width: 100%;  
+    }
+}

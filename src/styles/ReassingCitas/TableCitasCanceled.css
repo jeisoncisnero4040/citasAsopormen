@@ -1,0 +1,119 @@
+.table-citas_avaiables-container{
+    width: 100%;
+    height: auto;
+}
+.title-table-citas-canceled-avaibles{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.table-citas_canceled {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed
+}
+.table-citas_canceled-header a:hover {
+    color: yellow;
+}
+.table-citas_canceled-header a {
+    color: #fff;
+    text-decoration: none;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+
+.table-citas_canceled-row {
+    max-width: 25%; 
+    background-color: #1b0dd3;  
+    padding: 5px;
+    border: 2px solid gray;
+    color: #fff;
+}
+
+
+
+.dropdown-filter-centrals-office{
+    width: 15%;
+    height: 10%;
+}
+.cita-rendered-odd{
+    background-color: #555;
+    padding: 5px;
+    border: 2px solid gray;
+    height: 30px;
+}
+.cita-rendered-selected{
+    background-color:rgb(243, 240, 92);
+    padding: 5px;
+    border: 2px solid gray;
+    height: 30px;
+}
+.cita-rendered-pair{
+    background-color: #fff;
+    padding: 8px;
+    border: 2px solid gray;
+    height: 30px;
+}
+.td-table-citas-canceled{
+    max-width: 25%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+}
+.navigation-footer-table-citas-canceled{
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+.info-pagination-table-citas-canceled{
+    width: 70%;
+}
+.button-navigation-table-citas-canceled{
+    width: 30%;
+}
+.wrapper-navigation-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;  
+    gap: 10px; 
+   
+    width: 100%;
+    margin-right: 1%;
+
+}
+
+.button-navigation-table-active {
+    background-color: #1b0dd3;  
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+
+
+.button-navigation-table-unactive {
+    background-color: #d3d3d3;  
+    color: #808080;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: not-allowed;
+}
+.select-central-of-table-citas-canceled {
+    height: 30px;
+    padding: 0 12px; 
+    font-size: 16px; 
+    font-weight: bolder;
+    border: 1px solid #1b0dd3; 
+    border-radius: 5px; 
+    background-color: #f5f5f5; 
+    color: #333;
+    transition: border-color 0.3s; /* Transición suave para el color del borde */
+}

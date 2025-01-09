@@ -1,0 +1,34 @@
+.wrapper-citas-client{
+    display:flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    
+}
+.cita-card{
+    width: 70%;
+
+}
+.citas-client-no-found{
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: fff;
+    
+}
+.no-citas{
+    line-height: 0;
+    font-style: oblique;
+    font-weight: bold;
+    font-family: "Segoe UI", cursive;
+    color: gray;
+    font-size: 25px;
+}
+@media screen and (max-width: 768px) {
+    .cita-card{
+        width: 100%;
+    }
+}

@@ -2,8 +2,13 @@ import React, { Component } from "react";
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import '../styles/CreateCitaForm.css';
+import ApiRequestManager from "../util/ApiRequestMamager";
+import Constans from "../js/Constans";
+import Warning from "./Warning";
+import Info from "./Info";
 
 class CreateCitaForm extends Component {
+    requestManeger=new ApiRequestManager();
     constructor(props) {
         super(props);
         this.state = {
@@ -11,15 +16,45 @@ class CreateCitaForm extends Component {
                 startDate: new Date(),
                 weekDays: [],
                 sessionsNum: 1,
-                observations: '',
+                observationId: '',
                 numCitas: '',
+                copago:'',
             },
-            dropdownOpen: false
+            observations:[],
+            dropdownOpen: false,
+            observationContent:'',
+
+            errorMessage: '',
+            warningIsOpen: false,
+
+            info: '',
+            title: '',
+            infoIsOpen: false,
+
         };
     }
 
     componentDidMount() {
         this.props.getScheduleCitas(this.state.dataSchedule);
+        const url = `${Constans.apiUrl()}observa_citas`
+        this.requestManeger.getMethod(url)
+            .then(response=>{
+                this.setObservations(response.data.data);
+            })
+            .catch(error=>{
+                this._openErrorAlert(error)
+            })
+    }
+    
+    setObservations=(newObservations)=>{
+        this.setState({
+            observations:newObservations
+        })
+    }
+    setObservationContent=(newOnservationContent)=>{
+        this.setState({
+            observationContent:newOnservationContent
+        })
     }
 
     handleStartDateChange = (date) => {
@@ -77,7 +112,23 @@ class CreateCitaForm extends Component {
             );
         });
     }
-
+    renderObservations = () => {
+        if (this.state.observations.length > 0) {
+            return (
+                <>
+                    <option value="">Seleccionar Observacion</option> 
+                    {this.state.observations.map((observation, index) => (
+                        <option key={index} value={observation.id}>
+                            {observation.nombre.trim()}
+                        </option>
+                    ))}
+                </>
+            );
+        } else {
+            return <option>No se encontraron profesionales</option>;
+        }
+    };
+    
     handleNumSessionByDay = (event) => {
         this.setState(prevState => ({
             dataSchedule: {
@@ -88,17 +139,43 @@ class CreateCitaForm extends Component {
             this.props.getScheduleCitas(this.state.dataSchedule);
         });
     }
-    
 
     handleObservations = (event) => {
+        
         this.setState(prevState => ({
             dataSchedule: {
                 ...prevState.dataSchedule,
-                observations: event.target.value
+                observationId: event.target.value
+            }
+        }), () => {
+            this.props.getScheduleCitas(this.state.dataSchedule);
+            if (this.state.dataSchedule.observationId !== '') {
+                this.getObservationContent(this.state.dataSchedule.observationId);
+            }else{
+                this.state.observationContent=''
+            }
+        });
+    }
+    
+    handleCopago=(event)=>{
+        this.setState(prevState => ({
+            dataSchedule: {
+                ...prevState.dataSchedule,
+                copago: event.target.value
             }
         }),() => {
             this.props.getScheduleCitas(this.state.dataSchedule);
         });
+    }
+    getObservationContent=(nameObservation)=>{
+        const url=`${Constans.apiUrl()}observation/get_observation/${nameObservation}`
+        this.requestManeger.getMethod(url)
+            .then(response=>{
+                this.setObservationContent(response.data.data.contenido)
+            })
+            .catch(error=>{
+                this._openErrorAlert(error)
+            })
     }
     handleNumCitas=(event)=>{
         this.setState(prevState => ({
@@ -109,6 +186,32 @@ class CreateCitaForm extends Component {
         }),() => {
             this.props.getScheduleCitas(this.state.dataSchedule);
         });
+    }
+    _openErrorAlert = (error) => {
+        this.setState({
+            errorMessage: error,
+            warningIsOpen: true
+        });
+    };
+    _openInfo = (info, title) => {
+        this.setState({
+            info,
+            title,
+            infoIsOpen: true,  
+        });
+    };
+    renderObservationBotton = () => {
+        return (
+            <a onClick={this._showObservation}>Ver Observaciones</a>
+        );
+    }
+    _showObservation=()=>{
+         
+        const observationTemplate=this.state.observationContent;
+        const copago=this.state.dataSchedule.copago?this.state.dataSchedule.copago:'No aplica';
+        const observation=observationTemplate.replace('{{}}',copago)
+        
+        this._openInfo(observation)
     }
     render() {
         return (
@@ -180,11 +283,39 @@ class CreateCitaForm extends Component {
 
                 </div>
                 <div className="observations">
-                    <label>Observaciones</label>
-                    <textarea
-                        placeholder="Inserte observaciones a las citas"
-                        onChange={this.handleObservations}
+                    <label>Elige la Observacion:</label>
+                        <select onChange={this.handleObservations}>
+                            
+                            {this.renderObservations()}
+                        </select>
+
+                    <label>Copago</label>
+                    <input 
+                        placeholder="ingrese copago"
+                        autocomplete="off" 
+                        type="text" 
+                        onChange={this.handleCopago}
+                    
                     />
+                    {this.state.observationContent? this.renderObservationBotton():null}
+
+                    
+                </div>
+                <div>
+                    <Warning
+                        isOpen={this.state.warningIsOpen}
+                        onClose={() => this.setState({ warningIsOpen: false })}
+                        errorMessage={this.state.errorMessage}
+                    /> 
+                </div>
+                <div>
+                    <Info
+                        isOpen={this.state.infoIsOpen}
+                        onClose={() => this.setState({ infoIsOpen: false })}
+                        info={this.state.info}
+                        title={this.state.title}
+                    />
+
                 </div>
             </div>
         );

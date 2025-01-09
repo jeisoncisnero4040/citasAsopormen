@@ -275,7 +275,10 @@ class FormCitasForm extends Component {
         this.setState({ 
             client: updatedClient,
             historyNumber:updatedClient.codigo,
-            client_calendar:[]
+            client_calendar:[],
+            Authorization:{},
+            AuthorizationcounterCitas:''
+
          });
 
     }
@@ -351,7 +354,8 @@ class FormCitasForm extends Component {
 
             'ced_usu': this.props.user.cedula,
             'registro': this.props.user.usuario.trim(),
-
+            
+            'profesional':this.state.profesional.name.trim(),
             'cedprof': this.state.profesional.cedula,
 
             'sede': this.state.central.cod,
@@ -360,6 +364,8 @@ class FormCitasForm extends Component {
             'nro_hist': this.state.client.codigo,
             'codent': this.state.client.cod_entidad,
             'codent2': this.state.client.convenio,
+            'client_number_cel':this.state.client.cel,
+            'clientName':this.state.client.nombre,
 
             'n_autoriza':this.state.Authorization.n_autoriza,
             'procedim':this.state.Authorization.procedim,
@@ -367,9 +373,11 @@ class FormCitasForm extends Component {
 
             'procedipro': this.state.procedure.nombre,
             'recordatorio_wsp':this.state.procedure.recordatorio_whatsapp,
+            'notication_orden_programed':this.state.procedure.sendWhatsappConfirmation||false,
             'duration_session':this.state.procedure.duraccion,  
 
-            'regobserva': this.state.schedule.observations,
+            'regobserva': this.state.schedule.observationId,
+            'copago':this.state.schedule.copago??'No aplica',
             'start_date': startDateInColombia.toISOString(),
             'week_days': this.state.schedule.weekDays,
             'num_citas': this.state.schedule.numCitas,
@@ -424,7 +432,7 @@ class FormCitasForm extends Component {
     
          
         const body = this.getBodyRequests();
-        
+
         this.sendCitas(body);
     }
 
@@ -459,7 +467,7 @@ class FormCitasForm extends Component {
                                     {this.state.showClientCalendar ? (
                                         <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
                                     ) : (
-                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro}   cedulaProfesional={this.state.profesional.cedula.trim()} />
+                                        <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} getUpdateSchedulePro={this.getUpdateSchedulePro} cedulaProfesional={this.state.profesional.cedula.trim()}  ChangeToSchedule={this.ChangeToSchedule}/>
                                     )}
                                 </div>
                                 <div className="get-client-info">
@@ -481,7 +489,7 @@ class FormCitasForm extends Component {
                         </div>
                         <div className="select-orden">
                             {this.state.showScheduleProfesional ? (
-                                <ProfesionalSchedule events={this.state.profesional_schedule} ChangeToSchedule={this.ChangeToSchedule} profesional={this.state.profesional.name} />
+                                <ProfesionalSchedule events={this.state.profesional_schedule} ChangeToSchedule={this.ChangeToSchedule} profesional={this.state.profesional} />
                             ) : (
                                 <>
                                     <div className="data-order">

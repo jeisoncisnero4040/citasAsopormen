@@ -7,18 +7,21 @@ class Warning extends Component {
     constructor(props) {
         super(props);
     }
+    renderMarginTopInPercent=()=>{
+        return "50%";
+    }
 
     render() {
          
         const { isOpen, onClose, errorMessage } = this.props;
-
+        
         return (
             <Modal
                 isOpen={isOpen}
                 onRequestClose={onClose}
                 style={{
                     content: {
-                        top: '50%',
+                        top: this.renderMarginTopInPercent(),
                         left: '50%',
                         right: 'auto',
                         bottom: 'auto',

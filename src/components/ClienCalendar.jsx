@@ -9,12 +9,12 @@ import Warning from './Warning.jsx';
 import buscar from "../assets/buscar.jpg";
 import pdf from "../assets/pdf.webp";
 import eliminar from "../assets/eliminar.png";
-import cancelar from "../assets/cancelar.png"
+import cancelar from "../assets/cancelar_2.png"
 import Modal from 'react-modal';  
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import ApiRequestManager from '../util/ApiRequestMamager.js';
-
+import logo from'../assets/logo.png'
 
 
 Modal.setAppElement('#root');
@@ -33,11 +33,13 @@ class ClientCalendar extends Component {
             eventDetails: [],
             loading:false,
             tiempoCitaSelected:'',
+            tiemposCitasSelected:[],
             error:'',
             showError:false,
             showAgreeButtons:false,
             warningsAccepted:false,
             idSelected:'',
+            idsSelected:[],
             actionType:'',
             showLabelObservations:false,
             cancelObservations:'',
@@ -56,6 +58,19 @@ class ClientCalendar extends Component {
         const body = this.getBody();
         this.fetchDataAuthorization(body);
     }
+    handleCheckboxChange = (id) => {
+        this.setState(prevState => {
+            const { idsSelected } = prevState;
+    
+            
+            if (idsSelected.includes(id)) {
+                return { idsSelected: idsSelected.filter(existingId => existingId !== id) };
+            } else {
+                return { idsSelected: [...idsSelected, id] };
+            }
+        });
+    };
+    
 
     getBody = () => {
         return {
@@ -100,6 +115,7 @@ class ClientCalendar extends Component {
     handleEventClick = (info) => {
         const { start } = info.event;
         const eventDate = new Date(start);
+        this.setState({selectedday:start,idsSelected:[]});
 
         const filteredEvents = this.props.events.filter(event => {
             const eventDay = new Date(event.start);
@@ -126,6 +142,9 @@ class ClientCalendar extends Component {
     }
 
     generatePDF = (data,name) => {
+        const sortedFilteredEvents = [...data].sort((a, b) => {
+            return new Date(a.start) - new Date(b.start);   
+        });
         const docDefinition = {
             content: [
                 { text: 'Reporte '+ name, style: 'header',alignment: 'center' },
@@ -140,8 +159,8 @@ class ClientCalendar extends Component {
                     table: {
                         headerRows: 1,  
                         body: [
-                            ['Fecha Inicio', 'Duración', 'Profesional', 'Procedimiento', 'Observaciones', 'estado'],
-                            ...data.map(cita => [
+                            ['Fecha Inicio', 'Duración', 'Profesional', 'Procedimiento', 'estado'],
+                            ...sortedFilteredEvents.map(cita => [
                                 { text: new Date(cita.start).toLocaleString([], {
                                     day: '2-digit',
                                     month: 'numeric',
@@ -152,7 +171,7 @@ class ClientCalendar extends Component {
                                 { text: cita.duracion + ' mins', style: 'tableBody' },
                                 { text: cita.profesional, style: 'tableBody' },
                                 { text: cita.procedimiento, style: 'tableBody' },
-                                { text: cita.observaciones || 'N/A', style: 'tableBody' },
+
                                 { text: cita.asistida === '1' ? 'Asistida' : (cita.cancelada === '1' ? 'Cancelada' : (cita.no_asistida === '1' ? 'No Asistió' : 'Programada')), style: 'tableBody' }
                             ])
                         ]
@@ -178,6 +197,20 @@ class ClientCalendar extends Component {
         };
         pdfMake.createPdf(docDefinition).open();
     };
+
+    renderCancelSessionCitasButton=()=>{
+        
+        if(this.state.idsSelected.length>0){
+            
+
+            return (
+                <a style={{ display: 'flex',alignItems:'center' }} onClick={() => this.handleCancelClick()} >
+                    <p>Cancelar</p>
+                    <img className='icono-citas-cli' src={cancelar} alt="cancelar" />
+                </a>
+            )
+        }
+    }
 
     insertCitasInTable = () => {
         return (
@@ -207,11 +240,9 @@ class ClientCalendar extends Component {
                                     <p className='search'>Trabajando en ello</p>
                                 ) : (
                                     <>
+                                        {this.renderCheckboxCitaSelected(event.id,estado)}
                                         <a onClick={() => this.handleDeleteClick(event.id, event.tiempo)}>
                                             <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
-                                        </a>
-                                        <a onClick={() => this.handleCancelClick(event.id, event.tiempo)}>
-                                            <img className='icono-citas-cli' src={cancelar} alt="cancelar" />
                                         </a>
                                         <a onClick={() => this.createPdfByCitaId(event.id)}>
                                             <img className='icono-citas-cli' src={pdf} alt="pdf" />
@@ -225,6 +256,23 @@ class ClientCalendar extends Component {
                 })}
             </tbody>
         );
+    };
+    renderCheckboxCitaSelected = (id,estado) => {
+        if(estado==='Programada'){
+            return (
+                <div key={id} className="checkbox">
+                    <input
+                        type="checkbox"
+                        id={`checkbox-${id}`} 
+                        onChange={() => this.handleCheckboxChange(id)} 
+                        checked={this.state.idsSelected.includes(id)} 
+                    />
+
+                </div>
+            );
+        }else{
+            return;
+        }
     };
     createPdfByCitaId = async (id) => {
         this.setState({idSelected:id})
@@ -259,54 +307,90 @@ class ClientCalendar extends Component {
         }
     }
     
-    showPdfInBrowser = (data) => {
-        const estado = data.asistida === '1'
-            ? 'Asistida'
-            : data.cancelada === '1'
-            ? 'Cancelada'
-            : data.no_asistida === '1'
-            ? 'No Asistida'
-            : 'Programada';
+
+    _formatDate = (date) => {
+        const formattedDate =new Date(date)
+        const meses = [
+          "enero",
+          "febrero",
+          "marzo",
+          "abril",
+          "mayo",
+          "junio",
+          "julio",
+          "agosto",
+          "septiembre",
+          "octubre",
+          "noviembre",
+          "diciembre",
+        ];
     
-        const docDefinition = {
-            pageSize: {
-                width: 396,  
-                height: 612  
-            },
-            pageMargins: [20, 20, 20, 20],
-            content: [
-                { text: 'Info cita ' + data.id, alignment: 'center', style: 'header' },
-                { text: 'Detalle de Cita:', style: 'subheader' },
-                { text: ' ', margin: [0, 8] },
-                { text: '• Fecha: ' + data.fecha, style: 'text' },
-                { text: '• Hora: ' + data.hora, style: 'text' },
-                { text: '• Duración: ' + data.duracion + ' Mins', style: 'text' },
-                { text: '• Estado: ' + estado, style: 'text' },
-                { text: '• Usuario: ' + data.usuario, style: 'text' },
-                { text: '• Profesional: ' + data.profesional, style: 'text' },
-                { text: '• Orden: ' + data.orden, style: 'text' },
-                { text: '• Procedimiento: ' + data.procedimiento, style: 'text' },
-                { text: '• Observaciones: ' + (data.observaciones || 'No registra observaciones'), style: 'text' },
-                { text: '• Dirección: ' + data.direcion, style: 'text' },
-                { text: '• Fecha de Asignación: ' + data.hora_asignacion, style: 'text' }
-            ],
-            styles: {
-                header: {
-                    fontSize: 18,
-                    bold: true,
-                },
-                subheader: {
-                    fontSize: 14,
-                    bold: true,
-                },
-                text: {
-                    fontSize: 12,
-                }
-            }
-        };
+        const dia = formattedDate.getDate();
+        const mes = meses[formattedDate.getMonth()];
+        const anio = formattedDate.getFullYear();
     
-        pdfMake.createPdf(docDefinition).open();
-    }
+        return `${dia} de ${mes} de ${anio}`;
+      };
+   
+  showPdfInBrowser = async (data) => {
+    const estado = data.asistida === '1'
+      ? 'Asistida'
+      : data.cancelada === '1'
+      ? 'Cancelada'
+      : data.no_asistida === '1'
+      ? 'No Asistida'
+      : 'Programada';
+    const observations = data.observaciones
+      ? data.observaciones.replace('{{}}', data.copago||'No aplica')
+      : 'No registra Observaciones';
+    
+    const date=this._formatDate(data.fecha)
+    
+    const docDefinition = {
+      pageSize: {
+        width: 396,  
+        height: 612  
+      },
+      pageMargins: [20, 20, 20, 20],
+      content: [
+
+        { text: 'Info cita ' + data.id, alignment: 'center', style: 'header' },
+        { text: 'Detalle de Cita:', style: 'subheader' },
+        { text: ' ', margin: [0, 8] },
+        { text: '• Fecha: ' + date, style: 'text' },
+        { text: '• Hora: ' + data.hora, style: 'text' },
+        { text: '• Duración: ' + data.duracion + ' Mins', style: 'text' },
+        { text: '• Estado: ' + estado, style: 'text' },
+        { text: '• Usuario: ' + data.usuario, style: 'text' },
+        { text: '• Profesional: ' + data.profesional, style: 'text' },
+        { text: '• Orden: ' + data.orden, style: 'text' },
+        { text: '• Procedimiento: ' + data.procedimiento, style: 'text' },
+        { text: '• Dirección: ' + data.direcion, style: 'text' },
+        { text: '• Observaciones: ', style: 'text', },
+        { text: observations, style:'observations', preserveLeadingSpaces: true }
+      ],
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+        },
+        subheader: {
+          fontSize: 14,
+          bold: true,
+        },
+        text: {
+          fontSize: 12,
+        },
+        observations: {
+          fontSize: 11,
+          margin: [25, 5, 25, 5]
+        },
+      }
+    };
+
+    pdfMake.createPdf(docDefinition).open();
+  }
+    
     handleDeleteClick= (id, tiempo) =>{
         this.setState({
             tiempoCitaSelected:tiempo,
@@ -349,58 +433,90 @@ class ClientCalendar extends Component {
             }).finally(this.setState({working:true}));
     }
 
-    handleCancelClick=(id,tiempo)=>{
+    handleCancelClick=()=>{
             this.setState({
-                tiempoCitaSelected:tiempo,
-                idSelected:id,
                 actionType:'cancel'
             }
             )
     
             this.openLabelObservations()
     }
-    cancelCitaById = (id) => {
-        const body={
-            'realizar':this.state.cancelObservations,
-            'id':id
-        }
-        const url = `${Constants.apiUrl()}citas/cancel_cita`;
-        this.setState({working:true});
-        this.requestManager.postMethod(url,body)
+    cancelCitaById = (ids) => {
+        alert(ids.join(','))
+        const exampleCita=this.state.eventDetails.filter(even=>even.id===ids[0])
+        const date=exampleCita[0].start.replace('T',' ').slice(0,16);
+        alert(date)
+
+        const body = {
+            razon: this.state.cancelObservations,
+            ids: ids.join('|||'),
+            meanCancel:'mc',
+            fecha_cita:date
+        };
+    
+        const url = `${Constants.apiUrl()}citas/cancel_all_sessions_cita`;
+        this.setState({ working: true });
+    
+        this.requestManager.postMethod(url, body)
             .then(response => {
                 this.closeModal();
-                const newFilteredEvents = this.state.eventDetails.map(event => {
-                    if (event.id === id) {
-                        event.cancelada = '1'; 
+    
+                const tiemposCanceled = this.getCitasByTiempo(ids);
+    
+                const updatedEvents = this.props.events.map(event => {
+                    if (ids.includes(event.id)) {
+                        return { ...event, cancelada: '1' };
                     }
                     return event;
                 });
-                this.props.getCalendarClient(
-                    this.props.events.map(event => {
-                        if (event.id === id) {
-                            event.cancelada = '1'; 
-                        }
-                        return event;
-                    }),
-                    this.state.tiempoCitaSelected
-                );
-                this.openModal(newFilteredEvents,this.state.selectedday);
-                this.setState({ tiempoCitaSelected: '', idSelected: '',actionType:'',showLabelObservations:false });
+    
+                this.props.getCalendarClient(updatedEvents, tiemposCanceled);
+                //this.openModal(sortedFilteredEvents, this.state.selectedDay);
+    
+                this.setState({
+                    tiempoCitaSelected: '',
+                    idsSelected: [],
+                    actionType: '',
+                    showLabelObservations: false,
+                });
             })
             .catch(error => {
-                this.setState({
-                    showLabelObservations:false,
-                    error: error,
-                    showError: true,
-                    idSelected:'',
-                    actionType:''
-                }, () => {
-                    setTimeout(() => {
-                        this.setState({ showError: false });
-                    }, 3000);
-                });
-            }).finally(this.setState({working:false}));
-    }
+                this.setState(
+                    {
+                        showLabelObservations: false,
+                        error: error,
+                        showError: true,
+                        idSelected: '',
+                        actionType: '',
+                    },
+                    () => {
+                        setTimeout(() => {
+                            this.setState({ showError: false });
+                        }, 3000);
+                    }
+                );
+            })
+            .finally(() => {
+                this.setState({ working: false });
+            });
+    };
+    
+    getCitasByTiempo = (idsCanceled) => {
+        const { eventDetails } = this.state;
+        let citasByTiempo = {};
+    
+        idsCanceled.forEach(id => {
+            const event = eventDetails.find(event => event.id === id);
+            if (event && event.tiempo) {
+                citasByTiempo[event.tiempo] = (citasByTiempo[event.tiempo] || 0) + 1;
+            }
+        });
+    
+        return citasByTiempo;
+    };
+    
+
+
     
     openAgreeButtons = () => {
         this.setState({ showLabelObservations:false,showAgreeButtons: true });
@@ -420,7 +536,7 @@ class ClientCalendar extends Component {
         if (this.state.actionType==='delete') {
             this.deleteCitaById(this.state.idSelected);
         } else if (this.state.actionType==='cancel') {
-            this.cancelCitaById(this.state.idSelected); 
+            this.cancelCitaById(this.state.idsSelected); 
         }
         this.closeAgreeButtons(); 
     }
@@ -514,7 +630,11 @@ class ClientCalendar extends Component {
                     overlayClassName="overlay-client"
                 >
                     <div className="modal-content-client">
-                        <h4>{`Estado de horario de ${this.props.nameClient}`}</h4>
+                        <div className='render-client-name-and-cancel-buton'>
+                            <h4>{`Estado de horario de ${this.props.nameClient}`}</h4>
+                            {this.renderCancelSessionCitasButton()}
+                        </div>
+
                         <table>
                             <thead>
                                 <tr>

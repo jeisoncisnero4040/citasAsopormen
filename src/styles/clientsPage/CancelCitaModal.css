@@ -1,0 +1,30 @@
+.form-cancel-cita{
+    width: 500px;
+}
+.label-to-get-razon{
+    display: flex;
+    flex-direction: column;
+}
+.button-cancel-cita-modal{
+    display: flex;
+
+}
+.cancel-cita-title, .razon{
+    text-align: center;
+    font-style: oblique;
+    font-family: "Segoe UI", cursive;
+    font-weight: 900;
+    font-size: 30px;
+    color: black;
+    }
+.razon{
+    text-align: left;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+textarea{
+    background-color: #fff;
+    border: 1px solid #1b0dd3;
+    border-radius: 5px;
+}
+

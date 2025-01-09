@@ -19,27 +19,27 @@ class ProfesionalCalendar extends Component {
     constructor(props) {
         super(props);
     
-    const today = new Date().toISOString().split('T')[0]; 
-    this.state = {
-        startDate: today,
-        endDate: today,
-        modalIsOpen: false,
-        eventDetails: [],
-        selectedday: new Date().toISOString().split('T')[0],
-        warningIsOpen:false,
-        warningMessage:'',
-        alertIsOpen:false,
-        alertMessage:'',
-        canContine:false,
-        idToDelete:'',
-        tiempoCitaSelected:'',
-        error:'',
-        showError:false,
-        showAgreeButtons:false,
-        idSelected:'',
-        loading:false,
-        deletingCitas:false,
-    }
+        const today = new Date().toISOString().split('T')[0]; 
+        this.state = {
+            startDate: today,
+            endDate: today,
+            modalIsOpen: false,
+            eventDetails: [],
+            selectedday: new Date().toISOString().split('T')[0],
+            warningIsOpen:false,
+            warningMessage:'',
+            alertIsOpen:false,
+            alertMessage:'',
+            canContine:false,
+            idToDelete:'',
+            tiempoCitaSelected:'',
+            error:'',
+            showError:false,
+            showAgreeButtons:false,
+            idSelected:'',
+            loading:false,
+            deletingCitas:false,
+        }
     }
     handleStartDateChange = (event) => {
         this.setState({ startDate: event.target.value });
@@ -103,10 +103,7 @@ class ProfesionalCalendar extends Component {
                             <td>{event.usuario ? event.usuario : 'N/A'}</td>
                             <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
                             <td className='iconos-cita-cli'>
-                                {(this.state.deletingCitas && this.state.idSelected===event.id)?(<p className='search'>Eliminando</p>):(
-                                <a onClick={() => this.handleDeleteClick(event.id,event.tiempo)}>
-                                    <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
-                                </a>)}
+                                {this.renderDeleteButton(event.id, event.tiempo,estado)}
                             </td>
                         </tr>
                     );
@@ -292,11 +289,40 @@ class ProfesionalCalendar extends Component {
             </div>
         );
     }
-
+    
+    insertButtonDeleteAllCitasDay = () => {
+        return (
+            <div>
+                {this.state.deletingCitas ? (
+                    <p className="search">Eliminando ...</p>
+                ) : (
+                    <a onClick={this.handleDeleteAllCitasClick}>
+                        <img className="delete-citas" src={eliminar} alt="eliminar" />
+                    </a>
+                )}
+            </div>
+        );
+    }
+    renderDeleteButton = (id, tiempo) => {
+        const { deletingCitas, idSelected } = this.state;
+    
+        if (deletingCitas && idSelected === id) {
+            return <p className='search'>Eliminando</p>;
+        } else {
+            return (
+                <a onClick={() => this.handleDeleteClick(id, tiempo)}>
+                    <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
+                </a>
+            );
+        }
+    };
+    insertButtonShowSchedule=()=>{
+        return(
+            <a onClick={() => this.ChangeToSchedule()}><img src={horario} alt="horario" /></a>
+        )
+    }
     
 
-
- 
     render() {
         const { modalIsOpen, eventDetails } = this.state;
 
@@ -328,7 +354,7 @@ class ProfesionalCalendar extends Component {
                             <p className='search'>Buscando...</p>
                         ) : (
                             this.props.events.length > 0 ? (
-                                <a onClick={() => this.ChangeToSchedule()}><img src={horario} alt="horario" /></a>
+                                this.insertButtonShowSchedule()
                             ) : (
                                 null
                             )
@@ -354,9 +380,7 @@ class ProfesionalCalendar extends Component {
                             <div className='header-t-p'>
                                 <h4>{`Estado de horario de ${this.props.nameProfesional}`}</h4>
 
-                                {this.state.deletingCitas ? <p className='search'>Eliminando ...</p>:<a onClick={this.handleDeleteAllCitasClick}>
-                                    <img className='delete-citas' src={eliminar} alt="eliminar" />
-                                </a>}
+                                {this.insertButtonDeleteAllCitasDay()}
 
                                  
                              </div>  

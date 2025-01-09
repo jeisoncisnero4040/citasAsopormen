@@ -3,13 +3,19 @@ import '../styles/NabvarCitas.css';
 import logo from "../assets/logo.png";
 import { useNavigate } from 'react-router-dom';
 
-const NavbarCitas = ({ userName = '' }) => {   
+const NavbarCitas = ({user}) => {   
     const [isOpcionesCardOpen, setIsOpcionesCardOpen] = useState(false);
     const [isUserCardOpen, setIsUserCardOpen] = useState(false);
     const navigate = useNavigate();
     
     const whileAddFunction = () => {
-        navigate('/formcitas', { state: { userName } });
+        navigate('/formcitas', { state: user });
+    }
+    const redirectToRecoverReassingCitas= () => {
+        navigate('/reasignador_citas', { state: user });
+    }
+    const redirectToChatBotHistory=()=>{
+        navigate('/history_chatbot',{ state:user });
     }
 
     const handleLogout = () => {
@@ -37,9 +43,9 @@ const NavbarCitas = ({ userName = '' }) => {
                 </div>
                 {isOpcionesCardOpen && (
                     <div className="card-body">
-                        <a href={whileAddFunction}>Cargar Agenda</a>
-                        <a href={whileAddFunction}>Ver Paciente</a>
-                        <a href={whileAddFunction}>Ver Terapeuta</a>
+                        <a onClick={whileAddFunction}>Cargar Agenda</a>
+                        <a onClick={redirectToRecoverReassingCitas}>Reasignar Citas</a>
+                        <a onClick={redirectToChatBotHistory}>Historial Chat</a>
                     </div>
                 )}
             </div>
@@ -50,7 +56,7 @@ const NavbarCitas = ({ userName = '' }) => {
             
             <div className="card">
                 <div className="card-header" onClick={toggleUserCard}>
-                    <button className="card-btn">{userName.trim()}</button>
+                    <button className="card-btn">{user.usuario}</button>
                 </div>
                 {isUserCardOpen && (
                     <div className="card-body">

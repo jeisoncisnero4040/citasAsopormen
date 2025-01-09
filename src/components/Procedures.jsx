@@ -77,6 +77,16 @@ class Procedures extends Component {
             this.props.getProcedureName(this.state.procedureSelected);
         });
     }
+    handleChangeInCheckBoxWhatsappNotification = () => {
+        this.setState(prevState => ({
+            procedureSelected: {
+                ...prevState.procedureSelected,
+                sendWhatsappConfirmation: !prevState.procedureSelected.sendWhatsappConfirmation
+            }
+        }), () => {
+            this.props.getProcedureName(this.state.procedureSelected);
+        });
+    }
 
     renderProcedures = () => {
         if (this.state.procedures.length > 0) {
@@ -131,18 +141,25 @@ class Procedures extends Component {
                     </div>
 
                 </div>
+                <div className="checboxs-remember-whtsapp">
+                    <label>
+                        <input
+                            type="checkbox"
+                            checked={this.state.procedureSelected.recordatorio_whatsapp || false}
+                            onChange={this.handleChangeInCheckBoxWhatsapp}
+                        />
+                        Recordatorio whatsapp
 
-
-
-                <label>
+                    </label>
+                    <label>
                     <input
-                        type="checkbox"
-                        checked={this.state.procedureSelected.recordatorio_whatsapp || false}
-                        onChange={this.handleChangeInCheckBoxWhatsapp}
-                    />
-                    Recordatorio whatsapp
-                </label>
-
+                            type="checkbox"
+                            checked={this.state.procedureSelected.sendWhatsappConfirmation || false}
+                            onChange={this.handleChangeInCheckBoxWhatsappNotification}
+                        />
+                        Enviar confirmación de programación
+                    </label>
+                </div>
                 <div>
                     <Warning
                         isOpen={this.state.warningIsOpen}

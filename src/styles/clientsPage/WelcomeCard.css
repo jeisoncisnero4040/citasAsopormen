@@ -1,0 +1,146 @@
+.wrapper-card-welcome{
+
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    background: #1b0dd3;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+.date{
+  width: 60%;
+  text-align: left;
+  margin-left: 1%;
+  color: white;
+  font-weight: bolder;
+  color: #E7D600;
+  font-size: 20px;
+}
+.name-client-and-dropdown{
+  width: 39%;
+  text-align: right;
+}
+  
+.dropdown-card-welcome {
+  position: relative;
+  display: inline-block;
+
+}
+
+.dropdown-button {
+  background-color: #1b0dd3;
+  color: white;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  text-align: right;
+  height: 100%;
+  font-weight: bolder;
+  font: oblique bold 100% cursive;
+  font-family: "Segoe UI";
+  
+}
+
+.dropdown-menu-client{
+  position: absolute;
+  left: 0;
+  background-color: #1b0dd3;
+  list-style: none;
+  padding: 5px 0;
+  margin-top: 2%;
+  font-weight: bolder;
+}
+.dropdown-button:hover {
+  background-color: #1b0dd3;
+  color: #E7D600;
+}
+
+.dropdown-menu-client li {
+  padding: 5px;
+  cursor: pointer;
+  text-align: center; 
+  font-family: Arial, Helvetica, sans-serif;
+  color: #fff;
+  border: 1px solid #1b0dd3 ;
+}
+
+.dropdown-menu-client li:hover {
+  color: yellow;
+}
+@media (max-width: 768px) {
+  .wrapper-card-welcome{
+
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    background: #1b0dd3;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  .date{
+    width: 50%;
+    text-align: left;
+    margin-left: 0%;
+    font-weight: bolder;
+    color: #E7D600;
+    font-size:120%;
+  }
+  .name-client-and-dropdown{
+    width: 49%;
+    text-align: right;
+  }
+  .dropdown-button {
+    background-color: #1b0dd3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: right;
+    height: 100%;
+    font-weight: bolder;
+    font: oblique bold 100% cursive;
+    font-family: "Segoe UI";
+    font-size: 80%;
+    
+  }
+}
+@media (max-width: 480px) {
+  .wrapper-card-welcome{
+
+    width: 100%;
+    text-align: center;
+    margin: auto;
+    background: #1b0dd3;
+    display: flex;
+    align-items: center;
+    height: 100%;
+  }
+  .date{
+    width: 100%;
+    text-align: left;
+    margin-left: 0%;
+    font-weight: bolder;
+    color: #E7D600;
+    font-size:120%;
+  }
+  .name-client-and-dropdown{
+    width: 100%;
+    text-align: right;
+  }
+  .dropdown-button {
+    background-color: #1b0dd3;
+    color: white;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: right;
+    height: 100%;
+    font-weight: bolder;
+    font: oblique bold 100% cursive;
+    font-family: "Segoe UI";
+    font-size: 60%;
+    
+  }
+}

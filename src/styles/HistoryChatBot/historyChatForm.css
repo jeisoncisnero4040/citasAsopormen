@@ -1,0 +1,20 @@
+.history-chat-bot-container{
+    margin:1%;
+    width: 100%;
+}
+
+.select-data-client{
+    padding: 1%;
+    border:1px solid #ccc;
+    border-radius:20px;
+    width: 96%;
+    margin-bottom: 1%;
+}
+.table-history-chatbot{
+    padding: 1%;
+    border:1px solid #ccc;
+    border-radius:0px;
+    width: 96%;
+    margin-bottom: 1%;
+    margin-top: 1%;
+}
