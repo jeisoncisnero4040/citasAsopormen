@@ -14,7 +14,7 @@ class CreateCitaForm extends Component {
         this.state = {
             dataSchedule: {
                 startDate: new Date(),
-                weekDays: [],
+                weekDays: {},
                 sessionsNum: 1,
                 observationId: '',
                 numCitas: '',
@@ -67,16 +67,31 @@ class CreateCitaForm extends Component {
             this.props.getScheduleCitas(this.state.dataSchedule);
         });
     }
-    
+    handleStartDateChangeByDay=(hour,day)=>{
+        let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
+        updatedWeekDays[day].startHour=hour;
+        this.setState(prevState => ({
+            dataSchedule: {
+                ...prevState.dataSchedule,
+                weekDays: updatedWeekDays
+            }
+        }), () => {
+            this.props.getScheduleCitas(this.state.dataSchedule);
+            alert(JSON.stringify(this.state.dataSchedule.weekDays));
+        });
+    }
 
     handleWeekDaysChange = (event) => {
+        
         const { value, checked } = event.target;
-        let updatedWeekDays = [...this.state.dataSchedule.weekDays];
+        let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
+
     
         if (checked) {
-            updatedWeekDays.push(value);
+             
+            updatedWeekDays[value] = { sessions: 1, startHour: new Date() };  
         } else {
-            updatedWeekDays = updatedWeekDays.filter(day => day !== value);
+            delete updatedWeekDays[value];  
         }
     
         this.setState(prevState => ({
@@ -86,15 +101,21 @@ class CreateCitaForm extends Component {
             }
         }), () => {
             this.props.getScheduleCitas(this.state.dataSchedule);
+            
         });
     }
     sortWeekDays = (weekDays) => {
         const weekDaysOrder = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
-        
-        return weekDays.sort((a, b) => {
-            return weekDaysOrder.indexOf(a) - weekDaysOrder.indexOf(b);
+    
+         
+        const sortedEntries = Object.entries(weekDays).sort(([keyA], [keyB]) => {
+            return weekDaysOrder.indexOf(keyA) - weekDaysOrder.indexOf(keyB);
         });
-    }
+    
+         
+        return Object.fromEntries(sortedEntries);
+    };
+    
 
     toggleDropdown = () => {
         this.setState(prevState => ({
@@ -129,11 +150,13 @@ class CreateCitaForm extends Component {
         }
     };
     
-    handleNumSessionByDay = (event) => {
+    handleNumSessionByDay = (event,day) => {
+        let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
+        updatedWeekDays[day].sessions=event.target.value
         this.setState(prevState => ({
             dataSchedule: {
                 ...prevState.dataSchedule,
-                sessionsNum: event.target.value
+                weekDays: updatedWeekDays
             }
         }), () => {
             this.props.getScheduleCitas(this.state.dataSchedule);
@@ -213,6 +236,19 @@ class CreateCitaForm extends Component {
         
         this._openInfo(observation)
     }
+    _getSessionByWeek = () => {
+        let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
+        let suma = 0;
+        
+         
+        for (const day in updatedWeekDays) {
+             
+            suma = suma + updatedWeekDays[day].sessions; 
+        }
+        
+        return suma;
+    }
+    
     render() {
         return (
             <div className="select-data-cita-container">
@@ -229,30 +265,60 @@ class CreateCitaForm extends Component {
                             timeCaption="Hora"
                         />
                     </div>
-                    <div className="get-days">
-                        <label>Seleccione días</label>
-                        <div className="custom-dropdown">
-                            <button type="button" onClick={this.toggleDropdown}>
-                                {this.state.dropdownOpen ? 'Cerrar días' : 'Abrir días'}
-                            </button>
-                            {this.state.dropdownOpen && (
-                                <div className="dropdown-menu">
-                                    {['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'].map(day => (
-                                        <div key={day}>
-                                            <input
-                                                type="checkbox"
-                                                id={day}
-                                                value={day}
-                                                checked={this.state.dataSchedule.weekDays.includes(day)}
-                                                onChange={this.handleWeekDaysChange}
-                                            />
-                                            <label htmlFor={day}>{day.charAt(0).toUpperCase() + day.slice(1)}</label>
-                                        </div>
-                                    ))}
+
+                </div>
+                <div className="get-days">
+                    <label>Seleccione días</label>
+                    <div className="custom-dropdown">
+                        <button type="button" onClick={this.toggleDropdown}>
+                            {this.state.dropdownOpen ? 'Cerrar días' : 'Abrir días'}
+                        </button>
+                        {this.state.dropdownOpen && (
+                        <div className="dropdown-menu">
+                            <div className="header-dropdown-selec-days">
+                                <div className="header-dropdown-days">Dias</div>
+                                <div>sessiones </div>
+                                <div>inicio</div>
+                            </div>
+                            {['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'].map((day) => (
+                                <div className="option-day-to-create-schedule" key={day}>
+                                    <div className="dropdown-select-days-list-days">
+                                        <input
+                                            type="checkbox"
+                                            id={day}
+                                            value={day}
+                                            checked={this.state.dataSchedule.weekDays[day]}
+                                            onChange={this.handleWeekDaysChange}
+                                        />
+                                        <label htmlFor={day}>
+                                            {day.charAt(0).toUpperCase() + day.slice(1)}
+                                        </label>
+                                    </div>
+                                    <div className="select-numtype-sessions">
+                                        <select onChange={(e) => this.handleNumSessionByDay(e, day)}>
+                                            {this.renderListNumSessions()}
+                                        </select>
+                                    </div>
+                                    <div className="get-date-start">
+                                        <DatePicker
+                                            selected={this.state.dataSchedule.weekDays[day]?.startHour}  
+                                            onChange={(time) => this.handleStartDateChangeByDay(time, day)}  
+                                            showTimeSelectOnly
+                                            timeFormat="HH:mm"
+                                            timeIntervals={15} 
+                                            dateFormat="HH:mm"  
+                                            timeCaption="Hora"  
+                                        />
+                                    </div>
+
                                 </div>
-                            )}
+                            ))}
+                            
                         </div>
+                    )}
+
                     </div>
+                    <p>{this._getSessionByWeek()}</p>
                 </div>
                 <div className="get-schedule-cita">
                     <div className="select-numtype-sessions">

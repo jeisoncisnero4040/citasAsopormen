@@ -43,7 +43,7 @@
 
 .get-days {
     
-    width: 50%;
+    width: 100%;
     position: relative;  
 }
 
@@ -91,4 +91,19 @@
     font-size: 14px; 
     line-height: 1.5;
     resize: none;  
+}
+.option-day-to-create-schedule{
+    display:flex;
+    align-items: center;
+}
+.dropdown-select-days-list-days{
+    width: 50%;
+}
+.header-dropdown-selec-days{
+    display: flex;
+    width: 100%;
+}
+.header-dropdown-days{
+    width: 35%;
+    margin-left: 5%;
 }
