@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
 use App\utils\CelNumberManager;
 
+
 class CitasService{
     private $citasModel;
     private $responseManager;
@@ -42,36 +43,30 @@ class CitasService{
 
         $startDate =Carbon::parse($schedule['start_date'])->setTimezone('America/Bogota')->addHours(5);
         $weekDays=$schedule['week_days'];
-        $numSessions=$schedule['num_sessions'];
-        $numCitas=$schedule['num_citas'];
+        $weekDaysKeys=array_keys($weekDays);
+
         $sessionDuration=$schedule['duration_session'];
 
-        //$this->checkStartDateLaterToday($startDate->copy());
-        $this->checkStartDateInDaysWeek($startDate,$weekDays);
-        $this->checkLimitSessionsToSave($dataNumSessions);
+        $this->validateStartDateAgainstSchedule($startDate,$weekDaysKeys,$weekDays); 
+        $allSessions=$this->getNumSessionsToSave($dataNumSessions);
         $this->checkRememberWhatsWhitObservations($citaInDto);
 
 
-        $diferenceBeetwenDays=$this->getDifBeetwenDays($weekDays);
-        $scheduleCitas=$this->CreateSchedule($numSessions,$numCitas,$sessionDuration,$startDate,$weekDays,$diferenceBeetwenDays);
+        $diferenceBeetwenDays=$this->getDifBeetwenDays($weekDaysKeys);
+        $scheduleCitas=$this->CreateSchedule($allSessions,$sessionDuration,$startDate,$weekDays,$diferenceBeetwenDays,$weekDaysKeys);
         $citasIds=$this->saveCitas($scheduleCitas,$citaInDto);
         if($this->CheckReassingCitasRequests($request)){
             $idCitasCanceledRegister=$request['id'];
             $this->saveNewsIdsInCitaCanceledRegister($idCitasCanceledRegister,$citasIds);
         }
         
-        if($this->checkCitasHasRememberMesssage($citaInDto)){
-             
-            $dataToSendMessage=$this->makeDataToSendMsm($scheduleCitas,$citaInDto,$weekDays);
-            $this->whatsappService->sendNotificationOrdenProgramed($dataToSendMessage);
-        }
-        if($this->citasIsRememberebleAndFirstCitasIsNear($citaInDto,$scheduleCitas[0])){
-            $dataToSendCitaToRemember=$this->CreateDataToRemeberCita($citasIds,$scheduleCitas,$sessionDuration,$citaInDto);
+        //if($this->citasIsRememberebleAndFirstCitasIsNear($citaInDto,$scheduleCitas[0])){
+            //$dataToSendCitaToRemember=$this->CreateDataToRemeberCita($citasIds,$scheduleCitas,$sessionDuration,$citaInDto);
             //$this->whatsappService->rememberFisrtCita($dataToSendCitaToRemember);
-        }
-
+        //}
         
-        return $this->responseManager->success(count($citasIds),200);
+        $numCitasCreate=$citaInDto['procedipro']=='EMPALME'?0:count($citasIds);
+        return $this->responseManager->success($numCitasCreate,200);
     }
 
     public function getNumCitasFromOrder($authorization, $codProcedim)
@@ -80,6 +75,7 @@ class CitasService{
         $numCitasFromOrder = $this->citasModel::where('autoriz', $authorization)
                                 ->where('tiempo', $codProcedim)
                                 ->where('cancelada','!=', '1')
+                                ->where('procedipro','!=','EMPALME')
                                 ->count();
     
         return $this->responseManager->success($numCitasFromOrder);
@@ -214,6 +210,50 @@ class CitasService{
 
         return $this->responseManager->success(($citasGroupedBySessions));
     }
+    public function notifiedOrder($request){
+        citasRequests::validataDataToSendNotifyOrderProgramed($request);
+
+        $telephoneNumberClean=CelNumberManager::chooseTelephoneNumber($request['cel']);
+        $client=$request['client_name'];
+        $order=$request['tiempo'];
+
+
+        $allCitasClientByOrder=$this->sendQueryToGetAllCitasProgramdedClientOrder($request);
+        if(empty($allCitasClientByOrder)){
+            throw new NotFoundException("El cliente no registra citas con este numero de orden",404);
+        }
+
+        
+        
+        $day = [];
+        foreach ($allCitasClientByOrder as $cita) {
+            $date = $cita->fecha;
+            $dayName = DateManager::getDayByDate(Carbon::parse($date));
+            if (!in_array($dayName, $day)) {
+                array_push($day, $dayName);
+            }
+        }
+
+        $daySetOrdened=DateManager::sortDaysWeek($day);
+        
+        $firstDay=$allCitasClientByOrder[1];
+        $laterDay = $allCitasClientByOrder[count($allCitasClientByOrder) - 1];
+        $starDayDate=DateManager::dateToStringFormatOnlyDay(Carbon::parse($firstDay->fecha));
+        $laterDayDate=DateManager::dateToStringFormatOnlyDay(Carbon::parse($laterDay->fecha));
+        $dataToSendMessage=[
+ 
+            'week_days' => implode(",",$daySetOrdened),
+            'first_day'=>$starDayDate,
+            'client'=>$client,
+            'laterDay'=>$laterDayDate,
+            'authorization'=>$order,
+            'telephone_number'=>$telephoneNumberClean
+        ];
+        $this->whatsappService->sendNotificationOrdenProgramed($dataToSendMessage);
+        return $this->responseManager->success($dataToSendMessage);
+
+
+    }
 
     private function validateCitas($request){
         citasRequests::validateCitasClient($request);
@@ -227,26 +267,9 @@ class CitasService{
     private function CheckReassingCitasRequests($request){
         return CitasRequests::checkIsReassingCitas($request);
     }
-    private function makeDataToSendMsm($scheduleCitas,$citaInDto,$weekDays){
-        $laterDay = $scheduleCitas[count($scheduleCitas) - 1];
-        $telephoneNumberClean=CelNumberManager::chooseTelephoneNumber($citaInDto['client_number_cel']);
-        $weekDaysInString = implode(',', $weekDays);
 
-
-
-        $dataToSendMessage=[
-            'client'=>$citaInDto['clientName'],
-            'week_days'=>$weekDaysInString,
-            'first_day'=>DateManager::dateToStringFormat($scheduleCitas[0]),
-            'authorization'=>$citaInDto['n_autoriza'],
-            'laterDay'=>DateManager::dateToStringFormat($laterDay),
-            'telephone_number'=>$telephoneNumberClean
-
-        ];
-        return $dataToSendMessage;
-    }
     private function getSchedule(array $request) {
-        $keysToExtract = ['start_date', 'week_days', 'num_sessions', 'num_citas', 'duration_session'];
+        $keysToExtract = ['start_date', 'week_days', 'num_sessions_total', 'num_citas', 'duration_session'];
         $selectedFields = array_intersect_key($request, array_flip($keysToExtract));
         return $selectedFields;
     }
@@ -259,37 +282,38 @@ class CitasService{
         return $selectedFields;
     }
     private function getDataNumSessions(array $request){
-        $keysToExtract = ["all_sessions","saved_sessions","num_sessions","num_citas"];
+        $keysToExtract = ["all_sessions","saved_sessions","num_sessions_total","num_citas"];
         $selectedFields = array_intersect_key($request, array_flip($keysToExtract));
         return $selectedFields;
     }
 
-    private function checkStartDateInDaysWeek($start_date, $week_days){
-        $nameDayStart=DateManager::getDayByDate($start_date);
-        if (!in_array($nameDayStart, $week_days)) {
+    private function validateStartDateAgainstSchedule($startDate, $allowedDays, $scheduleDays) {
+         
+        $startDayName = DateManager::getDayByDate($startDate);
+        if (!in_array($startDayName, $allowedDays)) {
             throw new BadRequestException("El dia de inicio no coincide con los dias agregados al horario de citas", 400);
         }
-    }
-  
-    private function checkStartDateLaterToday(Carbon $startDate) {
-        $now = Carbon::now('America/Bogota');
-        if ($startDate->isBefore($now->startOfDay())) {
-            throw new BadRequestException("La fecha de inicio solo puede ser después de hoy.", 400);
+    
+        $configuredStartHour = $scheduleDays[$startDayName]['startHour'];
+        $configuredHour = DateManager::getHourAmPmFormat($configuredStartHour);
+        $configuredMinute = DateManager::getMinutesAmPmFormat($configuredStartHour);
+    
+        $startHour = $startDate->hour;
+        $startMinute = $startDate->minute;
+    
+        if ($configuredHour != $startHour || $configuredMinute != $startMinute) {
+            throw new BadRequestException("La hora de inicio no coincide con los dias agregados al horario de citas", 400);
         }
     }
     
-    
-    private function checkLimitSessionsToSave($dataSesions){
-        $allSessions=$dataSesions['all_sessions'];
-        $saved_sessions=$dataSesions['saved_sessions'];
-        $num_sessions=$dataSesions['num_sessions'];
-        $num_citas=$dataSesions['num_citas'];
 
-        $sessionsToSave=$num_sessions*$num_citas;
-        $sessionsAvaibles=$allSessions-$saved_sessions;
-        if ($sessionsToSave > $sessionsAvaibles){
-            throw new BadRequestException("el numero de secciones seleccionadas excede la cantidad disponible ",400);
-        }
+    private function getNumSessionsToSave(array $dataSesions) {
+        
+        $totalSessions = $dataSesions['all_sessions'];
+        $savedSessions = $dataSesions['saved_sessions'];
+        $requestedSessions = $dataSesions['num_sessions_total'];
+        $availableSessions = $totalSessions - $savedSessions;
+        return min($requestedSessions, $availableSessions);
     }
     private function checkRememberWhatsWhitObservations($citaInDto){
         $rememberWhats=$citaInDto['recordatorio_wsp'];
@@ -320,17 +344,22 @@ class CitasService{
         }
         return $diferenceDays;
     }
-    private function CreateSchedule($numSessions, $numCitas, $sessionDuration, $startDate, $weekDays, $diferenceDays) {
+    private function CreateSchedule($sessionsAvaibles, $sessionDuration, $startDate, $weekDays, $diferenceDays,$weekDaysKeys) {
         $nameDayStart = DateManager::getDayByDate($startDate);
-        $startIndex = array_search($nameDayStart, $weekDays);
-
-        $hour = DateManager::getHourOfDate($startDate);
-        $minute = DateManager::getMinuteOfDate($startDate);
-    
+        $startIndex = array_search($nameDayStart, $weekDaysKeys);
+        
         $schedule = [];
         $indexDay = $startIndex;
         
-        while ($numCitas > 0) {
+        while ($sessionsAvaibles > 0) {
+            $dayName=DateManager::getDayByDate($startDate);
+
+            $maxSessionsPerDay = $weekDays[$dayName]['sessions'];
+            $numSessions = min($sessionsAvaibles, $maxSessionsPerDay);
+
+            $startHourDay=$weekDays[$dayName]['startHour'];
+            $hour=DateManager::getHourAmPmFormat($startHourDay);
+            $minute=DateManager::getMinutesAmPmFormat($startHourDay);
             
             $startHour = $startDate->setTime(hour:$hour, minute:$minute);
              
@@ -339,7 +368,7 @@ class CitasService{
                     $schedule[] = $startDate->copy();  
                     $startDate->addMinutes($sessionDuration);
                 }
-                $numCitas -= 1;
+                $sessionsAvaibles -= $numSessions;
             }
     
              
@@ -518,6 +547,7 @@ class CitasService{
                 ci.autoriz AS autorizacion,
                 ci.procedim AS procedimiento,
                 ci.regobserva AS observaciones,
+                ci.procedipro,
                 ci.asistio AS asistida,
                 ci.cancelada AS cancelada,
                 ci.tiempo,
@@ -554,6 +584,7 @@ class CitasService{
         return $calendarMapper->map($unMappedCalendar);
 
     }
+
 
     private function sendQuerydeleteCitaById($id){
         try{
@@ -808,26 +839,29 @@ class CitasService{
     
         $idsArray = explode('|||', $idsToCancel);  
         $idsForQuery = array_map('intval', $idsArray);  
-        $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
+         
     
         try {
-            $citasCanceled = DB::transaction(function () use ($razon, $dateCancelation, $placeholders, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled, $dateCita,$meanCancel) {
-                
-                $citasCanceled = DB::update(
-                    "
-                    UPDATE citas 
-                    SET cancelada = '1', 
-                        realizar = ?, 
-                        fec_can = CONVERT(smalldatetime, ?, 120) ,
-                        mean_cancel=?
-                    WHERE id IN ($placeholders) 
-                    AND asistio = '0' 
-                    AND na = '0'",
-                    array_merge([$razon, $dateCancelation,$meanCancel], $idsForQuery)
-                );
+            $citasCanceled = DB::transaction(function () use ($razon, $dateCancelation, $idsForQuery, $idsToCancel, $idExample, $numSessionsCanceled, $dateCita,$meanCancel) {
+                foreach ($idsForQuery as $id){
+                    $citasCanceled = DB::update(
+                        "
+                        UPDATE citas 
+                        SET cancelada = '1', 
+                            realizar = ?, 
+                            fec_can = CONVERT(smalldatetime, ?, 120) ,
+                            mean_cancel=?
+                        WHERE id= ? 
+                        AND asistio = '0' 
+                        AND na = '0'",
+                        array_merge([$razon, $dateCancelation,$meanCancel],[$id] )
+                    );
+                }
+
         
                 
-                if ($citasCanceled > 0 && $meanCancel !='mc' ) {
+                if ($meanCancel !=='mc' ) {
+                    error_log('accsdca');
                     DB::insert(
                         "
                         INSERT INTO citas_canceladas 
@@ -885,7 +919,8 @@ class CitasService{
     
         $idsForQuery = array_map('intval', $ids);
         $placeholders = implode(',', array_fill(0, count($idsForQuery), '?'));
-    
+        
+        
         try {
             $citasChangedProfesional = DB::update("
                 UPDATE citas
@@ -899,6 +934,8 @@ class CitasService{
         }
     }
     private function sendQueryToGetCitasClient(string $ClientCod){
+        $now=Carbon::now()->setTime(hour: 0, minute: 0)->format('Y-m-d H:i:s');
+        
         try{
             $citas=DB::select(
                 "
@@ -926,11 +963,11 @@ class CitasService{
                     emplea em ON em.ecc = ci.cedprof
                 WHERE 
                     ci.nro_hist = ?
-                    AND ci.fecha >= GETDATE()
+                    AND ci.fecha >= CONVERT(smalldatetime,?,120)
 
                 ORDER BY 
                     ci.fecha ASC;
-                ",[$ClientCod]);
+                ",[$ClientCod,$now]);
             return $citas;
          }catch(\Exception $e){
             throw new ServerErrorException($e->getMessage(),500);
@@ -941,5 +978,25 @@ class CitasService{
         return $citasMapper->groupCitasBySessions($citas);
     }
 
+    private  function sendQueryToGetAllCitasProgramdedClientOrder($request){
+        $clienCod=$request['codigo_client'];
+        $order=$request['tiempo'];
+        try{
+            $citas=DB::select("
+                SELECT fecha,hora
+                FROM citas 
+                where nro_hist = ?
+                AND tiempo= ?
+                AND cancelada !=1
+                ORDER BY fecha ASC
+                ",[$clienCod,$order]
+
+            );
+            return $citas;
+        }catch(\Exception  $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+ 
 
 }

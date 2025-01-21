@@ -26,6 +26,18 @@ class CalendarProfesionalMapper{
 
         return $calendar;
     }
+    public function mapOnlyStarDate($citas){
+        foreach ($citas as &$cita) {
+            
+            $fechaHora = Carbon::parse($cita->fecha);
+            $hora24 = $this->convertHourTo24Format($cita->hora);
+            $startFechaHora = $fechaHora->copy()->addMinutes($this->calculateMinutesSinceStartOfDay($hora24));      
+            $cita->start = $startFechaHora->toIso8601String();
+
+        }
+
+        return $citas;
+    }
 
     private function ConvertHourTo24Format($hour) {
         try {

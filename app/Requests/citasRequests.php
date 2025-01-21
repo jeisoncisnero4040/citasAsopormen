@@ -86,9 +86,9 @@ class CitasRequests
     {
         $validator = Validator::make($request, [
             'start_date' => 'required|date',
-            'week_days' => ['required', 'array', new ValidWeekDays],
-            'num_citas' => 'required|integer|between:1,30',
-            'num_sessions' => 'required|integer|between:1,8',
+            'week_days' => ['required', 'array'],
+            'num_sessions_total' => 'required|integer',
+            'numWeeks'=>'required|integer'
         ]);
 
         if ($validator->fails()) {
@@ -159,6 +159,17 @@ class CitasRequests
         $validator=Validator::make($request,[
             'ids'=>'required|array',
             'cedprof'=>'required|regex:/^\d+$/'
+        ]);
+        if ($validator->fails()){
+            throw new BadRequestException($validator->errors(),400);
+        }
+    }
+    public static function validataDataToSendNotifyOrderProgramed($request){
+        $validator=Validator::make($request,[
+            'cel'=>'required|regex:/^\d+$/',
+            'client_name'=>'required|string',
+            'tiempo'=>'required|string',
+            'codigo_client'=>'required'
         ]);
         if ($validator->fails()){
             throw new BadRequestException($validator->errors(),400);

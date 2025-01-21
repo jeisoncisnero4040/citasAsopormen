@@ -58,6 +58,8 @@ Route::post('citas/cancel_all_sessions_cita',[CitasController::class, 'CancelCit
 Route::post('citas/Unactivate_cita_canceled',[CitasController::class, 'unactivateCita']);
 Route::post('citas/change_profesional',[CitasController::class,'ChangeProfesionalCitas']);
 Route::get('citas/get_citas_client/{clientCode}',[CitasController::class, 'GetCitasClient']);
+Route::post('citas/notify_order',[CitasController::class,'NotifyOrderProgramed']);
+
 
 Route::get('observa_citas',[ObservaCitasController::class,'getAllObservaCitas']);
 Route::get('observation/get_observation/{name}', [ObservaCitasController::class, 'getContentObservation']);

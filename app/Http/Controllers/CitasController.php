@@ -507,5 +507,9 @@ class CitasController extends Controller
         $resposne=$this->citasService->getCitasClient($clientCode);
         return response()->json($resposne,200);
    }   
+    public function NotifyOrderProgramed(Request $request){
+        $resposne=$this->citasService->notifiedOrder($request->all());
+        return response()->json($resposne,200);
+    }
 
 }

@@ -93,6 +93,7 @@ class ClientService{
         ClientRequest::ValidateDataToRequestPassword($request);
         $this->CheckWayToSendPasswordIsSelected($request);
         $client=$this->getClientByIdentiy($request);
+        $request['clientIdentity']=$client[0]->codigo;
         if(empty($client)){
             throw new NotFoundException('No se han encontrado usuarios',404);
         }
@@ -104,7 +105,10 @@ class ClientService{
             throw new BadRequestException("el usuario no registra contacto",400);
         }
         $password=PasswordGenerator::generatePassword();
-        $this->saveNewPassword($password,$request);
+        $clientsUpdate=$this->saveNewPassword($password,$request);
+        if(empty($clientsUpdate)){
+            throw new NotFoundException("no se ha encontrado usuario a actualizar",404);
+        }
         $this->sendMesaggeWithNewPassword($request,$client[0],$password);
         return $this->responseManager->success($client);
     }
@@ -264,6 +268,7 @@ class ClientService{
             $client = DB::select("
                 SELECT TOP 1 
                 nombre,
+                codigo,
                 email as email,
                 cel AS thelephoneNumber
                 FROM cliente
@@ -276,18 +281,18 @@ class ClientService{
         }
     }
     private function saveNewPassword(string $newPassword, array $request)
-    {
+    {   
+
         $codigoClient = $request['clientIdentity'];
+         
         $newPasswordEncrypted = bcrypt($newPassword);
     
         try {
             $clientsWithNewPassword = DB::update(
                 "
-                UPDATE cl2
-                SET cl2.user_password_mc = ?
-                FROM cliente2 AS cl2
-                JOIN cliente AS cl ON cl2.codigo = cl.codigo
-                WHERE cl.codigo = ?
+                UPDATE cliente2 
+                SET user_password_mc = ?
+                WHERE codigo = ?
                 ",
                 [
                     $newPasswordEncrypted,
@@ -295,7 +300,7 @@ class ClientService{
                 ]
             );
     
-            return $clientsWithNewPassword != 0;
+            return $clientsWithNewPassword;
         } catch (\Exception $e) {
             throw new ServerErrorException($e->getMessage(), 500);
         }

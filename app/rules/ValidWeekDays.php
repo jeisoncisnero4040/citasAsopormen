@@ -16,13 +16,9 @@ class ValidWeekDays implements Rule
         if (!is_array($value)) {
             return false;
         }
-    
-         
         if (empty($value)) {
             return false;
         }
-    
-         
         return !array_diff($value, $this->validDays);
     }
     

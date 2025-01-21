@@ -42,6 +42,7 @@ class DateManager {
         '11' => 'noviembre',
         '12' => 'diciembre',
     ];
+    static private $daysList=['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
     public static function getDayByDate($date) {
 
@@ -112,6 +113,39 @@ class DateManager {
         } catch (\Exception $e) {
             throw new ServerErrorException('Error al calcular los minutos desde el inicio del día', 500);
         }
+    }
+    public static function dateToStringFormatOnlyDay(Carbon $date) {
+        $month = self::getMonthToDate($date);
+        $dayOfWeek = self::getDayWeekToDate($date);
+        $day = $date->day;
+        $year=$date->year;
+
+
+        return "$dayOfWeek $day de $month del $year ";
+    }
+    public static function sortDaysWeek(array $weekDays){
+        $weekDaysOrder = self::$daysList;
+
+        usort($weekDays, function ($a, $b) use ($weekDaysOrder) {
+            return array_search($a, $weekDaysOrder) - array_search($b, $weekDaysOrder);
+        });
+    
+        return $weekDays;
+    }
+    public static function getHourAmPmFormat($timeString)
+    {
+        
+        $time = Carbon::createFromFormat('h:i A', $timeString);
+
+        
+        return (int) $time->format('H');
+    }
+
+    
+    public static function getMinutesAmPmFormat($timeString)
+    {
+        $time = Carbon::createFromFormat('h:i A', $timeString);
+        return (int) $time->format('i');
     }
     private static function getMonthToDate(Carbon $date) {
         $month = str_pad($date->month, 2, '0', STR_PAD_LEFT);
