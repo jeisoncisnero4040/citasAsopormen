@@ -168,7 +168,7 @@ class ClientService{
     {
         try {
             $clientInfo = DB::select("
-                SELECT 
+            SELECT 
                 cli.codigo, 
                 cli.nombre, 
                 cli.nit_cli, 

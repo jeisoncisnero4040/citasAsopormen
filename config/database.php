@@ -80,7 +80,7 @@ return [
 
         'sqlsrv' => [
             'driver' => 'sqlsrv',
-            'host' => 'localhost',
+            'host' => '192.168.39.150',
             'port' => '1433',
             'database' => 'Baseconta',
             'username' => 'sa',
