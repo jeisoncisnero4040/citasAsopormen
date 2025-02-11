@@ -1,0 +1,669 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API ChatBot Asopormen",
+        "description": "Documentación de la API del ChatBot Asopormen",
+        "contact": {
+            "email": "sistemas@asopormen.org.co"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "http://swagger.local",
+            "description": "Servidor de desarrollo"
+        }
+    ],
+    "paths": {
+        "/whatsapp/history/{number}": {
+            "get": {
+                "tags": [
+                    "Twillio"
+                ],
+                "summary": "Obtener historial de mensajes con un número",
+                "description": "Recupera los últimos 1000 mensajes enviados y recibidos de un usuario a través de WhatsApp, ordenados por fecha.",
+                "operationId": "cffcbe39f72ca0df6f4a0d07dd3ced8e",
+                "parameters": [
+                    {
+                        "name": "number",
+                        "in": "path",
+                        "description": "Número de teléfono del cliente con el cual se desea obtener el historial de mensajes.",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "3001234567"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Número máximo de mensajes a recuperar (por defecto 1000).",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1000
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Historial de mensajes recuperado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "sid": {
+                                                "type": "string",
+                                                "example": "SMXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+                                            },
+                                            "from": {
+                                                "type": "string",
+                                                "example": "whatsapp:+573001234567"
+                                            },
+                                            "to": {
+                                                "type": "string",
+                                                "example": "whatsapp:+573001234567"
+                                            },
+                                            "body": {
+                                                "type": "string",
+                                                "example": "Mensaje de prueba"
+                                            },
+                                            "status": {
+                                                "type": "string",
+                                                "example": "sent"
+                                            },
+                                            "date_sent": {
+                                                "type": "string",
+                                                "format": "date-time",
+                                                "example": "2024-11-22 12:34:56"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Número de teléfono inválido o parámetros incorrectos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Invalid phone number format"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron mensajes para el número especificado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "No messages found for this number"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/whatsapp/start_chat": {
+            "post": {
+                "tags": [
+                    "WhatsApp"
+                ],
+                "summary": "Enviar mensaje de confirmacion de citas al usuario ",
+                "description": "Inicia un chat de WhatsApp para un cliente programando una cita con los datos proporcionados y envía un mensaje utilizando un servicio como Twilio.",
+                "operationId": "4c5aa54d182ab26167856006ec8d48a8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "client",
+                                    "profesional",
+                                    "observations",
+                                    "telephone_number",
+                                    "date",
+                                    "procedim",
+                                    "direction",
+                                    "session_ids"
+                                ],
+                                "properties": {
+                                    "client": {
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    },
+                                    "profesional": {
+                                        "type": "string",
+                                        "example": "Dr. Andrés Gómez"
+                                    },
+                                    "observations": {
+                                        "type": "string",
+                                        "example": "Paciente necesita consulta general"
+                                    },
+                                    "telephone_number": {
+                                        "type": "string",
+                                        "pattern": "^3\\d{9}$",
+                                        "example": "3101234567"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-11-25 14:30"
+                                    },
+                                    "procedim": {
+                                        "type": "string",
+                                        "example": "Consulta médica"
+                                    },
+                                    "direction": {
+                                        "type": "string",
+                                        "example": "Carrera 45 #23-15"
+                                    },
+                                    "session_ids": {
+                                        "type": "string",
+                                        "example": "12345|||67890"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "message_id": "SM123456789",
+                                                "status": "sent"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation error: 'client' is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/whatsapp/failed": {
+            "post": {
+                "tags": [
+                    "WhatsApp"
+                ],
+                "summary": "Notificar error del sistema",
+                "description": "Envía una notificación a la oficina de sistemas de Asopormen para alertar sobre un error en el sistema. Incluye detalles del número de teléfono asociado, la fecha del error y su origen.",
+                "operationId": "c610d1bda662108194ca2a05cd853f7d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "telephone_number",
+                                    "date",
+                                    "origin"
+                                ],
+                                "properties": {
+                                    "telephone_number": {
+                                        "description": "Número de teléfono asociado al error. Debe ser un número móvil colombiano válido.",
+                                        "type": "string",
+                                        "example": "3001234567"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2024-11-22T15:30:00Z"
+                                    },
+                                    "origin": {
+                                        "description": "Origen o módulo del sistema donde ocurrió el error.",
+                                        "type": "string",
+                                        "example": "Fallo al conectar con la base de datos"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Notificación enviada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "message_id": "SM123456789",
+                                                "status": "sent"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation error: 'telephone_number' is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/whatsapp/handle_message_client": {
+            "post": {
+                "tags": [
+                    "WhatsApp"
+                ],
+                "summary": "Procesar mensaje de cliente",
+                "description": "Recibe un mensaje de WhatsApp de un cliente, identifica la intención del mensaje basado en su contenido y gestiona la cita asociada al número del cliente. Puede confirmar, cancelar o responder con mensajes predefinidos según el contexto.\\n\n     *                   la Url de este endpoint debe estar configurada como webhook en la consola de Twillio",
+                "operationId": "ca1115a2b9659bb4714b92bbe984fb6d",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "From",
+                                    "Body"
+                                ],
+                                "properties": {
+                                    "From": {
+                                        "description": "Número de teléfono del cliente en formato internacional prefijado con `whatsapp:`",
+                                        "type": "string",
+                                        "example": "whatsapp:+573101234567"
+                                    },
+                                    "Body": {
+                                        "description": "Texto del mensaje enviado por el cliente.",
+                                        "type": "string",
+                                        "example": "confirmar cita"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Operación exitosa",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "message_id": "SM123456789",
+                                                "status": "sent"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation error: 'From' is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/whatsapp/retrieve_password": {
+            "post": {
+                "tags": [
+                    "WhatsApp"
+                ],
+                "summary": "Enviar contraseña recuperada",
+                "description": "Envía un mensaje a través de WhatsApp con la nueva contraseña de un usuario, utilizando su número de teléfono registrado.",
+                "operationId": "160d329c4f4d1c84e749174f712ecdca",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "telephoneNumber",
+                                    "password",
+                                    "clientName"
+                                ],
+                                "properties": {
+                                    "telephoneNumber": {
+                                        "description": "Número de teléfono del cliente en formato válido (por ejemplo, colombiano).",
+                                        "type": "string",
+                                        "example": "3001234567"
+                                    },
+                                    "password": {
+                                        "description": "La nueva contraseña generada para el cliente.",
+                                        "type": "string",
+                                        "example": "NuevaContraseña123"
+                                    },
+                                    "clientName": {
+                                        "description": "Nombre del cliente al que se le envía la nueva contraseña.",
+                                        "type": "string",
+                                        "example": "Juan Pérez"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Contraseña enviada exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": {
+                                                "message_id": "SM123456789",
+                                                "status": "sent"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud incorrecta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Validation error: 'telephoneNumber' is required"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Twillio",
+            "description": "Twillio"
+        },
+        {
+            "name": "WhatsApp",
+            "description": "WhatsApp"
+        }
+    ]
+}

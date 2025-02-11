@@ -1,0 +1,68 @@
+[20-Dec-2024 00:22:06 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[21-Dec-2024 12:12:23 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[22-Dec-2024 00:11:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[22-Dec-2024 16:10:16 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[23-Dec-2024 00:27:13 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[23-Dec-2024 00:54:13 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[23-Dec-2024 16:09:26 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[24-Dec-2024 01:26:25 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[08-Jan-2025 18:09:33 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[20-Jan-2025 17:12:35 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[01-Feb-2025 10:09:55 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[06-Feb-2025 16:46:24 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[08-Feb-2025 19:55:32 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[08-Feb-2025 19:55:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[08-Feb-2025 19:55:49 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[08-Feb-2025 19:55:59 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7
+[08-Feb-2025 19:56:10 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Testing\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/TestCase.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/TestCase.php on line 7

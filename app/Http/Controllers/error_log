@@ -1,0 +1,104 @@
+[19-Dec-2024 06:35:10 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[19-Dec-2024 10:15:06 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php on line 25
+[19-Dec-2024 10:32:50 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[19-Dec-2024 11:46:25 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php on line 8
+[20-Dec-2024 00:24:47 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php on line 25
+[20-Dec-2024 00:24:49 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[20-Dec-2024 00:24:51 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[20-Dec-2024 00:24:52 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php on line 8
+[22-Dec-2024 00:12:01 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[22-Dec-2024 00:12:05 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php on line 8
+[22-Dec-2024 00:12:48 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php on line 25
+[22-Dec-2024 00:13:14 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[24-Dec-2024 01:27:51 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[24-Dec-2024 01:28:44 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php on line 25
+[24-Dec-2024 01:29:05 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[24-Dec-2024 01:29:43 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php on line 8
+[25-Dec-2024 21:23:18 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[26-Dec-2024 07:37:32 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[21-Jan-2025 22:32:21 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[21-Jan-2025 22:32:23 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php on line 8
+[21-Jan-2025 22:32:23 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php on line 25
+[22-Jan-2025 01:44:55 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[01-Feb-2025 10:23:35 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/CitasController.php on line 8
+[01-Feb-2025 10:23:35 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/Controller.php on line 9
+[01-Feb-2025 10:23:37 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/TwillioController.php on line 8
+[01-Feb-2025 10:23:38 UTC] PHP Fatal error:  Uncaught Error: Class "App\Http\Controllers\Controller" not found in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php:25
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Controllers/WhatsappController.php on line 25

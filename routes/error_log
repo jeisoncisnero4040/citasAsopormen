@@ -1,0 +1,172 @@
+[05-Dec-2024 21:47:21 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[06-Dec-2024 01:56:05 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[06-Dec-2024 10:38:51 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[06-Dec-2024 12:38:42 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[18-Dec-2024 05:26:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[20-Dec-2024 02:50:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[20-Dec-2024 08:44:31 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[21-Dec-2024 06:44:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[21-Dec-2024 12:11:34 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[21-Dec-2024 12:12:14 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[21-Dec-2024 12:12:17 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[21-Dec-2024 12:12:31 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[22-Dec-2024 11:31:50 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[23-Dec-2024 00:29:07 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[23-Dec-2024 01:46:42 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[23-Dec-2024 01:51:20 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[23-Dec-2024 01:53:59 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[23-Dec-2024 02:45:40 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[23-Dec-2024 03:06:08 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[23-Dec-2024 04:08:05 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[23-Dec-2024 05:17:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[23-Dec-2024 09:03:06 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[23-Dec-2024 16:08:18 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[23-Dec-2024 16:08:57 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[23-Dec-2024 16:09:13 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[23-Dec-2024 16:09:52 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[23-Dec-2024 19:06:34 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[08-Jan-2025 18:12:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[10-Jan-2025 18:23:10 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[10-Jan-2025 18:23:24 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[10-Jan-2025 20:06:30 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[20-Jan-2025 06:33:10 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[20-Jan-2025 06:50:16 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[20-Jan-2025 07:08:50 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[20-Jan-2025 07:32:15 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[01-Feb-2025 10:09:25 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[01-Feb-2025 10:09:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16
+[01-Feb-2025 10:09:29 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[01-Feb-2025 10:09:31 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[06-Feb-2025 05:05:25 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Artisan" not found in /home/basoporb4/public_html/chatbot/routes/console.php:17
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/console.php on line 17
+[06-Feb-2025 05:59:34 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/web.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/web.php on line 16
+[06-Feb-2025 09:10:40 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Route" not found in /home/basoporb4/public_html/chatbot/routes/api.php:9
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/api.php on line 9
+[06-Feb-2025 11:46:55 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Support\Facades\Broadcast" not found in /home/basoporb4/public_html/chatbot/routes/channels.php:16
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/routes/channels.php on line 16

@@ -1,0 +1,280 @@
+[19-Dec-2024 11:49:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[19-Dec-2024 11:52:47 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[19-Dec-2024 11:58:37 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[19-Dec-2024 12:00:39 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[19-Dec-2024 12:25:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[19-Dec-2024 12:27:06 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[19-Dec-2024 12:29:08 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[19-Dec-2024 12:45:24 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[19-Dec-2024 23:51:25 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[20-Dec-2024 00:24:30 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[20-Dec-2024 00:24:32 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[20-Dec-2024 00:24:34 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[20-Dec-2024 00:24:37 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[20-Dec-2024 00:24:40 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[20-Dec-2024 00:24:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[20-Dec-2024 00:24:45 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[22-Dec-2024 00:11:47 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[22-Dec-2024 00:12:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[22-Dec-2024 00:12:57 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[22-Dec-2024 00:13:05 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[22-Dec-2024 00:13:19 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[22-Dec-2024 00:13:28 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[22-Dec-2024 00:13:32 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[22-Dec-2024 05:25:17 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[23-Dec-2024 11:40:22 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[23-Dec-2024 11:43:52 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[23-Dec-2024 11:45:08 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[23-Dec-2024 11:45:40 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[23-Dec-2024 11:46:20 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[23-Dec-2024 11:46:44 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[23-Dec-2024 11:47:42 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[23-Dec-2024 11:51:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[24-Dec-2024 00:14:19 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[24-Dec-2024 01:27:59 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[24-Dec-2024 01:28:28 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[24-Dec-2024 01:28:36 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[24-Dec-2024 01:28:58 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[24-Dec-2024 01:29:12 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[24-Dec-2024 01:29:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[24-Dec-2024 01:29:36 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[25-Dec-2024 12:00:17 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[25-Dec-2024 15:32:13 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[25-Dec-2024 15:45:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[25-Dec-2024 15:51:30 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[25-Dec-2024 18:05:22 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[25-Dec-2024 22:50:21 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[25-Dec-2024 22:51:22 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[25-Dec-2024 22:51:45 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[26-Dec-2024 02:27:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[26-Dec-2024 02:37:20 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[26-Dec-2024 02:57:07 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[10-Jan-2025 19:42:54 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[10-Jan-2025 19:43:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[10-Jan-2025 20:02:24 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[25-Jan-2025 21:03:35 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[01-Feb-2025 10:23:41 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[01-Feb-2025 10:23:46 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[01-Feb-2025 10:23:51 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/PreventRequestsDuringMaintenance.php on line 7
+[01-Feb-2025 10:23:52 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[01-Feb-2025 10:23:53 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[01-Feb-2025 10:23:54 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[01-Feb-2025 10:23:56 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[01-Feb-2025 10:23:57 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
+[04-Feb-2025 16:23:06 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Auth\Middleware\Authenticate" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/Authenticate.php on line 8
+[04-Feb-2025 16:24:56 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustHosts" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustHosts.php on line 7
+[05-Feb-2025 23:14:13 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Http\Middleware\TrustProxies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrustProxies.php on line 8
+[06-Feb-2025 22:12:05 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Cookie\Middleware\EncryptCookies" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/EncryptCookies.php on line 7
+[07-Feb-2025 00:20:20 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\TrimStrings" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/TrimStrings.php on line 7
+[07-Feb-2025 01:15:53 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Routing\Middleware\ValidateSignature" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/ValidateSignature.php on line 7
+[07-Feb-2025 01:48:42 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Http\Middleware\VerifyCsrfToken" not found in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php:7
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/app/Http/Middleware/VerifyCsrfToken.php on line 7
