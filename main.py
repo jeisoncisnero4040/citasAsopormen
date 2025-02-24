@@ -1,5 +1,4 @@
 from flask import Flask, jsonify, request
-from fpdf import FPDF  
 from utils.ResponseManager import ResponseManager
 from services.GcpService import GcpService
 from exception.InternalServerErrorException import InternalServerErrorException
@@ -7,6 +6,7 @@ from ExceptionHandler import ExceptionHandler
 from rules.Validator import Validator
 from config.contans import APP_SECRET_KEY, FOLDER_ID
 from services.PdfService import PdfService
+import os
 
 
 # Configuración inicial
@@ -25,6 +25,7 @@ def upload_list_citas_pdf():
 
     file_name = PdfService.makeCitasPdf(data)  
     file_url = GcpService.upload_pdf(file_path=file_name, folder_id=FOLDER_ID)
+    os.remove(file_name)
 
     return jsonify(ResponseManager.success(file_url))
 
