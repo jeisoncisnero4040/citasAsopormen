@@ -77,15 +77,7 @@ class DateManager {
         $dayOfWeek = self::getDayWeekToDate($date);
         $day = $date->day;
         $hour = self::getHoursOfDateInAmPmFormat($date);
-
-         
-        if ($date->isTomorrow()) {
-            $dateInStringFormat = "Mañana a las $hour";
-        } else {
-            $dateInStringFormat = "$dayOfWeek $day de $month a las $hour";
-        }
-
-        return $dateInStringFormat;
+        return "$dayOfWeek $day de $month a las $hour";
     }
     public static function getHoursOfDateInAmPmFormat($date) {
         $hour = $date->hour;
@@ -123,15 +115,27 @@ class DateManager {
 
         return "$dayOfWeek $day de $month del $year ";
     }
-    public static function sortDaysWeek(array $weekDays){
-        $weekDaysOrder = self::$daysList;
-
+    public static function sortDaysWeek(array $weekDays)
+    {
+        $weekDaysOrder = self::$daysList;  
+    
         usort($weekDays, function ($a, $b) use ($weekDaysOrder) {
-            return array_search($a, $weekDaysOrder) - array_search($b, $weekDaysOrder);
+            [$dayA, $timeA] = explode(": ", $a);
+            [$dayB, $timeB] = explode(": ", $b);
+    
+            $indexA = array_search($dayA, $weekDaysOrder);
+            $indexB = array_search($dayB, $weekDaysOrder);
+    
+            if ($indexA === $indexB) {
+                return strcmp($timeA, $timeB);  
+            }
+            
+            return $indexA - $indexB;  
         });
     
         return $weekDays;
     }
+    
     public static function getHourAmPmFormat($timeString)
     {
         

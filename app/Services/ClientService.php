@@ -43,8 +43,6 @@ class ClientService{
             if(!$clients){
                 throw new NotFoundException("no se encontraron clientes",404);
             }
-
-        
             return $this->responseManager->success($clients);
        
         }catch(\Exception $e){
@@ -151,18 +149,14 @@ class ClientService{
         return $this->responseManager->success($historyMapped);
         
     }
-    public function getForbidensBlocksClient($request)
-    {
 
-        $blocksProhibided = $this->getForbbidentsBlocks($request);
-        $events = [];
-        foreach ($blocksProhibided as $block) {
-            $mappedEvents = $this->mapBlocksAndDays($block, $request);
-            if (is_array($mappedEvents)) {
-                $events = array_merge($events, $mappedEvents);
-            }
+
+    public function getClientsByNumberCel($numberCel){
+        $clients=$this->sendQueryTogetClientsByNumberCel($numberCel);
+        if(empty($clients)){
+            throw new NotFoundException("Clientes no registrados",404);
         }
-        return $this->responseManager->success($events);
+        return $this->responseManager->success($clients);
     }
     private function getClientByHistoryId($historyId)
     {
@@ -179,11 +173,11 @@ class ClientService{
                 cli.cel,
                 cli.codent AS cod_entidad,
                 cli.codent2 AS convenio,
-                mun.nombre AS municipio, 
+ 
                 ent.clase AS entidad 
                 FROM cliente cli 
                 INNER JOIN entidades ent ON ent.codigo = cli.codent2 
-                INNER JOIN municipio mun ON mun.codigo = cli.cod_ciudad 
+
                 WHERE cli.codigo = ?
             ", [$historyId]);
 
@@ -204,7 +198,7 @@ class ClientService{
     private function getAuthorizationsByClient($clientCode){
         try{
             $authorizations=DB::select("
-                SELECT TOP 20 n_autoriza, fecha, f_vence, entidad AS codent, paquete AS codent2, observa 
+                SELECT TOP 5 n_autoriza, fecha, f_vence, entidad AS codent, paquete AS codent2, observa 
                 FROM  autoriza WHERE historia = ? and  (anulada = 0  OR (suspendida = 1 and anulada = 1)) 
                 GROUP BY n_autoriza, fecha, f_vence, entidad, paquete, observa  ORDER BY fecha DESC
             ",[$clientCode]);
@@ -457,9 +451,28 @@ class ClientService{
         $hornIn24Format=DateManager::ConvertHourTo24Format($hour);
         return DateManager::CalculateMinutesSinceStartOfDay($hornIn24Format);
     }
+    public function sendQueryTogetClientsByNumberCel($numberCel){
+        try {
+            $clients = DB::select("
+                SELECT 
+                    LTRIM(RTRIM(cli.codigo)) AS num_historia, 
+                    LTRIM(RTRIM(cli.nombre)) AS nombre_cliente, 
+                    LTRIM(RTRIM(cli.nit_cli)) AS cedula_cliente, 
+                    LTRIM(RTRIM(ent.clase)) AS eps_cliente 
+                FROM cliente cli 
+                INNER JOIN entidades ent ON ent.codigo = cli.codent2 
+                WHERE LTRIM(RTRIM(cli.cel)) LIKE ?
+            ", ["%$numberCel%"]);
     
-    
-    
-    
+            return $clients;
+        } catch (\Exception $e) {
+            throw new ServerErrorException($e->getMessage(), 500);
+        }
+    }
     
 }
+    
+    
+    
+    
+    

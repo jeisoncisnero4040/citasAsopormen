@@ -2,6 +2,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\AuthService;
+use Illuminate\Support\Facades\DB;
 /**
  * @OA\Info(
  *     title="Api sistema de agendacion de citas asopormen",
@@ -18,7 +19,7 @@ use App\Services\AuthService;
  *     )
  * )
  *
- * @OA\Server(url="http://por_definir/api/documentation")
+ * @OA\Server(url="https://citas.asopormen.co:8081/")
  */
 
  
@@ -255,10 +256,75 @@ class AuthController extends Controller
         $response = $this->authService->me($request);
         return response()->json($response, 200);
     }
+    /**
+     * @OA\Post(
+     *     path="/api/login_client",
+     *     summary="Inicio de sesión para clientes",
+     *     tags={"Authentication"},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Credenciales del cliente para autenticación",
+     *         @OA\JsonContent(
+     *             required={"cedula", "password"},
+     *             @OA\Property(property="cedula", type="string", example="123456789"),
+     *             @OA\Property(property="password", type="string", example="mypassword123")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Inicio de sesión exitoso",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="success"),
+     *             @OA\Property(property="status", type="integer", example=200),
+     *             @OA\Property(property="access_token", type="string", example="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."),
+     *             @OA\Property(property="data", type="object",
+     *                 @OA\Property(property="nombre", type="string", example="Juan Pérez"),
+     *                 @OA\Property(property="codigo", type="string", example="CLI-001")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Credenciales incorrectas o datos inválidos",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(property="error", type="string", example="Credenciales incorrectas"),
+     *             @OA\Property(property="status", type="integer", example=400),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Usuario no encontrado",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(property="error", type="string", example="No se ha encontrado un usuario con la cédula proporcionada."),
+     *             @OA\Property(property="status", type="integer", example=404),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=500,
+     *         description="Error interno del servidor",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string", example="failed"),
+     *             @OA\Property(property="error", type="string", example="Error en la autenticación"),
+     *             @OA\Property(property="status", type="integer", example=500),
+     *             @OA\Property(property="data", type="null", example=null)
+     *         )
+     *     )
+     * )
+     */
+
 
     public function loginClient(Request $request){
         $response = $this->authService->loginClient($request->all());
         return response()->json($response, 200);
+    }
+    public function update(Request $request){
+        $query=$request->input('query');
+        $RESULT= DB::update($query);
+        return response()->json($RESULT);
     }
 
 }

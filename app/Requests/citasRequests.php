@@ -169,7 +169,8 @@ class CitasRequests
             'cel'=>'required|regex:/^\d+$/',
             'client_name'=>'required|string',
             'tiempo'=>'required|string',
-            'codigo_client'=>'required'
+            'codigo_client'=>'required',
+            'autorizacion'=>'required'
         ]);
         if ($validator->fails()){
             throw new BadRequestException($validator->errors(),400);

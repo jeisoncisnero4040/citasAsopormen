@@ -3,6 +3,7 @@
 namespace App\Mappers;
 
 use App\Exceptions\CustomExceptions\ServerErrorException;
+use App\utils\DateManager;
 use Illuminate\Support\Carbon;
 
 class CalendarProfesionalMapper{
@@ -20,6 +21,10 @@ class CalendarProfesionalMapper{
 
             if (isset($cita->usuario) && trim($cita->usuario)) {
                 $cita->title = trim($cita->usuario) . ' - ' . trim($cita->procedimiento);
+            }
+            if(isset($cita->fec_hora)){
+                $cita->dateSave=DateManager::dateToStringFormat(carbon::parse($cita->fec_hora));
+                unset($cita->fec_hora);
             }
             
         }

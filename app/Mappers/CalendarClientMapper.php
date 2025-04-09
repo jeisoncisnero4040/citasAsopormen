@@ -7,43 +7,50 @@ use Carbon\Carbon;
 class CalendarClientMapper extends CalendarProfesionalMapper
 {
 
-    public function groupCitasBySessions(array $citas)
+    public function groupCitasBySessions(array $citas, $deleteKeys = [])
     {
         $citasGroupedByDay = $this->splitCitasByDay($citas);
-
+    
         foreach ($citasGroupedByDay as &$dayCitas) {
             $dayCitas = $this->sortCitasByStartDate($dayCitas);
-
+    
             $processedCitas = [];
             $currentCita = clone $dayCitas[0];
             $currentCita->ids = $currentCita->id;
-
+    
             for ($index = 1; $index < count($dayCitas); $index++) {
                 $isCitaLinkedWithNext = $this->areCitasEqualAndLinked($dayCitas[$index - 1], $dayCitas[$index]);
-
+    
                 if ($isCitaLinkedWithNext) {
-                    
                     $currentCita->ids .= ' ||| ' . $dayCitas[$index]->id;
                 } else {
-                    
                     $currentCita->end = $dayCitas[$index - 1]->end;
-                    $processedCitas[] = $currentCita;
-
-                    
+                    $processedCitas[] = $this->removeKeysFromCita($currentCita, $deleteKeys);
+    
                     $currentCita = clone $dayCitas[$index];
                     $currentCita->ids = $currentCita->id;
                 }
             }
-
-           
+    
             $currentCita->end = $dayCitas[count($dayCitas) - 1]->end;
-            $processedCitas[] = $currentCita;
-
+            $processedCitas[] = $this->removeKeysFromCita($currentCita, $deleteKeys);
+    
             $dayCitas = $processedCitas;
         }
-
+    
         return $citasGroupedByDay;
     }
+    
+    private function removeKeysFromCita($cita, $deleteKeys)
+    {
+        foreach ($deleteKeys as $key) {
+            if (property_exists($cita, $key)) {
+                unset($cita->$key);
+            }
+        }
+        return $cita;
+    }
+
 
     private function splitCitasByDay(array $citas): array
     {

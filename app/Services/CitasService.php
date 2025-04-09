@@ -2,6 +2,8 @@
 
 namespace App\Services;
 
+use App\Events\ChangeProfesionalEvent;
+use App\Events\citaCanceledEvent;
 use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
@@ -15,21 +17,25 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
 use App\utils\CelNumberManager;
-
+use App\Events\citaCreateEvent;
+use App\Events\CitaDeletedEvent;
 
 class CitasService{
     private $citasModel;
     private $responseManager;
     private $whatsappService;
     private $observaCitasService;
+    private $driveService;
 
     public function __construct(CitasModel $citasModel, ResponseManager $responseManager,
-                                WhatsappService $whatsappService, ObservaCitasService $observaCitasService)
+                                WhatsappService $whatsappService, ObservaCitasService $observaCitasService
+                                ,DriveService $driveService)
     {
         $this->responseManager=$responseManager;
         $this->citasModel=$citasModel;
         $this->whatsappService=$whatsappService;
         $this->observaCitasService=$observaCitasService;
+        $this->driveService=$driveService;
 
     }
 
@@ -46,39 +52,45 @@ class CitasService{
         $weekDaysKeys=array_keys($weekDays);
 
         $sessionDuration=$schedule['duration_session'];
+        $procedipro=$citaInDto['procedipro'];
 
         $this->validateStartDateAgainstSchedule($startDate,$weekDaysKeys,$weekDays); 
-        $allSessions=$this->getNumSessionsToSave($dataNumSessions);
+        $allSessions=$this->getNumSessionsToSave($dataNumSessions,$procedipro);
         $this->checkRememberWhatsWhitObservations($citaInDto);
 
 
         $diferenceBeetwenDays=$this->getDifBeetwenDays($weekDaysKeys);
         $scheduleCitas=$this->CreateSchedule($allSessions,$sessionDuration,$startDate,$weekDays,$diferenceBeetwenDays,$weekDaysKeys);
+        if(empty($scheduleCitas)){
+            throw new BadRequestException("Error: no se pueden cargar mas citas a esta order",400);
+        }
         $citasIds=$this->saveCitas($scheduleCitas,$citaInDto);
         if($this->CheckReassingCitasRequests($request)){
             $idCitasCanceledRegister=$request['id'];
             $this->saveNewsIdsInCitaCanceledRegister($idCitasCanceledRegister,$citasIds);
         }
+         
+        $numCitasCreate = stripos($citaInDto['procedipro'], 'EMPALME') !== false ? 0 : count($citasIds);
         
-        //if($this->citasIsRememberebleAndFirstCitasIsNear($citaInDto,$scheduleCitas[0])){
-            //$dataToSendCitaToRemember=$this->CreateDataToRemeberCita($citasIds,$scheduleCitas,$sessionDuration,$citaInDto);
-            //$this->whatsappService->rememberFisrtCita($dataToSendCitaToRemember);
-        //}
-        
-        $numCitasCreate=$citaInDto['procedipro']=='EMPALME'?0:count($citasIds);
+        event(new citaCreateEvent($citasIds,$scheduleCitas,$citaInDto));
         return $this->responseManager->success($numCitasCreate,200);
     }
 
-    public function getNumCitasFromOrder($authorization, $codProcedim)
+    public function getNumCitasFromOrder($authorization, $codProcedim,$client_cod)
     {
         $this->validateAuthorizationAndProcedim($authorization, $codProcedim);
-        $numCitasFromOrder = $this->citasModel::where('autoriz', $authorization)
-                                ->where('tiempo', $codProcedim)
-                                ->where('cancelada','!=', '1')
-                                ->where('procedipro','!=','EMPALME')
-                                ->count();
+        $numCitasFromOrder =DB::select("
+		    SELECT COUNT(*) AS total FROM citas 
+            WHERE autoriz= ?
+            AND tiempo =?
+            AND cancelada != '1'
+            AND na != '1'
+            AND nro_hist = ?				
+            AND procedipro NOT  LIKE '%EMPALME%'
+        ",[$authorization,$codProcedim,$client_cod]);
+        $totalCitas = $numCitasFromOrder[0]->total ?? 0;
     
-        return $this->responseManager->success($numCitasFromOrder);
+        return $this->responseManager->success((int)$totalCitas);
     }
 
     public function getCitasByClientInRangeTime($request){
@@ -120,11 +132,12 @@ class CitasService{
         return $this->responseManager->success($response);
 
     }
-    public function deleteCitaById($id){
+    public function deleteCitaById($id,$queryParams){
         $citasDeleted=$this->sendQuerydeleteCitaById($id);
         if ($citasDeleted==0){
-            throw new BadRequestException("no es posible eliminar esta sección",400);
+           throw new BadRequestException("no es posible eliminar esta sección",400);
         }
+        event(new CitaDeletedEvent($id,$queryParams));
         return $this->responseManager->delete('cita con id '.$id);
     }
 
@@ -178,7 +191,9 @@ class CitasService{
     public function CancelGroupSsessions($request){
         citasRequests::ValidateCitaSessionsIds($request,"cancelar");
         $citasCanceled=$this->sendQueryToCancelGroupSessions($request);
-        return $this->responseManager->success($citasCanceled);
+        
+        event(new citaCanceledEvent($request));
+        return $this->responseManager->success(null);
     }
 
     public function unactivateCitaCanceledById($request) {
@@ -197,6 +212,7 @@ class CitasService{
     public function ChangeProfesionalToCitaIdsGroup($request){
         citasRequests::validateDataToChangeProfesional($request);
         $citasChanged=$this->sendQueryToChangeProfesionalsCitas($request);
+        event (new ChangeProfesionalEvent($request));
         return $this->responseManager->success($citasChanged);
         
     }
@@ -210,6 +226,16 @@ class CitasService{
 
         return $this->responseManager->success(($citasGroupedBySessions));
     }
+    public function getHistoryCitasClient($clientCode){
+        if(empty(trim($clientCode))){
+            throw new BadRequestException("El código de cliente debe ser valido",400);
+        }
+        $citas=$this->sendQueryToGetToCitasHistoryClient($clientCode);
+        $calendarMapped=$this->mapCalendarClient($citas);
+        $citasGroupedBySessions=$this->GroupCitasBysessions($calendarMapped);
+
+        return $this->responseManager->success(($citasGroupedBySessions));
+    }
     public function notifiedOrder($request){
         citasRequests::validataDataToSendNotifyOrderProgramed($request);
 
@@ -217,42 +243,50 @@ class CitasService{
         $client=$request['client_name'];
         $order=$request['tiempo'];
 
-
         $allCitasClientByOrder=$this->sendQueryToGetAllCitasProgramdedClientOrder($request);
         if(empty($allCitasClientByOrder)){
             throw new NotFoundException("El cliente no registra citas con este numero de orden",404);
         }
 
-        
-        
-        $day = [];
-        foreach ($allCitasClientByOrder as $cita) {
-            $date = $cita->fecha;
-            $dayName = DateManager::getDayByDate(Carbon::parse($date));
-            if (!in_array($dayName, $day)) {
-                array_push($day, $dayName);
-            }
-        }
 
-        $daySetOrdened=DateManager::sortDaysWeek($day);
+        $allCitasClientByOrderMapped=$this->mapCalendarClient($allCitasClientByOrder);
         
-        $firstDay=$allCitasClientByOrder[1];
-        $laterDay = $allCitasClientByOrder[count($allCitasClientByOrder) - 1];
-        $starDayDate=DateManager::dateToStringFormatOnlyDay(Carbon::parse($firstDay->fecha));
-        $laterDayDate=DateManager::dateToStringFormatOnlyDay(Carbon::parse($laterDay->fecha));
-        $dataToSendMessage=[
- 
-            'week_days' => implode(",",$daySetOrdened),
-            'first_day'=>$starDayDate,
+        $citasGrouped=$this->GroupCitasBysessions($allCitasClientByOrderMapped,deleteKeys:['id','fecha','hora','tiempo','autorizacion','end','ids']);
+        $citasGrouped=array_merge(...$citasGrouped) ;
+        
+        $citasFilteredByValoration=$this->filterValorations($citasGrouped);
+        $valorations=$citasFilteredByValoration['valorations'];
+        $therapies=$citasFilteredByValoration['notValorations'];
+
+        $payloadPdf=$this->getPayloadToUploadPdf($therapies,$valorations,$client,$citasGrouped);
+        $dataResponse=$this->driveService->uploadDriveService($payloadPdf);
+        $publicUrlPdf=$dataResponse['data'];
+        $id_pdf=$this->getDriveFileId($publicUrlPdf);
+
+        if(empty($id_pdf)){
+            throw new ServerErrorException("No se pudo extraer el id del archivo",500);
+        }
+        $dataToSenMessage=[
             'client'=>$client,
-            'laterDay'=>$laterDayDate,
             'authorization'=>$order,
+            'url_pdf'=>"$id_pdf/view?usp=sharing",
             'telephone_number'=>$telephoneNumberClean
         ];
-        $this->whatsappService->sendNotificationOrdenProgramed($dataToSendMessage);
-        return $this->responseManager->success($dataToSendMessage);
+        $this->whatsappService->sendNotificationOrdenProgramed($dataToSenMessage);
+        return $this->responseManager->success(['url'=>json_encode($payloadPdf)]);
+        
+    
 
-
+    }
+    public function restartCita($id){
+        if(empty($id)){
+            throw new BadRequestException("No se ha proporcionado un id de cita",400);
+        }
+        $citaRestart=$this->sendQueryToRestartCita($id);
+        if(empty($citaRestart)){
+            throw new NotFoundException("No se han encontrado Citas con el id suministrado",404);
+        }
+        return $this->responseManager->success($citaRestart);
     }
 
     private function validateCitas($request){
@@ -307,12 +341,15 @@ class CitasService{
     }
     
 
-    private function getNumSessionsToSave(array $dataSesions) {
+    private function getNumSessionsToSave(array $dataSesions,string $procedipro) {
         
         $totalSessions = $dataSesions['all_sessions'];
         $savedSessions = $dataSesions['saved_sessions'];
         $requestedSessions = $dataSesions['num_sessions_total'];
         $availableSessions = $totalSessions - $savedSessions;
+        if(stripos($procedipro, 'EMPALME') !== false){
+            return $requestedSessions;
+        }
         return min($requestedSessions, $availableSessions);
     }
     private function checkRememberWhatsWhitObservations($citaInDto){
@@ -459,69 +496,7 @@ class CitasService{
             return $this->saveCitasInBd($cita, $cont + 1);
         }
     }
-    private function checkCitasHasRememberMesssage($citaInDto){
-        return $citaInDto['notication_orden_programed'];
-    }
-    private function citasIsRememberebleAndFirstCitasIsNear($citaInDto, $firstCitaDate) {
-        $rememberWhatsapp = isset($citaInDto['recordatorio_wsp']) && $citaInDto['recordatorio_wsp'];
-        $citaIsNear = $firstCitaDate->diffInDays(Carbon::now()) <= 2;
-        return $rememberWhatsapp && $citaIsNear;
-    }
-    private function CreateDataToRemeberCita($citasIds, $scheduleCita, $sessionDuration, $citaInDto) {
-        $sessionIds = $this->getidsSessionToRemember($citasIds, $scheduleCita, $sessionDuration);
-        $profesional=$citaInDto['profesional'];
-        $client=$citaInDto['clientName'];
-        $direction=$citaInDto['direccion_cita'];
-        $procedim=$citaInDto['procedim'];
-        $date=$scheduleCita[0]->format('Y-m-d H:i');
-        $telephoneNumber=CelNumberManager::chooseTelephoneNumber($citaInDto['client_number_cel']);
-        $observation=$this->getObservation($citaInDto);
-        return [
-            'client'=>$client,
-            'profesional'=>$profesional,
-            'telephone_number' => $telephoneNumber,
-            'date'=>$date,
-            'procedim'=>$procedim,
-            'direction'=>str_replace('BARRIO','barrio',$direction),
-            'session_ids'=>$sessionIds,
-            'observations'=>$observation
-        ];
 
-        
-    }
-    
-    private function getidsSessionToRemember($citasIds, $scheduleCita, $sessionDuration) {
-        $sessionIds = $citasIds[0]; 
-        error_log($scheduleCita[0]);
-        $numCitas = count($citasIds)-1;
-    
-        for ($index = 1; $index < $numCitas; $index++) {
-            $previousTime = $scheduleCita[$index - 1]->copy()->addMinutes($sessionDuration);
-            
-            if ($previousTime->equalTo($scheduleCita[$index])) {
-                $sessionIds .= '|||' . $citasIds[$index]; 
-            } else {
-                break; 
-            }
-        }
-    
-        return $sessionIds; 
-    }
-    private function getObservation($citaInDto){
-        $copago=$citaInDto['copago'];
-        $idObservation=$citaInDto['regobserva'];
-        $observaCitasResponse=$this->observaCitasService->getObservationContentById((integer)$idObservation);
-        if ($observaCitasResponse['status']!==200){
-            throw new ServerErrorException("el paquete de citas fué creado, pero no se pudo enviar la notificacion por whatsapp
-                                            CAUSA: no se encontro la plantilla de observacion",500);
-        }
-        $observationTemplate=$observaCitasResponse['data']->contenido;
-        $observation=str_replace('{{}}',$copago,$observationTemplate);
-        return $observation;
-
-
-    }
-    
 
     private function validateAuthorizationAndProcedim($authorization,$codProcedim){
         if (empty(trim($authorization))){
@@ -664,6 +639,8 @@ class CitasService{
                     ci.autoriz AS autorizacion,
                     ci.tiempo AS tiempo,
                     ci.procedipro,
+                    ci.registro,
+                    ci.fec_hora,
                     asistio AS asistida,
                     cancelada,
                     na AS no_asistida,
@@ -819,6 +796,7 @@ class CitasService{
 					INNER JOIN observa_citas oc ON oc.id=CAST(ci.observaciones_mc AS INT)
                     WHERE cica.num_sessions_canceled > cica.num_sessions_reassing
                     AND cica.activa='1'
+                    
     
                 "
             );
@@ -858,18 +836,14 @@ class CitasService{
                     );
                 }
 
-        
-                
-                if ($meanCancel !=='mc' ) {
-                    error_log('accsdca');
-                    DB::insert(
-                        "
-                        INSERT INTO citas_canceladas 
-                        (ids_sessions, id_example, num_sessions_canceled, date_cita_canceled)
-                        VALUES (?, ?, ?, CONVERT(smalldatetime, ?, 120))",
-                        [$idsToCancel, $idExample, $numSessionsCanceled, $dateCita]
+                DB::insert(
+                    "
+                    INSERT INTO citas_canceladas 
+                    (ids_sessions, id_example, num_sessions_canceled, date_cita_canceled)
+                    VALUES (?, ?, ?, CONVERT(smalldatetime, ?, 120))",
+                    [$idsToCancel, $idExample, $numSessionsCanceled, $dateCita]
                     );
-                }
+                
         
                 
                 return $citasCanceled;
@@ -973,23 +947,81 @@ class CitasService{
             throw new ServerErrorException($e->getMessage(),500);
          }
     }
-    private function GroupCitasBysessions($citas){
+    private function sendQueryToGetToCitasHistoryClient($ClientCod){
+        $now = Carbon::now()->setTime(0, 0)->format('Y-m-d H:i:s');
+        
+        try {
+            $citas = DB::select(
+                "
+                SELECT 
+                    ci.id,
+                    ci.fecha,
+                    ci.hora AS hora,
+                    ci.autoriz AS autorizacion,
+                    ci.procedim AS procedimiento,
+                    ci.regobserva AS observaciones,
+                    ci.asistio AS asistida,
+                    ci.cancelada AS cancelada,
+                    ci.tiempo,
+                    ci.direccion_cita AS direccion,
+                    ci.na AS no_asistida,
+                    pro.duraccion AS duracion,
+                    em.enombre AS profesional
+                FROM 
+                    citas ci
+                INNER JOIN 
+                    cliente cli ON cli.codigo LIKE '%' + ci.nro_hist + '%'
+                INNER JOIN 
+                    procedipro pro ON pro.nombre = ci.procedipro
+                INNER JOIN 
+                    emplea em ON em.ecc = ci.cedprof
+                WHERE 
+                    ci.nro_hist = ?
+                    AND ci.fecha BETWEEN 
+                        CONVERT(smalldatetime, '2025-01-01 00:00:00', 120) 
+                        AND CONVERT(smalldatetime, ?, 120)
+                ORDER BY 
+                    ci.fecha DESC;
+                ", [$ClientCod, $now]);
+            
+            return $citas;
+        } catch (\Exception $e) {
+            throw new ServerErrorException($e->getMessage(), 500);
+        }
+    }
+    
+    private function GroupCitasBysessions($citas,$deleteKeys=[]){
         $citasMapper=new CalendarClientMapper();
-        return $citasMapper->groupCitasBySessions($citas);
+        return $citasMapper->groupCitasBySessions($citas,deleteKeys:$deleteKeys);
     }
 
     private  function sendQueryToGetAllCitasProgramdedClientOrder($request){
         $clienCod=$request['codigo_client'];
         $order=$request['tiempo'];
+        $authorization=$request['autorizacion'];
         try{
             $citas=DB::select("
-                SELECT fecha,hora
-                FROM citas 
+                SELECT 
+                    ci.id,
+                    ci.fecha,
+                    ci.hora,
+                    ci.direccion_cita AS direcion,
+                    ci.procedipro As procedimiento,
+                    ci.observaciones_mc AS observaciones,
+                    ci.copago,
+                    pro.duraccion AS duracion,
+                    ci. tiempo,
+                    ci.autoriz AS autorizacion,
+                    em.enombre as profesional
+                FROM citas ci 
+                INNER JOIN procedipro pro ON ci.procedipro = pro.nombre
+                INNER jOIN emplea em ON ci.cedprof = em.ecc
                 where nro_hist = ?
                 AND tiempo= ?
+                AND autoriz= ?
                 AND cancelada !=1
                 ORDER BY fecha ASC
-                ",[$clienCod,$order]
+                ",[$clienCod,$order,$authorization]
 
             );
             return $citas;
@@ -997,6 +1029,97 @@ class CitasService{
             throw new ServerErrorException($e->getMessage(),500);
         }
     }
+    private function filterValorations(array $listCitas): array {
+        $valorations = [];
+        $notValorations = [];
+    
+        foreach ($listCitas as $cita) {
+             
+            $procedimiento = strtolower($cita->procedimiento);
+    
+            if (stripos($procedimiento, "valoracion") !== false || stripos($procedimiento, "valoración") !== false) {
+                $valorations[] = $cita;
+            } else {
+                $notValorations[] = $cita;
+            }
+        }
+    
+        return ["valorations" => $valorations, "notValorations" => $notValorations];
+    }
+    public function getObservationsById($observaId,$copago){
+        if(!$observaId){
+            return null;
+        }
+        try{
+            $observaId=(int) $observaId;
+            $template=DB::select(
+                "
+                SELECT contenido FROM observa_citas
+                WHERE id= ?
+
+                
+                ",[$observaId]
+            );
+            return str_replace('{{}}',$copago,$template[0]);
+
+
+        }catch(\Exception $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+    private function getPayloadToUploadPdf(array $therapies,array $valorations,string $client,array $citasGrouped){
+        $orderHaveValorations=!empty($valorations);
+        $orderHaveTherapies=!empty($therapies);
+
+        $observaTer = null;
+        if ($orderHaveTherapies) {
+            $therapieExample = $therapies[0];
+            $idObserva = (int) $therapieExample->observaciones;
+            $copago = $therapieExample->copago;
+            $observaTer = $this->getObservationsById($idObserva, $copago);
+        }
+        
+        $observaVal = null;
+        if ($orderHaveValorations) {
+            $valExample = $valorations[0];
+            $idObserva = (int) $valExample->observaciones;
+            $copago = $valExample->copago;
+            $observaVal = $this->getObservationsById($idObserva, $copago);
+        }
+        
+        $observations = [
+            "terapia" => $observaTer,
+            "valoracion" => $observaVal
+        ];
+        
+        $payloadToMakePdf = [
+            "cliente" => $client,
+            "citas" => $citasGrouped,
+            "observaciones" => [$observations],
+        ];
+        return $payloadToMakePdf;
+    }
+    private function getDriveFileId($url) {
+        preg_match('/\/d\/([a-zA-Z0-9_-]+)\//', $url, $matches);
+        return $matches[1] ?? null;
+    }
+    private function sendQueryToRestartCita($id){
+        try{
+            $cita=DB::update("
+                update citas SET
+                cancelada= '0',
+                na='0',
+                asistida='0',
+                realizar=''
+                WHERE id = ?
+
+            ",[$id]);
+            return $cita;
+        }catch(\Exception  $e){
+            throw new ServerErrorException($e->getMessage(),500);
+        }
+    }
+
  
 
 }
