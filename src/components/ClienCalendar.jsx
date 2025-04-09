@@ -140,7 +140,11 @@ class ClientCalendar extends Component {
     closeModal = () => {
         this.setState({ modalIsOpen: false });
     }
-
+    _getDaySemana = (date) => {
+        const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        const fecha = new Date(date);
+        return dias[fecha.getDay()];
+    };
     generatePDF = (data,name) => {
         const sortedFilteredEvents = [...data].sort((a, b) => {
             return new Date(a.start) - new Date(b.start);   
@@ -159,8 +163,9 @@ class ClientCalendar extends Component {
                     table: {
                         headerRows: 1,  
                         body: [
-                            ['Fecha Inicio', 'Duración', 'Profesional', 'Procedimiento', 'estado'],
+                            ['dia','Fecha Inicio', 'Duración', 'Profesional', 'Procedimiento', 'estado'],
                             ...sortedFilteredEvents.map(cita => [
+                                { text: this._getDaySemana(cita.start), style: 'tableBody' },
                                 { text: new Date(cita.start).toLocaleString([], {
                                     day: '2-digit',
                                     month: 'numeric',
@@ -234,7 +239,7 @@ class ClientCalendar extends Component {
                             <td>{event.fecha.split(' ')[0]}</td>
                             <td>{event.profesional ? event.profesional : 'N/A'}</td>
                             <td>{event.autorizacion}</td>
-                            <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
+                            <td>{event.procedimiento ? event.procedipro : 'N/A'}</td>
                             <td className='iconos-cita-cli'>
                                 {(this.state.working && this.state.idSelected === event.id) ? (
                                     <p className='search'>Trabajando en ello</p>
@@ -379,11 +384,11 @@ class ClientCalendar extends Component {
           bold: true,
         },
         text: {
-          fontSize: 12,
+          fontSize: 10,
         },
         observations: {
-          fontSize: 11,
-          margin: [25, 5, 25, 5]
+          fontSize: 9,
+          margin: [22, 5, 22, 5]
         },
       }
     };
@@ -402,7 +407,7 @@ class ClientCalendar extends Component {
         this.openAgreeButtons()
     }
     deleteCitaById=(id)=> {
-        const url = `${Constants.apiUrl()}citas/${id}`;
+        const url = `${Constants.apiUrl()}citas/${id}?usuario=${encodeURIComponent(this.props.usuario)}&cliente=${encodeURIComponent(this.props.nameClient)}`;
         this.setState({working:true})
         this.requestManager.deleteMethod(url)
             .then(response => {
@@ -410,7 +415,8 @@ class ClientCalendar extends Component {
                 const newFilteredEvents=this.state.eventDetails.filter(event=>event.id !==id);
                 this.props.getCalendarClient(
                     this.props.events.filter(event => event.id !== id),
-                    this.state.tiempoCitaSelected
+                    this.state.tiempoCitaSelected,
+                    'delete'
                 );
 
                  
@@ -442,16 +448,18 @@ class ClientCalendar extends Component {
             this.openLabelObservations()
     }
     cancelCitaById = (ids) => {
-        alert(ids.join(','))
+       
         const exampleCita=this.state.eventDetails.filter(even=>even.id===ids[0])
         const date=exampleCita[0].start.replace('T',' ').slice(0,16);
-        alert(date)
+        
 
         const body = {
             razon: this.state.cancelObservations,
             ids: ids.join('|||'),
             meanCancel:'mc',
-            fecha_cita:date
+            fecha_cita:date,
+            usuario:this.props.usuario,
+            cliente:this.props.nameClient,
         };
     
         const url = `${Constants.apiUrl()}citas/cancel_all_sessions_cita`;
@@ -514,10 +522,7 @@ class ClientCalendar extends Component {
     
         return citasByTiempo;
     };
-    
 
-
-    
     openAgreeButtons = () => {
         this.setState({ showLabelObservations:false,showAgreeButtons: true });
     }

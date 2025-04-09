@@ -57,7 +57,7 @@ class TableOrders extends Component {
             });
     }
     fetchCounNumCitas = (n_autoriza, tiempo) => {
-        const url = `${Constans.apiUrl()}citas/get_num_citas/${n_autoriza}/${tiempo}`;
+        const url = `${Constans.apiUrl()}citas/get_num_citas/${n_autoriza}/${tiempo}/${this.props.historyNumber}`;
         return this.requestManager.getMethod(url)  
             .then(response => {
                 return response.data.data;

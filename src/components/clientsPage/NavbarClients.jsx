@@ -1,64 +1,45 @@
 // src/components/NavbarClients.js
 import React from "react";
+import { useNavigate,useLocation } from "react-router-dom";
 import "../../styles/clientsPage/Navbar.css";
+import citas from "../../assets/image.navbar.clients.cancel.cita.png";
+import sedes from "../../assets/image.navbar.clients.asopormen.sedes.png";
+import update from "../../assets/image.navbar.clients.update.info.png";
+import history from "../../assets/image.navbar.clients.historial.png"
 
-class NavbarClients extends React.Component {
-  constructor(props) {
-    super(props);
-  }
+const NavbarClients = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const client = location.state || {};
 
-  // Maneja la selección de la opción
-  handleOptionSelect = (option) => {
-    const { onOptionSelect } = this.props;
-    if (onOptionSelect) {
-      onOptionSelect(option);
-    }
-  };
-
-  render() {
-    const { selectedOption } = this.props;
-
-    return (
-      <div className="container-navbar-client">
-
-        <div className="navbar-client">
-          <div
-            className={`redirect-to-citas-component ${
-              selectedOption === "citas" ? "active" : ""
-            }`}
-            onClick={() => this.handleOptionSelect("start")}
-          >
-            <a className="navbar-client" >
-              Inicio
-            </a>
-          </div>
-         
-         <div
-           className={`redirect-to-citas-component ${
-             selectedOption === "citas" ? "active" : ""
-           }`}
-           onClick={() => this.handleOptionSelect("citas")}
-         >
-           <a className="navbar-client" >
-             Citas
-           </a>
-         </div>
- 
-          
-         <div
-           className={`redirect-to-userdatas-update " : ""
-           }`}
-           onClick={() => this.handleOptionSelect("actualizar")}
-         >
-           <a className="navbar-client" >
-             Actualizar datos
-           </a>
-         </div>
-       </div>
+  return (
+    <div className="container-navbar-client">
+      <div className="container-navbar-citas-item">
+        <a onClick={() => navigate("citas",{state:client})}>
+          <img src={citas} alt="citas" />
+          <p>CANCELAR CITA</p>
+        </a>
       </div>
-
-    );
-  }
-}
+      <div className="container-navbar-citas-item">
+        <a onClick={() => navigate("historial",{state:client})}>
+          <img src={history} alt="history" />
+          <p>HISTORIAL</p>
+        </a>
+      </div>
+      <div className="container-navbar-citas-item">
+        <a onClick={() => navigate("actualizar-datos",{state:client})}>
+          <img src={update} alt="update" />
+          <p>ACTUALIZAR DATOS</p>
+        </a>
+      </div>
+      <div className="container-navbar-citas-item">
+        <a onClick={() => navigate("nuestras-sedes",{state:client})}>
+          <img src={sedes} alt="sedes" />
+          <p>NUESTRAS SEDES</p>
+        </a>
+      </div>
+    </div>
+  );
+};
 
 export default NavbarClients;

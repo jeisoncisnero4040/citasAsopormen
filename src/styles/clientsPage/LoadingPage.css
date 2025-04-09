@@ -13,15 +13,13 @@
 .wheel {
   border: 10px solid rgba(255, 255, 255, .3);
   border-radius: 50%;
-  border-left-color: #1b0dd3; 
+  border-left-color: #E7D600; 
   width: 80px;
   height: 80px;
   animation: giro 1s linear infinite;
 }
 .text-loading{
 
-    font-style: oblique;
-    font-family: "Segoe UI", cursive;
     text-transform: capitalize;
     font-size: 25px;
     font-family: 'Montserrat', sans-serif;

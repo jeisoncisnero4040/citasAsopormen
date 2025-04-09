@@ -1,0 +1,43 @@
+.alert-container {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255, 255, 255, 0.95);  
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    min-width: 300px;
+    z-index: 9999;  
+    backdrop-filter: blur(3px); 
+}
+
+.error {
+    border: 2px solid red;
+    color: red;
+}
+
+.success {
+    border: 2px solid green;
+    color: green;
+}
+
+button {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.error-btn {
+    background-color: red;
+    color: white;
+}
+
+.success-btn {
+    background-color: green;
+    color: white;
+}

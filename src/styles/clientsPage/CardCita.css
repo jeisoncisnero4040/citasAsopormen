@@ -1,253 +1,167 @@
 .cita-card-wrapper {
-    display: flex; 
-    flex-direction: row; 
-    justify-content: space-between; 
-    align-items: stretch; 
-    width: 100%; 
-    background-color: #f9f9f9; 
-    overflow: hidden; 
-    margin-top: 2%;
-    border-radius: 10px;
-    border: 1px solid #1b0dd3;
+    background-color: #ffffff;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    border-radius: 20px;
+    padding: 20px;
+    width: 100%;
+    position: relative;
+    padding-bottom: 10%;
+    min-width: 300px;
 }
-
-
-
 
 .info-cita-card {
-    width: 75%; 
-    background-color: #fff;
-    display: flex;
-}
-.static-info-cita{
-    width: 85%;
-    margin: 20px;
-}
-.name-profesional-cita{
-    display: flex;
-    align-items: center;
-}
-.name-profesional-cita img{
-    height: 30px;
-}
-.name-profesional-cita-and-procedim{
-    margin-left: 10px;
-}
-.profesional-name, 
-.procedim {
-    line-height: 0;
-    font-style: oblique;
-    font-weight: bold;
-    font-family: "Segoe UI", cursive;
-    white-space: nowrap;
-    display: block;
-    text-overflow: ellipsis;
-    max-width: 0px;
- 
-}
-.direccion-cita,
-.duracion-cita{
-    line-height: 0;
-    font-style: oblique;
-    font-family: "Segoe UI", cursive;
-    margin-left: 10px;
-    text-transform: capitalize;
-    white-space: nowrap;
-    display: block;
-    text-overflow: ellipsis;
-    max-width: 0px;
+    line-height: 1.2;
 }
 
-
-.profesional-name {
-    font-size: 140%;
-    color: gray;
-}
-
-.procedim {
-    font-size: 10px;
-}
-.vertical-line{
-    margin-top: 20px;
-    margin-bottom: 20px;
-    background-color: gray;
-    width: 1px;
-}
-.options{
-    width: 15%;
-    background-color: #fff;
-    margin-left:20px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.info-date-card-asistida {
-    background-color: rgb(184, 235, 184);
-    width: 25%; 
-
-}
-
-.info-date-card-cancelada {
-    background-color:rgb(243, 240, 92);
-    width: 25%; 
-
-}
-
-.info-date-card-no-asistida {
-    background-color:rgb(247, 144, 97);
-    width: 25%; 
-
-}
-
-.info-date-card-programada {
-    background-color:rgb(220, 226, 233);
-    width: 25%; 
-
-}
-.wrapper-status {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.status-cita {
-    text-align: center;
+.header-cancelada, 
+.header-programada, 
+.header-asistida, 
+.header-no-asistida {
+    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: 900;
-    border: 1px solid black;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 3px 10px;  
-    border-radius: 5px;
-    text-transform: uppercase;
-    margin-bottom: 0;
-}
-
-.day-name,
-.fecha,
-.hour {
-    text-align: center;
-    text-transform: capitalize;
-    font-size: 12px;
-    font-style: oblique;
-    font-weight: bold;
-    font-family: "Segoe UI", cursive;
-    margin: 0;
-}
-
-.hour {
-    font-size: 30px;  
-    padding-bottom: 10px;  
-}
-.camcel-cita{
+    color: #4c69ff;
+    padding-bottom: 3%;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.header-programada { color: #4c69ff; }
+.header-cancelada { color: #E7D600; }
+.header-no-asistida { color: #EB4335; }
+.header-asistida { color: green; }
+
+.cita-info-item {
+    display: flex;
+    max-width: 100%;
+    align-items: center;
+    
+}
+
+.cita-info-item p {
+    color: #2E4F90;
+    font-weight: 200;
+    font-size: 16px;
+     
+}
+
+.icono-pro-programada, 
+.icono-pro-asistida,
+.icono-pro-cancelada, 
+.icono-pro-no-asistida {
+    font-size: 13px;
+    padding: 3px;
+    border-radius: 50%;
+    margin-right: 2%;
+    border: 1px solid;
+}
+
+.icono-pro-programada, 
+.icono-pro-asistida {
+    color: #2E4F90;
+    border-color: #2E4F90;
+}
+
+.icono-pro-cancelada, 
+.icono-pro-no-asistida {
+    color: rgba(98, 100, 118, 1);
+    border-color: rgba(98, 100, 118, 1);
+}
+
+.options-programada, 
+.options-no-programada {
+    width: 60%;
+    position: absolute;
+    bottom: -10%;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+    text-align: center;
+}
+
+.options-programada { background-color: #F8E750; }
+.options-no-programada { background-color: #f1f1f1; }
+
+.options-programada p,
+.options-no-programada p {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 900;
+}
+
+.options-programada p { color: #4c69ff; }
+.options-no-programada p { color: gray; }
+
+.key-cita-info-item{
+    display: flex;
     align-items: center;
 }
-.camcel-cita img{
-    height: 50px;
-    width: 50px;
-}
-.text-cancelar,
-.text-cancelar-small{
-    margin: 0%;
-    text-align: center;
 
-    font-style: oblique;
-    font-weight: bold;
-    font-family: "Segoe UI", cursive;
-    font-weight: 700;
-    color: #353434;
-
-}
-.text-cancelar{
-    font-size: 18px;
-}
-.text-cancelar-small{
-    font-size: 16px;
-}
-@media (max-width: 768px) {
-    .profesional-name, 
-.procedim {
-    line-height: 0;
-    font-style: oblique;
-    font-weight: bold;
-    font-family: "Segoe UI", cursive;
-    white-space: nowrap;
-    display: block;
-    text-overflow: ellipsis;
-    max-width: 0px;
- 
-}
-.direccion-cita,
-.duracion-cita{
-    line-height: 0;
-    font-style: oblique;
-    font-family: "Segoe UI", cursive;
-    margin-left: 10px;
-    text-transform: capitalize;
-    white-space: nowrap;
-    display: block;
-    text-overflow: ellipsis;
-    max-width: 0px;
+@media screen and (max-width: 1024px) {
+    .cita-card-wrapper {
+        min-width: 250px;
+    }
 }
 
+@media screen and (max-width: 768px) {
+    .cita-card-wrapper {
+        min-width: 200px;
+        padding: 15px;
+        padding-bottom: 15%;
+    }
 
-.profesional-name {
-    font-size: 100%;
-    color: gray;
-}
-
-.procedim {
-    font-size: 10px;
-}
-}
-@media (max-width: 480px) {
-    .cita-card-wrapper{
-        display: flex;
+    .cita-info-item {
         flex-direction: column;
+        align-items: flex-start;
+        line-height: 0%;
+    }
 
+    .cita-info-item p {
+        font-size: 14px;
     }
-    .info-date-card-asistida, .info-date-card-cancelada, .info-date-card-no-asistida,.info-date-card-programada{
-        width: 100%;
+
+    .options-programada, 
+    .options-no-programada {
+        width: 80%;
     }
-    .info-cita-card{
-        display: flex;
-        flex-direction: column;
-    }
-    .static-info-cita{
-        width: 100%;
-    }
-    .vertical-line{
-        margin-right: 20px;
-        margin-left: 20px;
-    }
-    .options{
-        width: 100%;
-        background-color: #fff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-    .direccion-cita{
-        font-size: 90%;
-    }
-    .profesional-name {
-        font-size: 140%;
-        color: gray;
-    }
-    .wrapper-button-cancel{
+    .key-cita-info-item{
         display: flex;
         align-items: center;
-        justify-content: center;
     }
-    .camcel-cita{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
- 
 }
 
+@media screen and (max-width: 480px) {
+    .cita-card-wrapper {
+        min-width: 100%;
+        padding: 10px;
+        padding-bottom: 15%;
+    }
+
+    .header-cancelada, 
+    .header-programada, 
+    .header-asistida, 
+    .header-no-asistida {
+        font-size: 14px;
+    }
+
+    .cita-info-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .cita-info-item p {
+        font-size: 12px;
+    }
+
+    .options-programada, 
+    .options-no-programada {
+        width: 90%;
+    }
+
+}

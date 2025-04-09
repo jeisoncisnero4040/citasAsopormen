@@ -15,9 +15,8 @@ class CreateCitaForm extends Component {
             dataSchedule: {
                 startDate: new Date(),
                 weekDays: {},
-                sessionsNum: 1,
                 observationId: '',
-                numCitas: '',
+                numWeeks: '',
                 copago:'',
             },
             observations:[],
@@ -77,7 +76,7 @@ class CreateCitaForm extends Component {
             }
         }), () => {
             this.props.getScheduleCitas(this.state.dataSchedule);
-            alert(JSON.stringify(this.state.dataSchedule.weekDays));
+             
         });
     }
 
@@ -89,7 +88,7 @@ class CreateCitaForm extends Component {
     
         if (checked) {
              
-            updatedWeekDays[value] = { sessions: 1, startHour: new Date() };  
+            updatedWeekDays[value] = { sessions: 1, startHour: '06:00 AM' };  
         } else {
             delete updatedWeekDays[value];  
         }
@@ -133,6 +132,37 @@ class CreateCitaForm extends Component {
             );
         });
     }
+    renderListHours = () => {
+        const hoursList = this._generateTimeIntervals();
+        return hoursList.map((hour) => (
+            <option key={hour} value={hour}>
+                {hour}
+            </option>
+        ));
+    };
+    _generateTimeIntervals=()=> {
+        const startTime = new Date(0, 0, 0, 6, 0); 
+        const endTime = new Date(0, 0, 0, 19, 0);  
+        const intervals = [];
+        
+        while (startTime <= endTime) {
+            const hours = startTime.getHours();
+            const minutes = startTime.getMinutes();
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+    
+            // Formatear horas y minutos con ceros delante
+            const formattedHours = (hours % 12 === 0 ? 12 : hours % 12).toString().padStart(2, '0');
+            const formattedMinutes = minutes.toString().padStart(2, '0');
+    
+            intervals.push(`${formattedHours}:${formattedMinutes} ${ampm}`);
+            startTime.setMinutes(startTime.getMinutes() + 15); 
+        }
+    
+        return intervals;
+    }
+
+    
+    
     renderObservations = () => {
         if (this.state.observations.length > 0) {
             return (
@@ -153,6 +183,18 @@ class CreateCitaForm extends Component {
     handleNumSessionByDay = (event,day) => {
         let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
         updatedWeekDays[day].sessions=event.target.value
+        this.setState(prevState => ({
+            dataSchedule: {
+                ...prevState.dataSchedule,
+                weekDays: updatedWeekDays
+            }
+        }), () => {
+            this.props.getScheduleCitas(this.state.dataSchedule);
+        });
+    }
+    handleStartHourByDay = (event,day) => {
+        let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
+        updatedWeekDays[day].startHour=event.target.value
         this.setState(prevState => ({
             dataSchedule: {
                 ...prevState.dataSchedule,
@@ -200,11 +242,11 @@ class CreateCitaForm extends Component {
                 this._openErrorAlert(error)
             })
     }
-    handleNumCitas=(event)=>{
+    handleNumWeeks=(event)=>{
         this.setState(prevState => ({
             dataSchedule: {
                 ...prevState.dataSchedule,
-                numCitas: event.target.value
+                numWeeks: event.target.value
             }
         }),() => {
             this.props.getScheduleCitas(this.state.dataSchedule);
@@ -239,15 +281,43 @@ class CreateCitaForm extends Component {
     _getSessionByWeek = () => {
         let updatedWeekDays = { ...this.state.dataSchedule.weekDays }; 
         let suma = 0;
-        
-         
         for (const day in updatedWeekDays) {
-             
-            suma = suma + updatedWeekDays[day].sessions; 
+            suma = suma + parseInt(updatedWeekDays[day].sessions); 
         }
-        
         return suma;
     }
+    renderNumSessionsSelect = (day) => {
+          
+
+         
+        return this.state.dataSchedule.weekDays[day] ? (
+            <div className="select-numtype-sessions">
+                <select
+                    value={this.state.dataSchedule.weekDays[day].sessions}
+                    onChange={(e) => this.handleNumSessionByDay(e, day)}
+                >
+                    {this.renderListNumSessions()}
+                </select>
+            </div>
+        ) : null;
+    };
+    renderStartHourSelect = (day) => {
+          
+
+         
+        return this.state.dataSchedule.weekDays[day] ? (
+            <div className="select-numtype-sessions">
+                <select
+                    value={this.state.dataSchedule.weekDays[day].startHour}
+                    onChange={(e) => this.handleStartHourByDay(e, day)}
+                >
+                    {this.renderListHours()}
+                </select>
+            </div>
+        ) : null;
+    };
+    
+    
     
     render() {
         return (
@@ -294,22 +364,9 @@ class CreateCitaForm extends Component {
                                             {day.charAt(0).toUpperCase() + day.slice(1)}
                                         </label>
                                     </div>
-                                    <div className="select-numtype-sessions">
-                                        <select onChange={(e) => this.handleNumSessionByDay(e, day)}>
-                                            {this.renderListNumSessions()}
-                                        </select>
-                                    </div>
-                                    <div className="get-date-start">
-                                        <DatePicker
-                                            selected={this.state.dataSchedule.weekDays[day]?.startHour}  
-                                            onChange={(time) => this.handleStartDateChangeByDay(time, day)}  
-                                            showTimeSelectOnly
-                                            timeFormat="HH:mm"
-                                            timeIntervals={15} 
-                                            dateFormat="HH:mm"  
-                                            timeCaption="Hora"  
-                                        />
-                                    </div>
+                                        {this.renderNumSessionsSelect(day)}
+                                        {this.renderStartHourSelect(day)}
+
 
                                 </div>
                             ))}
@@ -318,23 +375,24 @@ class CreateCitaForm extends Component {
                     )}
 
                     </div>
-                    <p>{this._getSessionByWeek()}</p>
                 </div>
                 <div className="get-schedule-cita">
                     <div className="select-numtype-sessions">
-                        <label>Sesiones:</label>
-                        <select onChange={this.handleNumSessionByDay}>
-                            {this.renderListNumSessions()}
-                        </select>
-                    </div>
-                    <div className="select-numtype-sessions">
-                        <label>Dias</label>
+                        <label>Semanas</label>
                         <input 
-                            placeholder="Numero días"
+                            placeholder="Numero Semanas"
                             autocomplete="off" 
                             type="text" 
-                            onChange={this.handleNumCitas}
+                            onChange={this.handleNumWeeks}
                         
+                        />
+                    </div>
+                    <div className="show-num-sessions">
+                        <label>num Semanas:</label>
+                        <input
+                            type="text"
+                            placeholder={this._getSessionByWeek()}
+                            readOnly
                         />
                     </div>
                     <div className="show-num-sessions">

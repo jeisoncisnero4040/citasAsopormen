@@ -24,7 +24,7 @@
 
 }
 .show-num-sessions{
-    width: 30%;
+    width: 28%;
     margin-left: 5%;
     
 }
@@ -32,11 +32,14 @@
     height: 8px;
     background: #ccc;
 }
+.show-num-sessions label{
+    font-size: 90%;
+}
 
 
 
 .get-date-start {
-    width: 50%;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -95,6 +98,8 @@
 .option-day-to-create-schedule{
     display:flex;
     align-items: center;
+    margin: 0%;
+    padding: 0%;
 }
 .dropdown-select-days-list-days{
     width: 50%;

@@ -1,0 +1,37 @@
+.update-client-forms {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; /* Permite que los elementos se ajusten cuando la pantalla sea más pequeña */
+}
+
+.form-to-update-cleint {
+    width: 30%;
+    margin-right: 3%;
+}
+
+/* Pantallas medianas (tablets, 768px) */
+@media (max-width: 768px) {
+    .update-client-forms {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .form-to-update-cleint {
+        width: 80%;
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+}
+
+/* Pantallas pequeñas (móviles, 480px) */
+@media (max-width: 480px) {
+    .form-to-update-cleint {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .update-client-forms {
+        padding: 10px;
+    }
+}

@@ -4,7 +4,9 @@ import RequestPasswordForm from "./RequestPasswordForm";
 
 class RequestPasswordClients extends IndexClients{
     renderForm = () => {
-        return <div className="wrapper"><RequestPasswordForm/></div>; 
+        return <div className="wrapper-login">
+            < RequestPasswordForm/>
+        </div>; 
     };
 
 }

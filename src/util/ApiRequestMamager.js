@@ -5,13 +5,9 @@ class ApiRequestManager {
     getToken = () => {
         return localStorage.getItem('authToken')
     }
-
- 
     setToken = (newToken) => {
         localStorage.setItem('authToken', newToken);
     }
-
- 
     handleAuthError = (error) => {
         if(!error.response){
             throw  "Uppps al parecer estamos teniendo un problema con la red"
@@ -23,7 +19,6 @@ class ApiRequestManager {
             throw error.response.data.error?error.response.data.error:'error al hacer la peticion'  
         }
     }
-
     postMethod = async (url, payload) => {
         const token = this.getToken();
         try {
@@ -47,8 +42,6 @@ class ApiRequestManager {
             return this.handleAuthError(error);
         }
     }
-
-     
     getMethod = async (url) => {
 
         const token = this.getToken();

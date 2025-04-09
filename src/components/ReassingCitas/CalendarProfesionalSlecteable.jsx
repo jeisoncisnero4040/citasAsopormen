@@ -54,7 +54,7 @@ class CalerdarProfesionalSelecteable extends ProfesionalCalendar {
             this.props.getUpdateIdsSelected(this.state.idsSelected)
         });
     };
-    renderDeleteButton = (id, tiempo,estado) => {
+    _renderButtons= (id, tiempo,estado) => {
         if(estado==='Programada'){
             return (
                 <div key={id} className="checkbox">

@@ -1,0 +1,44 @@
+.citas-clients{
+    width: 100%;
+    height: 'auto';
+    background-image:  url('../../assets/background.clients.2.png'),
+    url('../../assets/background.clients.png');
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.citas-client-wrapper{
+    width: 80%;
+    margin-top: 5%;
+    margin-bottom: 5%;
+    background-color: #EAEAEA;
+    border-radius: 20px;
+    padding: 1% 5%;
+}
+.container-citas-client{
+    margin: 0%;
+    padding: 0%;
+    width: 100vw;
+    overflow-x: hidden;
+}
+@media (max-width: 1024px) {
+    .citas-client-wrapper {
+        width: 90%;
+        padding: 3% 5%;
+    }
+}
+
+@media (max-width: 768px) {
+    .citas-client-wrapper {
+        width: 95%;
+        padding: 4% 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    .citas-client-wrapper {
+        width: 100%;
+        padding: 0%;
+    }
+}

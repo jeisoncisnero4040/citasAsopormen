@@ -269,50 +269,57 @@ class ReassingCitasForm extends React.Component {
     }
 
     _checkSchedule = () => {
-        if (this.state.showTwoCalendars) {
+
+        const weekdays = this.state.schedule.weekDays??null;
+        if(!weekdays){
             return null;
         }
-        const weekdays = this.state.schedule.weekDays;
-        const startDate = new Date(this.state.schedule.startDate);
-        const durationInHours = this.state.duration / 60;
-        const durationCita = this.state.schedule.sessionsNum * durationInHours;
-
-        const hourStart = startDate.getHours();
-        const hourFinish = hourStart + durationCita;
-
+    
         let alertMessage = 'Alerta\n';
-        if (weekdays.includes("domingo")) {
+        if (weekdays['domingo']) {
             alertMessage += 'Has seleccionado el día domingo que no es día laborable.\n';
         }
-
-        if (weekdays.includes("sabado") && (hourStart >= 12 || hourFinish >= 12)) {
-            alertMessage += 'El horario seleccionado es el sábado después de las 12pm.\n';
+    
+        if (weekdays['sabado']) {
+            
+            const startDateInString = weekdays['sabado'].startHour;
+            const startDate = this.stringToTime(startDateInString);  
+            const numSessions = weekdays['sabado'].sessions;
+            const duration = this.state.procedure.duraccion;  
+            const totalDurationInMinutes = numSessions * duration;
+            const hourFinish = new Date(startDate);
+            hourFinish.setMinutes(hourFinish.getMinutes() + totalDurationInMinutes); 
+            const hourFinishIn24Format = hourFinish.getHours();
+            
+            if (hourFinishIn24Format >= 12) {
+                alertMessage += 'El horario seleccionado es el sábado después de las 12pm. \n';
+            }
         }
-
-        if (hourStart < 5) {
-            alertMessage += "El horario seleccionado es antes de las 5am.\n";
-        } else if (hourFinish > 19) {
-            alertMessage += "El horario seleccionado es después de las 7pm.\n";
-        }
-
+        
         if (alertMessage !== 'Alerta\n') {
             alertMessage += '¿Seguro que deseas continuar?';
             return alertMessage.trim();
+        } else {
+            return null;
         }
-        return null;
     }
 
     _getBodyRequests = () => {
         if (this.state.showTwoCalendars) {
             return {
                 'ced_usu': this.props.user.cedula,
-                'registro': this.props.user.usuario.trim(),
+                'usuario': this.props.user.usuario.trim(),
                 'cedprof': this.state.profesional_2.cedula,
+                'profesional_1':this.state.profesional.name?this.state.profesional.name.trim():null,
+                'profesional_2':this.state.profesional_2.name?this.state.profesional_2.name.trim():null,
                 'ids': this.state.selectedIds
             };
         }
         const startDate = new Date(this.state.schedule.startDate);
         startDate.setHours(startDate.getHours() - 5);
+
+        const numcitasByWeek=Object.keys(this.state.schedule.weekDays).length;
+        const numcitas=numcitasByWeek*this.state.schedule.numWeeks;
         
         return {
             'ced_usu': this.props.user.cedula,
@@ -345,6 +352,9 @@ class ReassingCitasForm extends React.Component {
             'num_citas': this.state.schedule.numCitas,
             'copago':this.state.schedule.copago??'No aplica',
             'num_sessions': this.state.schedule.sessionsNum,
+            'num_citas': numcitas,
+            'num_sessions_total': this._getSessionByWeek()*this.state.schedule.numWeeks,
+            'numWeeks':this.state.schedule.numWeeks,
 
             'all_sessions':this.state.cita.cantidad,
             'saved_sessions':this.state.cita.reasignadas,
@@ -352,6 +362,14 @@ class ReassingCitasForm extends React.Component {
             'id':this.state.cita.id
 
         };
+    }
+    _getSessionByWeek = () => {
+        let updatedWeekDays = { ...this.state.schedule.weekDays }; 
+        let suma = 0;
+        for (const day in updatedWeekDays) {
+            suma = suma + parseInt(updatedWeekDays[day].sessions); 
+        }
+        return suma;
     }
 
     _buildUrl = () => {

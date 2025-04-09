@@ -151,14 +151,8 @@ class Procedures extends Component {
                         Recordatorio whatsapp
 
                     </label>
-                    <label>
-                    <input
-                            type="checkbox"
-                            checked={this.state.procedureSelected.sendWhatsappConfirmation || false}
-                            onChange={this.handleChangeInCheckBoxWhatsappNotification}
-                        />
-                        Enviar confirmación de programación
-                    </label>
+
+
                 </div>
                 <div>
                     <Warning

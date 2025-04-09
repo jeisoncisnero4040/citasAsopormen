@@ -14,13 +14,21 @@ class FormUpdateEmailClient extends FormUpdatePasswordClient {
             clientCodigo: "",
             loading: false, 
             SuccesIsOpen:false,
-            SuccesMsm:''
+            info:'',
+            title:'',
+            password:''
         };
     }
 
     _setEmail = (newEmail) => {
         this.setState({ email: newEmail }); 
     };
+    _setPassword=(newPassword)=>{
+        this.setState({password:newPassword})
+    }
+    handlepassword=(event)=>{
+        this._setPassword(event.target.value)
+    }
 
     handleNewEmail = (event) => {
         this._setEmail(event.target.value);
@@ -47,51 +55,61 @@ class FormUpdateEmailClient extends FormUpdatePasswordClient {
         this._setLoading(true)
         this.requestManager.postMethod(url,body)
             .then(response=>{
-                this._openModalSucces("Email actualizado correctamente")
+                this._openModalSucces("CAMBIO DE CORREO","Email Actualizado Con Éxito")
                 this._setEmail('')
             })
             .catch(error=>{
-                this._openModal(error)
+                this._openModalSucces("Error",error)
             })
-            .finally(this._setLoading(false))
+            .finally(()=>this._setLoading(false))
     }
 
     render() {
-        const { email, error, loading,SuccesMsm } = this.state;
+        const { email, error, loading,info,title,password } = this.state;
 
         return (
-            <div className="container-login-clients">
-                <div className="login-clients">
-                    <div className="login-clients-header">
-                        <p>Portal de usuarios</p>
-                    </div>
+            <div className="container-form-update-client">
+                
+                <div className="form-update-clients-labels-and-footer">
+                    <p className="subtittle-form-update-client">EMAIL</p>
 
-                    <div className="login-clients-labels-and-footer">
-                        <p className="subtitle">Actualizar Email</p>
+                    <form onSubmit={this.handleSubmit}>
+                        <div className="form-update-clients-insert-data">
+                            <label htmlFor="email">
+                                Contraseña
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                placeholder="Favor ingresar contraseña"
+                                value={password}
+                                onChange={this.handlepassword}
+                                required
+                            />
+                        </div>
+                        <div className="form-update-clients-insert-data">
+                            <label htmlFor="email">
+                                Nuevo Correo
+                            </label>
+                            <input
+                                type="email"
+                                id="email"
+                                placeholder="Favor Confirmar su  nuevo correo electronico"
+                                value={email}
+                                onChange={this.handleNewEmail}
+                                required
+                            />
+                        </div>
+                        
 
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="login-clients-insert-data">
-                                <label htmlFor="email">
-                                    Ingrese Su Nuevo Email
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    placeholder="Favor Confirmar su  nuevo correo electronico"
-                                    value={email}
-                                    onChange={this.handleNewEmail}
-                                    required
-                                />
-                            </div>
-
-                            <div className="login-clients-button-login">
-                                <button type="submit" disabled={loading}>
-                                    {loading ? "Cargando..." : "Continuar"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div className="update-clients-button-update">
+                            <button type="submit" disabled={loading}>
+                                {loading ? "Cargando..." : "Continuar"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
+                
 
                 <div>
                     <Warning
@@ -104,7 +122,8 @@ class FormUpdateEmailClient extends FormUpdatePasswordClient {
                     <Succes
                         isOpen={this.state.SuccesIsOpen}
                         onClose={() => this._setSuccesIsOpen(false)}
-                        errorMessage={SuccesMsm}
+                        info={info}
+                        title={title}
                     />
                 </div>
             </div>

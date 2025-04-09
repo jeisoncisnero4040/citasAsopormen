@@ -1,8 +1,7 @@
 import React from "react";
 import Constants from '../../js/Constans';
 import ApiRequestManager from "../../util/ApiRequestMamager.js";
-import Warning from "../Warning";
-import logo from '../../../src/assets/logo.png'
+import Succes from "../Succes.jsx";
 
 class RequestPasswordForm extends React.Component {
     requestManager = new ApiRequestManager();
@@ -13,11 +12,22 @@ class RequestPasswordForm extends React.Component {
             selectedEmailAsReceptor: false,
             selectedMobileAsReceptor: false,
             loading: false,
-            warningIsOpen: false,
-            errorMessage: "",
+            SuccesIsOpen:false,
+            info:"",
+            title:"",
         };
         
     }
+    _setSuccesMsm=(newMesage)=>{
+        this.setState({ info: newMesage });
+    }
+    _setTitleSucces=(newSucces)=>{
+        this.setState({ tittle: newSucces });
+    }
+    _setSuccesIsOpen=(newStatus)=>{
+        this.setState({SuccesIsOpen: newStatus });
+    }
+
 
     handleInputIdentityNumber = (event) => {
         this.setState({ identityNumber: event.target.value });
@@ -42,7 +52,7 @@ class RequestPasswordForm extends React.Component {
         const { selectedEmailAsReceptor, selectedMobileAsReceptor } = this.state;
 
         if (!selectedEmailAsReceptor && !selectedMobileAsReceptor) {
-            this.openWarning("No se ha seleccionado ningún método de envío");
+            this._openModalSucces("ERROR","No se ha seleccionado ningún método de envío");
             return;
         }
 
@@ -65,21 +75,22 @@ class RequestPasswordForm extends React.Component {
         this.requestManager
             .postMethod(url, body)
             .then((response) => {
-                // Manejar la respuesta aquí si es necesario
+                this._openModalSucces("Contraseña actaulizada".toUpperCase(),"se ha enviado la contraseña nueva al medio seleccionado")
             })
             .catch((error) => {
-                this.openWarning(error);
+                this._openModalSucces("Error",error)
             })
             .finally(() => {
                 this.setState({ loading: false });
             });
     };
 
-    openWarning = (error) => {
+    _openModalSucces = (title,info) => {
         this.setState({
-            errorMessage: error,
-            warningIsOpen: true,
-        });
+            title:title,
+            info:info,
+            SuccesIsOpen:true
+        })
     };
     
     redirectToIndexPage=()=>{
@@ -89,9 +100,6 @@ class RequestPasswordForm extends React.Component {
     render() {
         return (
             <div className="container-login-clients">
-                <div className="header-and-logo">
-                    <img src={logo} alt="logo" />
-                </div>
 
                 <div className="login-clients">
                     <div className="login-clients-header">
@@ -99,7 +107,8 @@ class RequestPasswordForm extends React.Component {
                     </div>
 
                     <div className="login-clients-labels-and-footer">
-                        <p className="subtitle">Solicitar Contraseña</p>
+                        <p className="subtitle">Ingrese datos para solicitar contraseña</p>
+                        <p className="subtitle">Una vez solicites la contraseña cerifica el canal de envío </p>
 
                         <form onSubmit={this.handleSubmit}>
                             <div className="login-clients-insert-data">
@@ -134,7 +143,7 @@ class RequestPasswordForm extends React.Component {
                             </div>
 
                             <div className="login-clients-button-login">
-                                <button type="submit">{this.state.loading ? 'Solicitando' : 'Continuar'}</button>
+                                <button type="submit">{this.state.loading ? 'Solicitando' : 'Solicitar Contraseña'}</button>
                             </div>
                         </form>
                         <div className="login-clients-request-password">
@@ -144,10 +153,11 @@ class RequestPasswordForm extends React.Component {
                 </div>
 
                 <div>
-                    <Warning
-                        isOpen={this.state.warningIsOpen}
-                        onClose={() => this.setState({ warningIsOpen: false })}
-                        errorMessage={this.state.errorMessage}
+                    <Succes
+                        isOpen={this.state.SuccesIsOpen}
+                        onClose={() => this._setSuccesIsOpen(false)}
+                        info={this.state.info}
+                        title={this.state.title}
                     />
                 </div>
             </div>

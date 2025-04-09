@@ -1,48 +1,35 @@
 .index-clientsPage {
     width: 100%;
     height: 100%;
-    background-color: #fff;
-}
-
-.index-clientsPage-body {
-    width: 100%;
+    margin: 0;
+    padding: 0;
     display: flex;
-    height: 90%;
-    background-color: #fff;
-}
-
-.index-clientsPage-left,
-.index-clientsPage-rigth {
-    height: 100%;
-    width: 33%;
-    background-color: #fff;
-}
-
-.index-clientsPage-center {
-    height: 100%;
-    width: 33%;
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    background-color: #fff; 
+    background-image: url('../../assets/logo.clientes.png'), 
+                      url('../../assets/background.clients.4.png'),  
+                      url('../../assets/background.clients.3.png'),
+                      url('../../assets/background.clients.2.png'),
+                      url('../../assets/background.clients.png');
+    background-size: 220px 220px, 400px 320px, 1100px 320px, cover, cover;  
+    background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat; 
+    background-position: 60px 00px, top left, right 450px, center, center; /* Cambia 'left 70px' a 'left 150px' */
+    
+    
 }
 
-.index-clientsPage-footer {
-    width: 100%;
-    background: #1b0dd3;
-    text-align: center;
-    padding: 0;
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    z-index: 1000; 
-    color: #f1f1f1;
+
+.wrapper-login{
+    width: 500px;
+    height: 80%;
+    background-color: #FFFFFF;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+    
+
 }
-.login-clients-checkbox-options{
-    display: flex;
-    flex-direction: column;
-}
+
+
 
 
 @media screen and (max-width: 760px) {
@@ -57,4 +44,39 @@
         height: 100%;
     }
 }
+@media screen and (max-width: 480px) {
+    .index-clientsPage {
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-image: url('../../assets/logo.clientes.png'), 
+                          url('../../assets/background.clients.4.png'),  
+                          url('../../assets/background.clients.3.png'),
+                          url('../../assets/background.clients.2.png'),
+                          url('../../assets/background.clients.png');
+        background-size: 80px 80px, 400px 320px, 1100px 320px, cover, cover;  
+        background-repeat: no-repeat, no-repeat, no-repeat, no-repeat, no-repeat; 
+        background-position: center 10px, top left, right 450px, center, center; /* Cambia 'left 70px' a 'left 150px' */
+        
+        
+    }
+    
+    
+    .wrapper-login{
+        width: 500px;
+        height: 80%;
+        background-color: #FFFFFF;
+        border-radius: 10px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5);
+        margin-top: 40px;
+
+        
+    
+    }
+}
+
 

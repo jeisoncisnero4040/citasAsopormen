@@ -13,7 +13,11 @@ import IndexClients from "./components/clientsPage/indexClients";
 import RequestPasswordClients from "./components/clientsPage/RequestPasswordClients";
 import ClientsPage from "./components/clientsPage/ClientsPage";
 import HistoryChatbotPage from "./components/HistoyChatbot/HistoryChatbotPage";
-
+import UsuariosCitas from "./components/clientsPage/UsuariosCitas";
+import UpdateUser from "./components/clientsPage/UpdateUser";
+import Sedes from "./components/clientsPage/Sedes";
+import UsuarioHistory from "./components/clientsPage/UsuarioHistory";
+import IndexOrdersCase from "./components/caseOrdersPage/Components/index";
 
 
 function App() {
@@ -32,10 +36,16 @@ function App() {
               <Route path="/formcitas" element={<FormCitas />} />
               <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
               <Route path="/reasignador_citas" element={<ReassingCitasPage/>}/> 
+              <Route path="/orders" element={<IndexOrdersCase/>}/> 
 
           </Route>
           <Route element={<ProtectedRouteClient/> }>
-              <Route path="/clientes_citas" element={<ClientsPage/>}/> 
+              <Route path="/clientes_citas" element={<ClientsPage/>}/>
+              <Route path="/clientes_citas/citas" element={<UsuariosCitas/>}/>  
+              <Route path="/clientes_citas/actualizar-datos" element={<UpdateUser/>}/>  
+              <Route path="/clientes_citas/nuestras-sedes" element={< Sedes />}/> 
+              <Route path="/clientes_citas/historial" element={<UsuarioHistory  />}/>   
+              
           </Route>
           
            

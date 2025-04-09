@@ -1,13 +1,47 @@
-.wrapper-citas-client{
-    display:flex;
+
+.citas-programed-container{
+    display: flex;
+    flex-direction: column;
+    max-width: 100%;
+     
+}
+.list-citas-client {
+    padding-left: 15%;
     flex-direction: column;
     width: 100%;
     align-items: center;
     justify-content: center;
-    
+    overflow-y: scroll;
+    height: 70vh;
+    overflow-x: hidden;
+
+     
+    -ms-overflow-style: none;   
+    scrollbar-width: thin; 
+}
+
+ 
+.list-citas-client::-webkit-scrollbar {
+    width: 20px;  
+}
+
+.list-citas-client::-webkit-scrollbar-track {
+    background: #FFFFFF; /* Color del fondo del scrollbar */
+    border-radius: 10px;
+}
+
+.list-citas-client::-webkit-scrollbar-thumb {
+    background: #E7D600; /* Color de la barra de desplazamiento */
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+.list-citas-client::-webkit-scrollbar-thumb:hover {
+    background: #E7D600; /* Color al pasar el mouse */
 }
 .cita-card{
     width: 70%;
+    margin-bottom: 4%;
 
 }
 .citas-client-no-found{
@@ -27,8 +61,74 @@
     color: gray;
     font-size: 25px;
 }
-@media screen and (max-width: 768px) {
-    .cita-card{
-        width: 100%;
+.subtittle-citas {
+    display: flex;
+    align-items: center;
+    gap: 10px; 
+    padding :0% 15%;
+}
+
+.subtittle-citas p {
+    
+    font-size: 18px;
+    white-space: nowrap;  
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    color: #4c69ff;
+}
+
+.subtittle-citas .points-line {
+    flex-grow: 1;  
+    border-bottom: 2px dashed #E7D600;;  
+    height: 0;  
+    margin-left: 10px;  
+    white-space: nowrap;
+    overflow: hidden;  
+    color: #E7D600;
+}
+.wrapper-citas-client-loading{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+@media (max-width: 1024px) {
+    .list-citas-client {
+        padding-left: 10%;
+    }
+    .cita-card {
+        width: 80%;
+        margin-bottom: 6%;
+    }
+    .subtittle-citas {
+        padding: 0% 10%;
     }
 }
+
+@media (max-width: 768px) {
+    .list-citas-client {
+        padding-left: 5%;
+    }
+    .cita-card {
+        width: 90%;
+        margin-bottom: 10%;
+    }
+    .subtittle-citas {
+        padding: 0% 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    .list-citas-client {
+        padding-left: 0;
+    }
+    .cita-card {
+        width: 95%;
+        margin-bottom: 12%;
+    }
+    .subtittle-citas {
+        padding: 0% 2%;
+    }
+}
+

@@ -1,10 +1,7 @@
 import React from "react";
 import '../../styles/clientsPage/CardCita.css';
-import profesional from '../../assets/1021799.png';
-import reloj from '../../assets/reloj.png';
-import direcion from '../../assets/direcion.png';
-import cancelar_2 from '../../assets/cancelar_2.png';
 import CancelCitaModal from "./CancelCitaModal";
+import { FaUser, FaChild, FaMapMarkerAlt, FaClock } from "react-icons/fa";
 
 class CardCita extends React.Component {
     constructor(props) {
@@ -15,13 +12,19 @@ class CardCita extends React.Component {
         };
     }
 
-    // Este método puede ser llamado cuando las props cambian
-    static getDerivedStateFromProps(nextProps, nextState) {
-        if (nextProps.cita !== nextState.cita) {
-            return { cita: nextProps.cita };
-        }
-        return null;
+    componentDidMount() {
+        this._setCita(this.props.cita);
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.cita !== this.props.cita) {
+            this._setCita(this.props.cita);
+        }
+    }
+
+    _setCita = (newCita = {}) => {
+        this.setState({ cita: newCita });
+    };
     markCitaAsCancelada = () => {
         this.setState((prevState) => ({
             cita: {
@@ -38,24 +41,33 @@ class CardCita extends React.Component {
         if (statusCita === 'programada') {
             return (
                 <div className="wrapper-button-cancel">
-                    <a className="camcel-cita" onClick={this.openModal}>
-                        <img src={cancelar_2} alt="" />
-                        <p className="text-cancelar">Cancelar</p>
-                        <p className="text-cancelar-small">cita</p>
+                    <a className="camcel-cita" onClick={()=>this.openModal()}>
+                        <p className="text-cancelar">Cancelar Cita</p>
                     </a>
                 </div>
             );
         }
-        return null;
+        else{
+            const statusCita=this._getStatusCita(this.state.cita);
+             
+            return(
+                <div className="wrapper-button-unavaiable">
+                    <a className="camcel-cita" onClick={null}>
+                        <p className="text-cancelar">{this._capitalize(statusCita)}</p>
+                    </a>
+                </div>
+            )
+        }
+         
     };
     
 
-    // Método para obtener el estado de la cita
+     
     _getStatusCita = (cita) => {
         if (!cita) return "Sin estado";
         if (cita.asistida === "1") return "asistida";
         if (cita.cancelada === "1") return "cancelada";
-        if (cita.no_asistida === "1") return "no asistida";
+        if (cita.no_asistida === "1") return "no-asistida";
         return "programada";
     };
 
@@ -103,6 +115,14 @@ class CardCita extends React.Component {
     closeModal = () => {
         this.setState({ isModalOpen: false });
     };
+    _capitalize = (string) => {
+        const words = string.split(" ");
+        return words.map(word => {
+             
+            return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+        }).join(" ");  
+    };
+    
 
     render() {
         const { cita, isModalOpen } = this.state;
@@ -112,53 +132,63 @@ class CardCita extends React.Component {
         const hourStart = this._getMinuteStart(cita);
         const duration = this._getDurationCita(cita);
         const direction = this._getDirectionCita(cita);
-
+        const fecha = `${dayName} ${startDate ? startDate.toLocaleDateString() : "No disponible"} - ${hourStart}`;
 
         return (
             <div className="cita-card-wrapper">
-                <div className={`info-date-card-${statusCita.replace(/ /g, "-")}`}>
-                    <div className="wrapper-status">
-                        <p className="status-cita">{statusCita}</p>
-                    </div>
-                    <br />
-                    <p className="day-name">{dayName}</p>
-                    <p className="fecha">{startDate ? startDate.toLocaleDateString() : "No disponible"}</p>
-                    <p className="hour">{hourStart}</p>
-                </div>
 
                 <div className="info-cita-card">
-                    <div className="static-info-cita">
-                        <div className="name-profesional-cita">
-                            <img src={profesional} alt="" />
-                            <div className="name-profesional-cita-and-procedim">
-                                <p className="profesional-name">{cita.profesional}</p>
-                                <p className="procedim">{cita.procedimiento}</p>
-                            </div>
-                        </div>
-                        <hr />
-                        <div className="name-profesional-cita">
-                            <img src={direcion} alt="" />
-                            <p className="direccion-cita">Dirección: {direction}</p>
-                        </div>
-                        <div className="name-profesional-cita">
-                            <img src={reloj} alt="" />
-                            <p className="duracion-cita">Duración: {duration} Minutos</p>
-                        </div>
-                    </div>
-                    <div className="vertical-line"></div>
-                    <div className="options">
-                        {this.renderOptions()}
-                    </div>
-
+                    
+                <div className={`header-${statusCita}`}>
+                    <p className={statusCita}>{fecha.toUpperCase()}</p>
                 </div>
 
-                {/* Modal */}
-                <CancelCitaModal
-                    isOpen={isModalOpen}
-                    onClose={this.closeModal}
-                    citaCanceled={this.markCitaAsCancelada}
-                    cita={cita}
-                />
+                <div className='cita-info-item'>
+                    <div className="key-cita-info-item">
+                        <FaUser className={`icono-pro-${statusCita}`} />
+                        <p className={statusCita}>Profesional:</p>
+                    </div>
+                    <p>{cita.profesional}</p>
+                </div>
+
+                <div className='cita-info-item'>
+                    <div className="key-cita-info-item">
+                        <FaChild className={`icono-${statusCita}`} />
+                        <p className={statusCita}>Cita:</p>
+                    </div>
+                    <p>{cita.procedimiento}</p>
+                </div>
+
+                <div className='cita-info-item'>
+                    <div className="key-cita-info-item">
+                        <FaMapMarkerAlt className={`icono-${statusCita}`} />
+                        <p className={statusCita}>Dirección:</p>
+                    </div>
+                    <p>{direction}</p>
+                </div>
+
+                <div className='cita-info-item'>
+                    <div className="key-cita-info-item">
+                        <FaClock className={`icono-${statusCita}`} />
+                        <p className={statusCita}>Duración:</p>
+                    </div>
+                    <p>{duration} Minutos</p>
+                </div>
+
+                    {/* Modal */}
+                    <CancelCitaModal
+                        isOpen={isModalOpen}
+                        onClose={this.closeModal}
+                        citaCanceled={this.markCitaAsCancelada}
+                        cita={this.props.cita}
+                    />
+
+                </div>
+                <div className={`options-${statusCita === 'programada' ? 'programada' : 'no-programada'}`}>
+                    {this.renderOptions()}
+                </div>
+
+
             </div>
         );
     }

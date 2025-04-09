@@ -3,6 +3,7 @@ import Modal from 'react-modal';
 import '../../styles/clientsPage/CancelCitaModal.css'
 import ApiRequestManagerClient from "../../util/ApiRequestManagerClient";
 import Constants from "../../js/Constans";
+import { FaTimes} from "react-icons/fa";
 
 Modal.setAppElement('#root');
 
@@ -37,14 +38,20 @@ class CancelCitaModal extends React.Component {
         this.props.onClose(); 
     };
 
+
     cancelCita=()=>{
         if(!this.state.razon){
             this.setError("La razon por la cual se cancela la cita es requerida");
             return;
         }
+        if(!this._isCitaOnTime()){
+            this.setError("La cita que desea cancelar ya no esta disponible para esta acción");
+            return;
+        }
         let body=this._createPayload();
-        let url=this._getUrl()
+        let url=this._getUrl();
         this._fetchRequest(url=url,body=body);
+        this.props.onClose();
 
     }
     _getUrl=()=>{
@@ -52,6 +59,7 @@ class CancelCitaModal extends React.Component {
     }
     _createPayload = () => {
         const { cita, razon } = this.state;
+        
         return {
             ids: cita.ids,
             fecha_cita: cita.start.replace('T',' ').slice(0,16),
@@ -69,9 +77,17 @@ class CancelCitaModal extends React.Component {
             })
 
     }
+    _isCitaOnTime = () => {
+        const now = new Date();
+        const dateCita = new Date(this.state.cita.start);
+        const diferenciaMs = dateCita - now;
+        const diferenciaHoras = diferenciaMs / (1000 * 60 * 60);
+        return diferenciaHoras > 6;
+    };
+    
     render() {
         const { isOpen, onClose } = this.props;
-        const { razon } = this.state;
+        const { razon, error } = this.state;
 
         return (
             <Modal
@@ -84,42 +100,55 @@ class CancelCitaModal extends React.Component {
                         right: 'auto',
                         bottom: 'auto',
                         marginRight: '-50%',
-                        transform: 'translate(-50%, -50%)',
+                        transform: 'translate(-50%, -40%)',
                         padding: '20px',
                         borderRadius: '10px',
                         zIndex: 10000,
                     },
                     overlay: {
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        backgroundColor: 'rgba(0, 0, 0, 0.3)',
                     },
                 }}
             >
                 <div className="form-cancel-cita">
-                    <h2 className="cancel-cita-title">Cancelar Cita</h2>
+                    <div className="title-and-close-button">
+                        <p>CANCELACIÓN DE CITA</p>
+                        <a onClick={this.handleSubmit}><FaTimes /></a>
+                    </div>
+                    <div className="info-cancel-cita">
+                        <p className="subtittle">IMPORTANTE:</p>
+                        <p className="text-info-to-cancel-cita">
+                            • Si no cumple con las condiciones establecidas para cancelaciones,
+                            la cita se registrará como asistida.
+                        </p>
+                        <p className="text-info-to-cancel-cita">
+                            • Si cancela por motivos de salud, deberá presentar un soporte médico
+                            de manera presencial para realizar la modificación correspondiente.
+                        </p>
+                    </div>
                     <div className="label-to-get-razon">
-                        <label className="razon">
-                            Razón para cancelar la cita:
-                        </label>
+                        <label className="razon">Razón:</label>
                         <textarea
                             id="razon"
                             value={razon}
                             onChange={this.handleRazonChange}
-                            rows="4"
+                            rows="6"
                             placeholder="Escribe aquí la razón para cancelar la cita..."
                         ></textarea>
-
                     </div>
                     <div className="button-cancel-cita-modal">
-                        <button onClick={this.handleSubmit}>Salir</button>
-                        <button onClick={this.cancelCita}>Cancelar Cita</button>
+                        <button onClick={this.cancelCita}>Continuar</button>
                     </div>
                     <div className="insert-error-canceling-citas">
-                        <p>{this.state.error??this.state.error}</p>
+                        <p>{error}</p>
                     </div>
                 </div>
             </Modal>
         );
     }
+
+
 }
 
 export default CancelCitaModal;
+

@@ -1,110 +1,118 @@
-.wrapper-card-welcome{
-
-    width: 100%;
-    text-align: center;
-    margin: auto;
-    background: #1b0dd3;
+/* Estilos principales del contenedor */
+.wrapper-card-welcome {
     display: flex;
     align-items: center;
-    height: 100%;
+    justify-content: space-between;  
+    padding: 10px 20px; 
+    background-color: #E7D600; 
+    font-family: 'Montserrat', sans-serif;
+    margin: 0%;  
+    padding: 0%;
 }
-.date{
-  width: 60%;
-  text-align: left;
-  margin-left: 1%;
-  color: white;
-  font-weight: bolder;
-  color: #E7D600;
-  font-size: 20px;
+
+ 
+.redirect-to-home{
+    font-size: 200%;
+    color:#4C69FF ; 
+    margin-left:5%;  
 }
-.name-client-and-dropdown{
-  width: 39%;
-  text-align: right;
+.redirect-to-home :hover{
+  border-radius: 50%;
+  padding:5%;
+  background-color:#4C69FF ;
+  color: #ffffff;
 }
-  
-.dropdown-card-welcome {
-  position: relative;
-  display: inline-block;
+
+ 
+.wrapper-card-welcome p {
+    font-size: 180%;  
+    color: #4C69FF;  
+    text-align: center;  
+    margin: 0; 
+    flex-grow: 1;  
+    font-weight: 800;
+}
+
+ 
+.name-client-and-dropdown {
+    display: flex;
+    align-items: center;  
+    position: relative; 
+}
+
+/* Botón del dropdown */
+.dropdown-card-welcome .dropdown-button {
+    background-color: #E7D600;  
+    color: #4C69FF;  
+    border: none;  
+    padding: 5px 10px; 
+    font-size: 14px; 
+    border-radius: 4px;  
+    cursor: pointer; 
+    font-weight: 600;
 
 }
 
-.dropdown-button {
-  background-color: #1b0dd3;
-  color: white;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-  text-align: right;
-  height: 100%;
-  font-weight: bolder;
-  font: oblique bold 100% cursive;
-  font-family: "Segoe UI";
-  
+.dropdown-card-welcome .dropdown-button:hover {
+    background-color: #E7D600;  
 }
 
-.dropdown-menu-client{
-  position: absolute;
-  left: 0;
-  background-color: #1b0dd3;
-  list-style: none;
-  padding: 5px 0;
-  margin-top: 2%;
-  font-weight: bolder;
-}
-.dropdown-button:hover {
-  background-color: #1b0dd3;
-  color: #E7D600;
-}
-
-.dropdown-menu-client li {
-  padding: 5px;
-  cursor: pointer;
-  text-align: center; 
-  font-family: Arial, Helvetica, sans-serif;
-  color: #fff;
-  border: 1px solid #1b0dd3 ;
+/* Menú desplegable */
+.dropdown-card-welcome .dropdown-menu-client {
+    position: absolute;  
+    top: 40px; 
+    background-color: #E7D600;  
+    border: 1px solid #ccc;  
+    border-radius: 4px;  
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); 
+    list-style: none;  
+    padding: 5px 0;  
+    margin: 0;  
+    z-index: 10;  
+    color: #4C69FF;
 }
 
-.dropdown-menu-client li:hover {
-  color: yellow;
+
+.dropdown-card-welcome .dropdown-menu-client li {
+    padding: 10px 15px; 
+    font-size: 18px; 
+    color: #4C69FF; 
+    cursor: pointer; 
+    font-weight: 700;
+
 }
+
 @media (max-width: 768px) {
   .wrapper-card-welcome{
 
     width: 100%;
     text-align: center;
     margin: auto;
-    background: #1b0dd3;
+    
     display: flex;
     align-items: center;
     height: 100%;
   }
-  .date{
-    width: 50%;
-    text-align: left;
-    margin-left: 0%;
-    font-weight: bolder;
-    color: #E7D600;
-    font-size:120%;
-  }
+
   .name-client-and-dropdown{
     width: 49%;
     text-align: right;
   }
-  .dropdown-button {
-    background-color: #1b0dd3;
-    color: white;
-    border: none;
-    cursor: pointer;
-    width: 100%;
-    text-align: right;
-    height: 100%;
-    font-weight: bolder;
-    font: oblique bold 100% cursive;
-    font-family: "Segoe UI";
-    font-size: 80%;
-    
+  .dropdown-card-welcome .dropdown-button {
+    background-color: #E7D600;  
+    color: #4C69FF;  
+    border: none;  
+    padding: 5px 10px; 
+    font-size: 14px; 
+    border-radius: 4px;  
+    cursor: pointer; 
+    font-weight: 600;
+
   }
+  .wrapper-card-welcome p {
+    font-size: 150%;  
+
+}
 }
 @media (max-width: 480px) {
   .wrapper-card-welcome{
@@ -112,7 +120,6 @@
     width: 100%;
     text-align: center;
     margin: auto;
-    background: #1b0dd3;
     display: flex;
     align-items: center;
     height: 100%;
@@ -130,7 +137,7 @@
     text-align: right;
   }
   .dropdown-button {
-    background-color: #1b0dd3;
+  
     color: white;
     border: none;
     cursor: pointer;
@@ -138,9 +145,15 @@
     text-align: right;
     height: 100%;
     font-weight: bolder;
-    font: oblique bold 100% cursive;
-    font-family: "Segoe UI";
     font-size: 60%;
     
+  }
+  .wrapper-card-welcome p {
+    font-size: 100%;  
+    color: #4C69FF;  
+    text-align: center;  
+    margin: 0; 
+    flex-grow: 1;  
+    font-weight: 800;
   }
 }

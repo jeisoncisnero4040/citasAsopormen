@@ -1,0 +1,104 @@
+.wrapper-contacs-asopormen {
+    display: flex;
+    background-color: #E7D600;
+    width: 100%;
+    height: auto;
+    padding:  0%;
+    margin: 0%;  
+  }
+  
+  .net-asopormen {
+    display: flex;
+    align-items: center; 
+    padding-left: 3%;
+    width: 50%;
+  }
+  
+  .net-asopormen p {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    color: #4c69ff;
+    margin: 0;  
+    margin-right: 10px;  
+  }
+  
+  .social-icons {
+    display: flex; 
+    gap: 7px;  
+  }
+  
+  .social-icons a {
+    font-size: 18px;  
+    color: #4C69FF;  
+    transition: transform 0.3s ease, color 0.3s ease; 
+  }
+  
+  .social-icons a:hover {
+    color: #1A3F91;  
+    transform: scale(1.2);  
+  }
+  
+  .number-asopormen {
+    width: 50%;  
+    display: flex;
+    justify-content: flex-end;  
+    align-items: center;
+    padding-right: 1%;
+  }
+  
+  .phone-icon{
+    font-size: 160%;
+    object-fit: contain; 
+    color:#4c69ff ; 
+    border-radius: 50%;
+    padding: 1.5%;
+    background-color: #FFFFFF;
+  }
+   
+  .number-cel-asopormen {
+      display: flex;
+      flex-direction: column; /* Alinea los elementos en columna */
+      align-items: flex-start; /* Alinea el texto a la izquierda */
+      padding: 10px 20px; /* Espaciado interno */
+      font-family: 'Montserrat', sans-serif; /* Fuente Montserrat */
+      }
+      
+      .number-cel-asopormen p {
+      margin: 0; /* Elimina márgenes */
+      font-weight: 500; /* Peso seminegrita */
+      font-size: 14px; /* Tamaño del texto */
+      color: #4C69FF; /* Color azul */
+      }
+      
+      .number-cel-asopormen p:first-child {
+      font-size: 12px; /* Tamaño más pequeño para el primer texto */
+      text-transform: uppercase; /* Convierte a mayúsculas */
+      margin-bottom: 5px; /* Espaciado entre las dos líneas */
+      }
+      
+      .number-cel-asopormen p:last-child {
+      font-size: 16px; /* Tamaño más grande para el número */
+      font-weight: bold; /* Negrita */
+      }
+      
+  @media screen and (max-width: 480px) {
+      .wrapper-contacs-asopormen {
+          display: block;  
+      }
+      .net-asopormen{
+          width: 100%;
+      }
+      .number-asopormen {
+        width: 100%;  
+        display: flex;
+        justify-content: flex-start;  
+        align-items: center;
+        padding-left: 3%;
+      }
+      .social-icons {
+        display: flex; 
+        gap: 5px;  
+      }
+    }
+    

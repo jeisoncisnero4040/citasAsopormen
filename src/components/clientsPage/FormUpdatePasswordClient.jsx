@@ -3,6 +3,7 @@ import Warning from "../Warning";
 import ApiRequestManagerClient from "../../util/ApiRequestManagerClient";
 import Constants from "../../js/Constans" ;
 import Succes from "../Succes";
+import '../../styles/clientsPage/FormUpdatePasswordClient.css'
 
 
 //este componente comparte el css con el formulario de login-clientes
@@ -18,7 +19,8 @@ class FormUpdatePasswordClient extends React.Component {
             clientCodigo: "",
             loading: false, 
             SuccesIsOpen:false,
-            SuccesMsm:''
+            info:"",
+            title:"",
         };
     }
     componentDidMount=()=>{
@@ -38,7 +40,10 @@ class FormUpdatePasswordClient extends React.Component {
     };
 
     _setSuccesMsm=(newMesage)=>{
-        this.setState({ SuccesMsm: newMesage });
+        this.setState({ info: newMesage });
+    }
+    _setTitleSucces=(newSucces)=>{
+        this.setState({ tittle: newSucces });
     }
     _setSuccesIsOpen=(newStatus)=>{
         this.setState({SuccesIsOpen: newStatus });
@@ -81,9 +86,12 @@ class FormUpdatePasswordClient extends React.Component {
         this._setWarningIsOpen(true);
     };
 
-    _openModalSucces = (message) => {
-        this._setSuccesMsm(message);
-        this._setSuccesIsOpen(true);
+    _openModalSucces = (title,info) => {
+        this.setState({
+            title:title,
+            info:info,
+            SuccesIsOpen:true
+        })
     };
     _getUrl=()=>{
         return `${Constants.apiUrl()}clients/update_password`
@@ -91,6 +99,7 @@ class FormUpdatePasswordClient extends React.Component {
     logout=()=>{
         localStorage.removeItem('authToken');
         localStorage.removeItem('userCitas');
+        localStorage.removeItem('userCitasHistory');
         window.location.href = '/clinico/clientes';
     }
     _createPayloaad=()=>{
@@ -106,7 +115,7 @@ class FormUpdatePasswordClient extends React.Component {
                 this.logout()
             })
             .catch(error=>{
-                this._openModal(error)
+                this._openModalSucces("Error",error)
             })
             .finally(this._setLoading(false))
     }
@@ -114,11 +123,11 @@ class FormUpdatePasswordClient extends React.Component {
     handleSubmit = (event) => {
         event.preventDefault();
         if(!this._checkLengthNewPassword()){
-            this._openModal("La contraseña nueva es muy corta");
+            this._openModalSucces("ERROR","La Contraseña Nueva Es Muy Corta");
             return;
         }
         if (!this._checkPasswordAreEquals()) {
-            this._openModal("Las contraseñas no coinciden.");
+            this._openModalSucces("ERROR","Las Contraseña No Coinciden");
             return;
         }
         let body=this._createPayloaad()
@@ -135,55 +144,51 @@ class FormUpdatePasswordClient extends React.Component {
             warningIsOpen,
             error,
             loading,
-            SuccesMsm,
+            info,title,
         } = this.state;
 
         return (
-            <div className="container-login-clients">
-                <div className="login-clients">
-                    <div className="login-clients-header">
-                        <p>Portal de usuarios</p>
-                    </div>
+            <div className="container-form-update-client">
+        
+                <div className="form-update-clients-labels-and-footer">
+                    <p className="subtittle-form-update-client">CONTRASEÑA</p>
 
-                    <div className="login-clients-labels-and-footer">
-                        <p className="subtitle">Actualizar Contraseña</p>
+                    <form onSubmit={this.handleSubmit}>
+                        {/* Campo para contraseña */}
+                        <div className="form-update-clients-insert-data">
+                            <label htmlFor="new-password">Contraseña</label>
+                            <input
+                                type="password"
+                                id="new-password"
+                                placeholder="Ingrese su nueva contraseña"
+                                value={newPassword}
+                                onChange={this.handleNewPassword}
+                                required
+                            />
+                        </div>
 
-                        <form onSubmit={this.handleSubmit}>
-                            {/* Campo para contraseña */}
-                            <div className="login-clients-insert-data">
-                                <label htmlFor="new-password">Nueva Contraseña</label>
-                                <input
-                                    type="password"
-                                    id="new-password"
-                                    placeholder="Ingrese su nueva contraseña"
-                                    value={newPassword}
-                                    onChange={this.handleNewPassword}
-                                    required
-                                />
-                            </div>
+                        <div className="form-update-clients-insert-data">
+                            <label htmlFor="confirm-password">
+                                Confirme Nueva Contraseña
+                            </label>
+                            <input
+                                type="password"
+                                id="confirm-password"
+                                placeholder="Favor Confirmar nueva contraseña"
+                                value={confirmationNewPassword}
+                                onChange={this.handleNewPasswordConfirmation}
+                                required
+                            />
+                        </div>
 
-                            <div className="login-clients-insert-data">
-                                <label htmlFor="confirm-password">
-                                    Confirme Nueva Contraseña
-                                </label>
-                                <input
-                                    type="password"
-                                    id="confirm-password"
-                                    placeholder="Favor Confirmar nueva contraseña"
-                                    value={confirmationNewPassword}
-                                    onChange={this.handleNewPasswordConfirmation}
-                                    required
-                                />
-                            </div>
-
-                            <div className="login-clients-button-login">
-                                <button type="submit" disabled={loading}>
-                                    {loading ? "Cargando..." : "Continuar"}
-                                </button>
-                            </div>
-                        </form>
-                    </div>
+                        <div className="update-clients-button-update">
+                            <button type="submit" disabled={loading}>
+                                {loading ? "Cargando..." : "Continuar"}
+                            </button>
+                        </div>
+                    </form>
                 </div>
+                
 
                 <div>
                     <Warning
@@ -196,7 +201,8 @@ class FormUpdatePasswordClient extends React.Component {
                     <Succes
                         isOpen={this.state.SuccesIsOpen}
                         onClose={() => this._setSuccesIsOpen(false)}
-                        errorMessage={SuccesMsm}
+                        info={info}
+                        title={title}
                     />
                 </div>
             </div>

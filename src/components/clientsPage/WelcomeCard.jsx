@@ -1,89 +1,46 @@
-import React from "react";
-import '../../styles/clientsPage/WelcomeCard.css'
+import { useState } from "react";
+import { FaHome } from "react-icons/fa";
+import "../../styles/clientsPage/WelcomeCard.css";
+import { useNavigate } from "react-router-dom";
 
-class WelcomeCard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: "",
-      isOpen: false,  
+function WelcomeCard({ client,title }) {
+    const [isOpen, setIsOpen] = useState(false);
+
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
     };
-  }
+    const navigate = useNavigate();
 
-  setDate = (newDate) => {
-    this.setState({
-      date: newDate,
-    });
-  };
+    const _redirectToHome=()=>{
+      navigate("/clientes_citas", { state:client});
+    }
 
-  formatDate = (date) => {
-    const meses = [
-      "enero",
-      "febrero",
-      "marzo",
-      "abril",
-      "mayo",
-      "junio",
-      "julio",
-      "agosto",
-      "septiembre",
-      "octubre",
-      "noviembre",
-      "diciembre",
-    ];
+    const logout = () => {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("userCitas");
+        localStorage.removeItem('userCitasHistory');
+        window.location.href = "/clinico/clientes";
+    };
 
-    const dia = date.getDate();
-    const mes = meses[date.getMonth()];
-    const anio = date.getFullYear();
-
-    return `${dia} de ${mes} de ${anio}`;
-  };
-
-  componentDidMount() {
-    const now = new Date();
-    const dateString = this.formatDate(now);
-    this.setDate(dateString);
-  }
-
-  
-  toggleDropdown = () => {
-    this.setState((prevState) => ({
-      isOpen: !prevState.isOpen,
-    }));
-  };
-  logout=()=>{
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userCitas')
-    window.location.href = '/clinico/clientes';
-  }
-
-  renderDropdown = () => {
     return (
-      <div className="dropdown-card-welcome">
-        <button className="dropdown-button" onClick={this.toggleDropdown}>
-          {this.props.nameClient ?? 'Opciones'}
-        </button>
-        {this.state.isOpen && (
-          <ul className="dropdown-menu-client">
-            <li onClick={this.logout}>Cerrar sesión</li>
-          </ul>
-        )}
-      </div>
-    );
-  };
-
-  render() {
-    return (
-      <div className="wrapper-card-welcome">
-        <div className="date">
-            <p>{this.state.date}</p>
+        <div className="wrapper-card-welcome">
+            <a className="redirect-to-home" onClick={()=>_redirectToHome()}><FaHome className="home-icon" /></a>
+            <p>{title}</p>
+            <div className="name-client-and-dropdown">
+                <div className="dropdown-card-welcome">
+                    <button className="dropdown-button" onClick={toggleDropdown}>
+                        {client.nombre ?? "Opciones"}
+                    </button>
+                    {isOpen && (
+                        <ul className="dropdown-menu-client">
+                            <li onClick={logout}>Cerrar sesión</li>
+                        </ul>
+                    )}
+                </div>
+            </div>
         </div>
-        <div className="name-client-and-dropdown">
-            {this.renderDropdown()}
-        </div>
-      </div>
     );
-  }
 }
 
 export default WelcomeCard;
+

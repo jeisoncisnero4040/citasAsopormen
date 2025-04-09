@@ -6,10 +6,10 @@ class CalerdarProfesionalReadOnly extends ProfesionalCalendar {
     
     insertButtonDeleteAllCitasDay = () => {
         return (
-            <div><p></p></div>
+            null
         );
     };
-    renderDeleteButton = (id, tiempo) => {
+    _renderButtons = (id, tiempo) => {
         return (
             <div><p>No hay opciones</p></div>
         );

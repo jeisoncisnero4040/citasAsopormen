@@ -37,7 +37,7 @@ class ClientCitas extends React.Component {
     }
 
     fetchCitas = () => {
-        const url = `${Constants.apiUrl()}citas/get_citas_client/${this.props.codigo}`;
+        const url = this._getUrl();
         this.setState({ loading: true });
 
         this.requestManager
@@ -55,6 +55,9 @@ class ClientCitas extends React.Component {
                 this.setState({ loading: false });
             });
     };
+    _getUrl=()=>{
+        return `${Constants.apiUrl()}citas/get_citas_client/${this.props.codigo}`
+    }
 
     setCitas = (newCitas, saveInCache = false) => {
         this.setState({ citasClient: newCitas });
@@ -85,18 +88,27 @@ class ClientCitas extends React.Component {
         }
 
         return (
-            <div className="wrapper-citas-client">
-                {citasClient.map((cita) => (
-                    <div key={cita.id} className="cita-card">
-                        <CardCita cita={cita} citaCanceled={this.markCitaAsCancelada} />
-                    </div>
-                ))}
+            <div className="citas-programed-container">
+                <div className="subtittle-citas">
+                    <p>{this.props.subtitle}</p>
+                    <p className="points-line">{" -".repeat(300)}</p>
+                </div>
+                <div className="list-citas-client">
+                    
+                    {citasClient.map((cita) => (
+                         
+                        <div key={cita.id} className="cita-card">
+                            <CardCita cita={cita} citaCanceled={this.markCitaAsCancelada} />
+                        </div>
+                    ))}
+                </div>
             </div>
+
         );
     };
     renderLoading=()=>{
       return (
-        <div className="wrapper-citas-client">
+        <div className="wrapper-citas-client-loading">
             <LoadingPage/>
         </div>
       )
@@ -116,6 +128,7 @@ class ClientCitas extends React.Component {
                     onClose={() => this.setState({ warningIsOpen: false })}
                     errorMessage={errorMessage}
                 />
+                
             </div>
         );
     }

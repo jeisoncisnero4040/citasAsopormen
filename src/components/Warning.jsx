@@ -29,7 +29,7 @@ class Warning extends Component {
                         transform: 'translate(-50%, -50%)',
                         padding: '20px',
                         borderRadius: '10px',
-                        zIndex: 10000
+                        zIndex: '10000'
                     },
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',

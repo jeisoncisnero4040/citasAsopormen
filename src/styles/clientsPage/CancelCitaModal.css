@@ -1,5 +1,44 @@
 .form-cancel-cita{
-    width: 500px;
+    max-width: 400px;
+    z-index: 10000;
+    background-color: #FFFFFF;
+    border-radius: 20px;
+    padding: 5% 10%;
+}
+.title-and-close-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.title-and-close-button p{
+    font-size: 120%;
+    color: #4C69FF;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    width: 90%;
+}
+.title-and-close-button a{
+    
+    width: auto;
+    background-color: #ffffff;
+    padding: 2px;
+    border-radius: 50%;
+    border: 2px solid #4C69FF;
+    text-align: center;
+    
+}
+.subtittle{
+    font-size: 100%;
+    color: #4C69FF;
+    font-weight: 900;
+    font-family: 'Montserrat', sans-serif;
+}
+.text-info-to-cancel-cita{
+    font-size: 80%;
+    color: #2E4F90;
+    font-weight:300;
+    font-family: 'Montserrat', sans-serif;
 }
 .label-to-get-razon{
     display: flex;
@@ -10,12 +49,10 @@
 
 }
 .cancel-cita-title, .razon{
-    text-align: center;
-    font-style: oblique;
-    font-family: "Segoe UI", cursive;
+    font-size: 100%;
+    color: #4C69FF;
     font-weight: 900;
-    font-size: 30px;
-    color: black;
+    font-family: 'Montserrat', sans-serif;
     }
 .razon{
     text-align: left;
@@ -23,8 +60,24 @@
     margin-bottom: 10px;
 }
 textarea{
-    background-color: #fff;
-    border: 1px solid #1b0dd3;
-    border-radius: 5px;
+    background-color: #EAEAEA;
+    border: 2px solid #EAEAEA;
+    border-radius: 10px;
+    
+}
+.button-cancel-cita-modal{
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: center;
+}
+.button-cancel-cita-modal button{
+    
+    width: 50%;
+    border-radius: 20px;
+    background-color: #F8E750;
+    color: #2E4F90;
+    font-weight: bolder;
 }
 

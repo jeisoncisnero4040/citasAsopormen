@@ -10,6 +10,8 @@ import Constants from '../js/Constans.jsx';
 import buscar from "../assets/buscar.jpg";
 import Warning from './Warning.jsx';
 import horario from "../assets/horario.png";
+import reiniciar from '../assets/restart.cita.png'
+import metadata from '../assets/image.info.png'
  
 Modal.setAppElement('#root');
 
@@ -39,6 +41,10 @@ class ProfesionalCalendar extends Component {
             idSelected:'',
             loading:false,
             deletingCitas:false,
+            restartingCitas:false,
+
+            modalMetadataCitasIsOpen:false,
+            metadataCita:{}
         }
     }
     handleStartDateChange = (event) => {
@@ -55,6 +61,7 @@ class ProfesionalCalendar extends Component {
             'endDate': this.state.endDate
         };
     }
+    
     
     getCalendarProfesional = () => {
         const body = this.getBody();
@@ -103,7 +110,7 @@ class ProfesionalCalendar extends Component {
                             <td>{event.usuario ? event.usuario : 'N/A'}</td>
                             <td>{event.procedimiento ? event.procedimiento : 'N/A'}</td>
                             <td className='iconos-cita-cli'>
-                                {this.renderDeleteButton(event.id, event.tiempo,estado)}
+                                {this._renderButtons(event.id, event.tiempo,estado,event.usuario)}
                             </td>
                         </tr>
                     );
@@ -114,9 +121,9 @@ class ProfesionalCalendar extends Component {
  
 
 
-    deleteCitaById=(id)=> {
+    deleteCitaById=(id,cliente)=> {
 
-        const url = `${Constants.apiUrl()}citas/${id}`;
+        const url = `${Constants.apiUrl()}citas/${id}?usuario=${encodeURIComponent(this.props.usuario)}&profesional=${encodeURIComponent(this.props.nameProfesional)}`;
         this.setState({deletingCitas:true})
         this.requestManager.deleteMethod(url)
             .then(response => {
@@ -124,7 +131,8 @@ class ProfesionalCalendar extends Component {
                 const newFilteredEvents=this.state.eventDetails.filter(event=>event.id !==id);
                 this.props.getUpdateCalendarPro(
                     this.props.events.filter(event => event.id !== id),
-                    this.state.tiempoCitaSelected
+                    this.state.tiempoCitaSelected,
+                    'delete'
                 );
 
                  
@@ -226,7 +234,8 @@ class ProfesionalCalendar extends Component {
                this.props.events.filter(cita => 
                    !citasDeletables.some(deletable => deletable.id === cita.id)
                 ), 
-                citasByTiempo
+                citasByTiempo,
+                'delete'
             );
 
     
@@ -244,9 +253,7 @@ class ProfesionalCalendar extends Component {
         })
         .finally(this.setState({deletingCitas:false}));
     }
-    handleDeleteAllCitasClick=()=>{
-        this.openAgreeButtons()
-    }
+
 
     handleDeleteClick= (id, tiempo) =>{
         this.setState({
@@ -254,10 +261,58 @@ class ProfesionalCalendar extends Component {
             idSelected:id
         }
         )
-        this.openAgreeButtons()
+        this.openAgreeButtons(id)
         
 
     }
+    _handleRestartCita = (id) => {
+        
+        const url = `${Constants.apiUrl()}citas/restart/${id}`;
+        this.setState({restartingCitas:true})
+        this.requestManager.postMethod(url)
+            .then(response => {
+                this.closeModal();
+                const newFilteredEvents = this.state.eventDetails.map(event => {
+                    if (event.id === id) {
+                        return { ...event, cancelada: '0', no_asistida: '0', asistida: '0' };
+                    }
+                    return event;
+                });
+            
+                this.props.getUpdateCalendarPro(
+                    this.props.events.map(event => {
+                        if (event.id === id) {
+                            return { ...event, cancelada: '0', no_asistida: '0', asistida: '0' };
+                        }
+                        return event;
+                    }),
+                    this.state.tiempoCitaSelected  
+                );
+            
+                this.setState({ tiempoCitaSelected: '', idSelected: '' });
+            
+                if (newFilteredEvents.length > 0) {
+                    this.openModal(newFilteredEvents, this.state.selectedday);
+                }
+
+            })
+            .catch(error => {
+                if (error) {
+                    
+                    this.setState({
+                        error: error,
+                        showError: true
+                    }, () => {
+                         
+                        setTimeout(() => {
+                            this.setState({ showError: false });
+                        }, 1000); 
+                    });
+                }
+            }).finally(this.setState({deletingCitas:false}));
+
+    };
+    
     openAgreeButtons = () => {
         this.setState({ showAgreeButtons: true });
     }
@@ -267,12 +322,7 @@ class ProfesionalCalendar extends Component {
     }
     
     acceptWarnings = () => {
-        
-        if (this.state.tiempoCitaSelected) {
-            this.deleteCitaById(this.state.idSelected);
-        } else {
-            this.deleteCitasByday(); 
-        }
+        this.deleteCitaById(this.state.idSelected);
         this.closeAgreeButtons(); 
     }
     ChangeToSchedule=()=>{
@@ -289,38 +339,56 @@ class ProfesionalCalendar extends Component {
             </div>
         );
     }
+
     
-    insertButtonDeleteAllCitasDay = () => {
-        return (
-            <div>
-                {this.state.deletingCitas ? (
-                    <p className="search">Eliminando ...</p>
-                ) : (
-                    <a onClick={this.handleDeleteAllCitasClick}>
-                        <img className="delete-citas" src={eliminar} alt="eliminar" />
-                    </a>
-                )}
-            </div>
-        );
-    }
-    renderDeleteButton = (id, tiempo) => {
+    _renderButtons = (id, tiempo, estado,cliente) => {
         const { deletingCitas, idSelected } = this.state;
     
         if (deletingCitas && idSelected === id) {
             return <p className='search'>Eliminando</p>;
         } else {
             return (
-                <a onClick={() => this.handleDeleteClick(id, tiempo)}>
-                    <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
-                </a>
+                <div>
+                    <a onClick={() =>this._showMetaDataInfoCitaById(id)}>
+                        <img className='icono-citas-cli' src={metadata} alt="reiniciar" />
+                    </a>
+                    {estado === 'Programada' ? (
+                        <a onClick={() => this.handleDeleteClick(id, tiempo,cliente)}>
+                            <img className='icono-citas-cli' src={eliminar} alt="eliminar" />
+                        </a>
+                    ) : (
+                        <a onClick={() => this._handleRestartCita(id)}>
+                            <img className='icono-citas-cli' src={reiniciar} alt="reiniciar" />
+                        </a>
+                    )}
+                </div>
             );
         }
     };
+    _showMetaDataInfoCitaById=(id)=>{
+        const cita=this.state.eventDetails.filter(event=>event.id===id);
+        this._openModalMetadataCita(cita[0])
+    }
+
     insertButtonShowSchedule=()=>{
         return(
             <a onClick={() => this.ChangeToSchedule()}><img src={horario} alt="horario" /></a>
         )
     }
+    _openModalMetadataCita=(dataCita)=>{
+        this.setState(
+            {
+                modalMetadataCitasIsOpen:true,
+                metadataCita:dataCita
+            }
+        )
+    }
+    _closeModalMetadataCita = () => {
+        this.setState({
+            modalMetadataCitasIsOpen: false,
+        });
+    };
+
     
 
     render() {
@@ -378,11 +446,7 @@ class ProfesionalCalendar extends Component {
                     >
                         <div className="modal-content">
                             <div className='header-t-p'>
-                                <h4>{`Estado de horario de ${this.props.nameProfesional}`}</h4>
-
-                                {this.insertButtonDeleteAllCitasDay()}
-
-                                 
+                                <h4>{`Estado de horario de ${this.props.nameProfesional}`}</h4>   
                              </div>  
                             
                             <div className='table-pro'>
@@ -416,6 +480,15 @@ class ProfesionalCalendar extends Component {
                         onClose={() => this.setState({ warningIsOpen: false })}
                         errorMessage={this.state.errorMessage}
                     />
+                </div>
+                    
+                <div className={`modal-info-cita-${this.state.modalMetadataCitasIsOpen ? 'active' : 'inactive'}`}>
+                    <h2>INFO CITA {this.state.metadataCita?.id ?? "N/A"}</h2>
+                    <p>Fecha de registro: {this.state.metadataCita?.dateSave ?? "No disponible"}</p>
+                    <p>Nombre de quien registra: {this.state.metadataCita?.registro ? String(this.state.metadataCita.registro).replace(/\./g, " ") : "No disponible"}</p>
+                    <button onClick={() => this._closeModalMetadataCita()} type="button">
+                        Cerrar
+                    </button>
                 </div>
             </div>
         );

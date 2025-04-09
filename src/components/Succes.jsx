@@ -1,11 +1,13 @@
 import Warning from "./Warning";
 import Modal from 'react-modal';
+import "../styles/Succes.css"
+
 
 Modal.setAppElement('#root');
 class Succes extends Warning{
     render() {
          
-        const { isOpen, onClose, errorMessage } = this.props;
+        const { isOpen, onClose, info,title } = this.props;
         
         return (
             <Modal
@@ -20,17 +22,23 @@ class Succes extends Warning{
                         marginRight: '-50%',
                         transform: 'translate(-50%, -50%)',
                         padding: '20px',
-                        borderRadius: '10px',
-                        zIndex: 10000
+                        borderRadius: '30px',
+                        width:'400px',
+                        zIndex: 10000,
+                        background:'#ffffff',
+                        boxShadow:'0px 4px 10px rgba(0, 0, 0, 0.5)'
                     },
                     overlay: {
                         backgroundColor: 'rgba(0, 0, 0, 0.5)',
                     },
                 }}
-            >
-                <h2>Hecho</h2>
-                <p>{errorMessage}</p>
-                <button onClick={onClose}>Cerrar</button>
+            >   
+                <div className="container-succes">
+                    <p className="title-succes-modal">{title}</p>
+                    <p className="subtitle-succes-modal">{info}</p>
+                    <button className="button-succes-modal" onClick={onClose}>Continuar</button>
+                </div>
+
             </Modal>
         );
     }

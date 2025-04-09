@@ -13,6 +13,7 @@ import CreateCitaForm from "./CreateCitaForm.jsx";
 import AlertSchedule from "./AlertSchedule.jsx";
 import ApiRequestManager from "../util/ApiRequestMamager.js";
 import ProfesionalSchedule from "./ProfesionalSchedule.jsx";
+import SuccessWithLink from "./SuccesWhithLink.jsx";
 
 
 
@@ -56,7 +57,13 @@ class FormCitasForm extends Component {
 
             alertMessage: '', 
             AlertIsOpen:false,
-            canContinue:true
+            canContinue:true,
+
+            sendingMessage:false,
+
+            SuccesIsOpen:false,
+            url:"",
+
 
         };
     }
@@ -213,27 +220,26 @@ class FormCitasForm extends Component {
             });
     }
 
-    getCalendarClient=(calendarUpdated,tiempo=null)=>{
-        this.setState({
-            client_calendar:calendarUpdated
-        },()=>this.updateCounterCitas(tiempo))
-    }
+    getCalendarClient = (calendarUpdated, tiempo = null, action = null) => {
+        this.setState({ client_calendar: calendarUpdated }, 
+            action === 'delete' && tiempo ? () => this.updateCounterCitas(tiempo) : undefined
+        );
+    };
     ChangeToSchedule=()=>{
         this.setState({showScheduleProfesional:!this.state.showScheduleProfesional})
     }
 
     
-    getUpdateCalendarPro = (calendarUpdated, tiempo=null) => {
-
-        this.setState({
-            profesional_calendar: calendarUpdated
-        }, tiempo?() => this.updateCounterCitas(tiempo):null);
-    }
+    getUpdateCalendarPro = (calendarUpdated, tiempo = null, action) => {
+        this.setState({ profesional_calendar: calendarUpdated }, 
+            action === 'delete' && tiempo ? () => this.updateCounterCitas(tiempo) : undefined
+        );
+    };
     getUpdateSchedulePro=(scheduleUpdate)=>{
         this.setState({profesional_schedule:scheduleUpdate})
     }
     
-    updateCounterCitas = (tiempo) => {
+    updateCounterCitas = (tiempo,action) => {
         if (typeof tiempo === 'object' && tiempo !== null) {  
             if (tiempo[this.state.Authorization.tiempo]) {
                 this.setState(prevState => ({
@@ -309,34 +315,27 @@ class FormCitasForm extends Component {
     checkSchedule = () => {
         const weekdays = this.state.schedule.weekDays;
     
-        let startDate = new Date(this.state.schedule.startDate);
-        startDate.setHours(startDate.getHours());
-        let startDateInColombia = startDate;
-        
-        const duration = this.state.procedure.duraccion;
-        const numSession = this.state.schedule.sessionsNum;
-        
-        const durationInHours = duration / 60;
-        const durationCita = numSession * durationInHours;
-        
-        const hourStart = startDateInColombia.getHours();
-        const hourFinish = hourStart + durationCita;
-    
         let alertMessage = 'Alerta\n';
-        if (weekdays.includes("domingo")) {
+        if (weekdays['domingo']) {
             alertMessage += 'Has seleccionado el día domingo que no es día laborable.\n';
         }
     
-        if (weekdays.includes("sabado") && (hourStart >= 12 || hourFinish >= 12)) {
-            alertMessage += 'El horario seleccionado es el sábado después de las 12pm. \n';
+        if (weekdays['sabado']) {
+            
+            const startDateInString = weekdays['sabado'].startHour;
+            const startDate = this.stringToTime(startDateInString);  
+            const numSessions = weekdays['sabado'].sessions;
+            const duration = this.state.procedure.duraccion;  
+            const totalDurationInMinutes = numSessions * duration;
+            const hourFinish = new Date(startDate);
+            hourFinish.setMinutes(hourFinish.getMinutes() + totalDurationInMinutes); 
+            const hourFinishIn24Format = hourFinish.getHours();
+            
+            if (hourFinishIn24Format >= 12) {
+                alertMessage += 'El horario seleccionado es el sábado después de las 12pm. \n';
+            }
         }
-    
-        if (hourStart < 5) {
-            alertMessage += "El horario seleccionado es antes de las 5am.\n";
-        } else if (hourFinish > 19) {
-            alertMessage += "El horario seleccionado es después de las 7pm.\n";
-        }
-    
+        
         if (alertMessage !== 'Alerta\n') {
             alertMessage += '¿Seguro que deseas continuar?';
             return alertMessage.trim();
@@ -344,11 +343,26 @@ class FormCitasForm extends Component {
             return null;
         }
     }
+    stringToTime=(timeString)=> {
+        const [time, period] = timeString.split(' ');  
+        const [hours, minutes] = time.split(':').map(Number);  
+    
+        let adjustedHours = period === 'PM' && hours !== 12 ? hours + 12 : hours;
+        if (period === 'AM' && hours === 12) adjustedHours = 0;  
+        const date = new Date();  
+        date.setHours(adjustedHours, minutes, 0, 0);  
+    
+        return date;
+    }
+    
     
     getBodyRequests = () => {
         let startDate = new Date(this.state.schedule.startDate);
         startDate.setHours(startDate.getHours()-5);
         let startDateInColombia = startDate;
+
+        const numcitasByWeek=Object.keys(this.state.schedule.weekDays).length;
+        const numcitas=numcitasByWeek*this.state.schedule.numWeeks;
         
         return {
 
@@ -377,11 +391,12 @@ class FormCitasForm extends Component {
             'duration_session':this.state.procedure.duraccion,  
 
             'regobserva': this.state.schedule.observationId,
-            'copago':this.state.schedule.copago??'No aplica',
+            'copago':this.state.schedule.copago??'0',
             'start_date': startDateInColombia.toISOString(),
             'week_days': this.state.schedule.weekDays,
-            'num_citas': this.state.schedule.numCitas,
-            'num_sessions': this.state.schedule.sessionsNum,
+            'num_citas': numcitas,
+            'num_sessions_total': this._getSessionByWeek()*this.state.schedule.numWeeks,
+            'numWeeks':this.state.schedule.numWeeks,
             
             
             'all_sessions':this.state.Authorization.cantidad,
@@ -389,6 +404,14 @@ class FormCitasForm extends Component {
 
 
         };
+    }
+    _getSessionByWeek = () => {
+        let updatedWeekDays = { ...this.state.schedule.weekDays }; 
+        let suma = 0;
+        for (const day in updatedWeekDays) {
+            suma = suma + parseInt(updatedWeekDays[day].sessions); 
+        }
+        return suma;
     }
     sendCitas = (body) => {
         const url = `${Constants.apiUrl()}citas/create_citas`;
@@ -432,7 +455,6 @@ class FormCitasForm extends Component {
     
          
         const body = this.getBodyRequests();
-
         this.sendCitas(body);
     }
 
@@ -446,6 +468,58 @@ class FormCitasForm extends Component {
             this.sendCitas(body);
         });
     }
+
+    sendMessageOrdenWhithSchedule = () => {
+        // Construir el cuerpo del mensaje
+        const body = this._builBodyToSendMessageOrderWithSchedule();
+        const url = `${Constants.apiUrl()}citas/notify_order`;
+    
+        if (!body || Object.keys(body).length === 0) {
+            return;
+        }
+    
+        // Establecer el estado de envío
+        this.setState({ sendingMessage: true });
+    
+        // Enviar la solicitud
+        this.requestManager.postMethod(url, body)
+            .then((response) => {
+                const url=response.data.data.url
+                 this._openModalSucces(url)
+            })
+            .catch((error) => {
+                 
+                this.setState({
+                    errorMessage: error,
+                    warningIsOpen: true,
+                });
+            })
+            .finally(() => {
+                 
+                this.setState({ sendingMessage: false });
+            });
+    };
+    _builBodyToSendMessageOrderWithSchedule=()=>{
+        return{
+            'tiempo':this.state.Authorization.tiempo ,
+            'codigo_client':this.state.client.codigo,
+            'client_name':this.state.client.nombre,
+            'cel':this.state.client.cel,
+            'autorizacion':this.state.Authorization.n_autoriza
+
+        }
+    }
+    _openModalSucces = (url) => {
+        this.setState({
+            url:url,
+            SuccesIsOpen:true
+        })
+    };
+    _setSuccesIsOpen=(newStatus)=>{
+        this.setState({SuccesIsOpen: newStatus });
+    }
+
+   
     render() {
         return (
             <div className="form-citas-1">
@@ -480,16 +554,16 @@ class FormCitasForm extends Component {
                                     {this.state.showClientCalendar ? "Mostrar calendario Profesional" : "Mostrar calendario cliente"}
                                 </a>
                                 {this.state.showClientCalendar ? (
-                                    <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} />
+                                    <ClientCalendar nameClient={this.state.client.nombre} codigo={this.state.client.codigo} events={this.state.client_calendar} getCalendarClient={this.getCalendarClient} usuario={this.props.user.usuario.trim()} />
                                 ) : (
-                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} getUpdateSchedulePro={this.getUpdateSchedulePro} cedulaProfesional={this.state.profesional.cedula.trim()}  ChangeToSchedule={this.ChangeToSchedule}/>
+                                    <ProfesionalCalendar events={this.state.profesional_calendar} nameProfesional={this.state.profesional.name}  getUpdateCalendarPro={this.getUpdateCalendarPro} getUpdateSchedulePro={this.getUpdateSchedulePro} cedulaProfesional={this.state.profesional.cedula.trim()}  ChangeToSchedule={this.ChangeToSchedule} usuario={this.props.user.usuario.trim()}/>
                                 )}
                             </div>
 
                         </div>
                         <div className="select-orden">
                             {this.state.showScheduleProfesional ? (
-                                <ProfesionalSchedule events={this.state.profesional_schedule} ChangeToSchedule={this.ChangeToSchedule} profesional={this.state.profesional} />
+                                <ProfesionalSchedule events={this.state.profesional_schedule} ChangeToSchedule={this.ChangeToSchedule} profesional={this.state.profesional}  />
                             ) : (
                                 <>
                                     <div className="data-order">
@@ -505,6 +579,11 @@ class FormCitasForm extends Component {
                                         <div className="get-order">
                                             <Procedures getProcedureName={this.getProcedureName}/> 
                                         </div>
+                                        <div className="get-order">
+                                            {this.state.Authorization.tiempo?
+                                            <button type="button" onClick={()=>this.sendMessageOrdenWhithSchedule()}>{this.state.sendingMessage?'Notificando':'Enviar mensaje orden programada'}</button>:null}
+                                        </div>
+
                                     </div>
 
                                     <div className="create-cita">
@@ -539,6 +618,14 @@ class FormCitasForm extends Component {
                         alertMessage={this.state.alertMessage}
                         onAccept={this.onAccept}
                          
+                    />
+                </div>
+                <div>
+                    <SuccessWithLink
+                        isOpen={this.state.SuccesIsOpen}
+                        onClose={() => this._setSuccesIsOpen(false)}
+                        url={this.state.url}
+                       
                     />
                 </div>
             </div>

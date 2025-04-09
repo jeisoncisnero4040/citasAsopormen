@@ -1,18 +1,18 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import logo from '../../../src/assets/logo.png';
 import '../../styles/clientsPage/LoginClients.css';
-import Warning from "../Warning";
 import ApiRequestManager from "../../util/ApiRequestMamager.js";
 import Constants from '../../js/Constans';
+import Succes from "../Succes.jsx"
 
 const LoginClients = () => {
 
     const [document, setDocument] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState('');
-    const [warningIsOpen, setWarningIsOpen] = useState(false);
+    const [info, setInfo] = useState('');
+    const [SuccesIsOpen, setSuccesIsOpen] = useState(false);
+    const [title, setTitle]=useState("")
 
     const navigate = useNavigate();
     const requestManager = new ApiRequestManager();
@@ -55,7 +55,7 @@ const LoginClients = () => {
                 _redirectToClientsPage(userdata);
             })
             .catch((error) => {
-                openWarning(error);
+                _openSucces("ERROR",error);
             })
             .finally(() => {
                 changeLoading(false);
@@ -75,24 +75,25 @@ const LoginClients = () => {
         window.location.href = '/clinico/solicitar_contraseña';
     }
 
-    const openWarning = (error) => {
-        setErrorMessage(error);
-        setWarningIsOpen(true);
+    const _openSucces = (title,error) => {
+        setInfo(error);
+        setTitle(title);
+        setSuccesIsOpen(true);
+        
     }
+
 
     return (
         <div className="container-login-clients">
-            <div className="header-and-logo">
-                <img src={logo} alt="logo" />
-            </div>
 
             <div className="login-clients">
                 <div className="login-clients-header">
-                    <p>Portal de usuarios</p>
+                    <p>¡Bienvenido(a) de nuevo!</p>
                 </div>
 
                 <div className="login-clients-labels-and-footer">
-                    <p className="subtitle">Iniciar sesión</p>
+                    <p className="subtitle">Nos alegra verte de vuelta </p>
+                    <p className="subtitle">Ingresa a tu cuenta para entrar a tu cuenta y consultar tus citas</p>
 
                     <form onSubmit={handleSubmit}>
                         {/* Campo para número de documento */}
@@ -120,25 +121,29 @@ const LoginClients = () => {
                                 required
                             />
                         </div>
+                        <div className="login-clients-request-password">
+                            <a onClick={redirectToRequestPasswordPage} className="request-password">¿Olvidaste tu contraseña?</a>
+                        </div>
 
                         <div className="login-clients-button-login">
-                            <button type="submit">{loading ? 'Cargando' : 'Continuar'}</button>
+                            <button type="submit">{loading ? 'Cargando' : 'Iniciar sesión'}</button>
                         </div>
                     </form>
 
-                    {/* Enlace para solicitar contraseña */}
-                    <div className="login-clients-request-password">
-                        <a onClick={redirectToRequestPasswordPage} className="request-password">Solicitar contraseña</a>
-                    </div>
+                    
+
                 </div>
             </div>
 
             <div>
-                <Warning
-                    isOpen={warningIsOpen}
-                    onClose={() => setWarningIsOpen(false)}
-                    errorMessage={errorMessage}
-                />
+            <div>
+                <Succes
+                        isOpen={SuccesIsOpen}
+                        onClose={() => setSuccesIsOpen(false)}
+                        info={info}
+                        title={title}
+                    />
+                </div>
             </div>
         </div>
     );

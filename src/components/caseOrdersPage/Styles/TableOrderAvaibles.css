@@ -1,0 +1,150 @@
+.table-cases-container {
+    width: 100%;
+    background: #ffffff;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    padding-bottom:1% ;
+    
+}
+.table-orders-case {
+    margin-top: 1%;
+    width: 100%;
+    border-collapse: separate; 
+    border-spacing: 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden; 
+}
+
+/* Estilos del encabezado */
+.header-table-case-order {
+    background: #1b0dd3;  
+    color: black;  
+    padding: 10px; 
+}
+
+.header-table-case-order th {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 12px; 
+    font-size: 100%;
+}
+
+/* Botones en fila */
+.buttos-option-case {
+    display: flex;
+}
+
+.accepted {
+    background-color: #d4edda;  
+    color: #155724;  
+  }
+  
+  
+.in-process {
+    background-color: #fff3cd;  
+    color: #856404;  
+}
+
+.close-case-order {
+    background-color: #dc3545; /* Rojo suave */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+  
+.close-case-order:hover {
+    background-color: #c82333; 
+    transform: scale(1.05);
+}
+  
+  
+.view-case-order {
+    background-color: #007bff; /* Azul */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+  
+.view-case-order:hover {
+    background-color: #0056b3;  
+    transform: scale(1.05);
+}
+  
+  
+.close-case-order + .view-case-order {
+    margin-left: 8px;
+}
+.button-navigate-table-orders{
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.button-navigate-table-orders button{
+    width: 10%;
+    height: 40px;
+    background-color: gray; /* Rojo suave */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+.button-navigate-table-orders button:hover{
+    background-color: #c82333; 
+    transform: scale(1.05);
+}
+.metadata {
+    display: flex;
+    width: 100%;
+    gap: 20px;
+
+    align-items: center;
+    justify-content: center;
+
+
+}
+
+.metadata p {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333;
+    margin: 0;
+
+}
+
+/* Cuadrado de color */
+.metadata p::before {
+    content: "▀";
+    display: inline-block;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+/* Color de estado para cada línea */
+.metadata p:nth-child(1)::before {
+    color: #155724;  
+    
+}
+
+.metadata p:nth-child(2)::before {
+    color:#856404 /* Orden cargada */
+}
