@@ -18,6 +18,7 @@ class AuditModel extends BaseModel
     public function create($dataAction)
 
     {   
+        
         $table = (new self())->table;
         $bindings = array_values($dataAction);
         $placeholders = self::makePlaceholders($dataAction);
@@ -50,20 +51,24 @@ class AuditModel extends BaseModel
     public function searchRegister($search, $from = null, $to = null)
     {
         $table = (new self())->table;
-        $keywords = array_filter(explode(' ', $search));
+        $keywords = array_filter(explode(' ', strtolower($search)));
         $fields = (new self())->searchable;
     
-        $likeConditions = [];
+        $conditions = [];
         $bindings = [];
     
         foreach ($keywords as $word) {
+            $wordConditions = [];
             foreach ($fields as $field) {
-                $likeConditions[] = "$field LIKE ?";
+                $wordConditions[] = "$field LIKE ?";
                 $bindings[] = '%' . $word . '%';
             }
+             
+            $conditions[] = '(' . implode(' OR ', $wordConditions) . ')';
         }
     
-        $query = "SELECT * FROM {$table} WHERE (" . implode(' AND ', $likeConditions) . ")";
+         
+        $query = "SELECT * FROM {$table} WHERE " . implode(' AND ', $conditions);
     
         if ($from && $to) {
             $query .= " AND fecha_creacion BETWEEN CONVERT(smalldatetime, ?, 120) 

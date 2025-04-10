@@ -40,7 +40,8 @@ class CitasService{
     }
 
     public function createGroupCitas($request){
-        
+    
+        $request=$this->finishRequestSingleCita($request);
         $this->validateCitas($request);
 
         $schedule=$this->getSchedule($request);
@@ -288,6 +289,7 @@ class CitasService{
         }
         return $this->responseManager->success($citaRestart);
     }
+    
 
     private function validateCitas($request){
         citasRequests::validateCitasClient($request);
@@ -301,6 +303,36 @@ class CitasService{
     private function CheckReassingCitasRequests($request){
         return CitasRequests::checkIsReassingCitas($request);
     }
+    private function finishRequestSingleCita($request)
+    {
+        
+        $weekDays = $request['week_days'] ?? null;
+        $numSessionsTotal = $request['num_sessions_total'] ?? null;
+        $startDateInput = $request['start_date'] ?? null;
+    
+        
+        if ((empty($weekDays) || intval($numSessionsTotal) === 0) && $startDateInput) {
+    
+            
+            $startDateOriginal = Carbon::parse($request['start_date'])->setTimezone('America/Bogota')->addHours(5);
+            $day = DateManager::getDayByDate($startDateOriginal);
+            $hour = DateManager::getHoursOfDateInAmPmFormat($startDateOriginal);
+    
+          
+            $infoCitaSingle = [
+                'sessions' => 1,
+                'startHour' => $hour,
+            ];
+    
+            
+            $request['week_days'] = [$day => $infoCitaSingle];
+            $request['num_sessions_total'] = 1;
+            $request['numWeeks'] = 1;
+        }
+    
+        return $request;
+    }
+    
 
     private function getSchedule(array $request) {
         $keysToExtract = ['start_date', 'week_days', 'num_sessions_total', 'num_citas', 'duration_session'];
