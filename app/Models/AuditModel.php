@@ -47,35 +47,39 @@ class AuditModel extends BaseModel
     }
 
     
-    public function searchRegister($search)
+    public function searchRegister($search, $from = null, $to = null)
     {
         $table = (new self())->table;
         $keywords = array_filter(explode(' ', $search));
         $fields = (new self())->searchable;
-
+    
         $likeConditions = [];
         $bindings = [];
-
+    
         foreach ($keywords as $word) {
             foreach ($fields as $field) {
                 $likeConditions[] = "$field LIKE ?";
                 $bindings[] = '%' . $word . '%';
             }
         }
-
-        
-        $query = "SELECT * FROM {$table} 
-                  WHERE (" . implode(' OR ', $likeConditions) . ")";
-
-        
+    
+        $query = "SELECT * FROM {$table} WHERE (" . implode(' AND ', $likeConditions) . ")";
+    
+        if ($from && $to) {
+            $query .= " AND fecha_creacion BETWEEN CONVERT(smalldatetime, ?, 120) 
+                        AND CONVERT(smalldatetime, ?, 120)";
+            $bindings[] = $from;
+            $bindings[] = $to;
+        }
+    
         $query .= " ORDER BY 
             (CASE WHEN descripcion LIKE ? THEN 1 ELSE 0 END +
              CASE WHEN fecha_creacion LIKE ? THEN 1 ELSE 0 END) DESC";
-
-        
+    
         $bindings[] = '%' . $search . '%';
         $bindings[] = '%' . $search . '%';
-
+    
         return self::senqQuery($query, $bindings, 'select', $this->database);
     }
+    
 }

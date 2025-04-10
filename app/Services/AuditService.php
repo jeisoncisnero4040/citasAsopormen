@@ -37,9 +37,10 @@ class AuditService
         $this->sourceDidFound($audits);
         return $this->responseManager->success($audits);
     }
-    public function searchAudit($searchParam)
+    public function searchAudit($searchParam,?array $dataDate)
     {
-        $audits = $this->auditModel->searchRegister($searchParam);
+        $datesMapped=AuditMappers::mapDatesToGetAudit($dataDate);
+        $audits = $this->auditModel->searchRegister($searchParam,$datesMapped['from']??null,$datesMapped['to']??null);
         $this->sourceDidFound($audits);
         return $this->responseManager->success($audits);
     }

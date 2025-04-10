@@ -8,7 +8,10 @@ use App\utils\DateManager;
 class AuditMappers
 {
     public static function mapDatesToGetAudit($data)
-    {
+    {   
+        if($data==null || empty($data)){
+            return [];
+        }
         if (isset($data['from']) && $data['from']) {
             $data['from'] = Carbon::parse($data['from'])->format('Y-m-d H:i:s');
         }

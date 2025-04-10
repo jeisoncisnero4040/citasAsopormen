@@ -11,8 +11,10 @@ class AuditContoller extends Controller
     public function __construct(AuditService $auditService) {
         $this->auditService=$auditService;
     }
-    public function searchAudit($param){
-        $response=$this->auditService->searchAudit($param);
+    public function searchAudit($param, Request $request)
+    {
+        $response = $this->auditService->searchAudit($param, $request->query());
         return response()->json($response);
     }
+    
 }
