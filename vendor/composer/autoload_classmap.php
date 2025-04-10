@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'App\\Console\\Commands\\ClearLogs' => $baseDir . '/app/Console/Commands/ClearLogs.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
+    'App\\Events\\ChangeProfesionalEvent' => $baseDir . '/app/Events/ChangeProfesionalEvent.php',
     'App\\Events\\CitaDeletedEvent' => $baseDir . '/app/Events/CitaDeletedEvent.php',
     'App\\Events\\citaCanceledEvent' => $baseDir . '/app/Events/citaCanceledEvent.php',
     'App\\Events\\citaCreateEvent' => $baseDir . '/app/Events/citaCreateEvent.php',
@@ -17,6 +18,7 @@ return array(
     'App\\Exceptions\\CustomExceptions\\ServerErrorException' => $baseDir . '/app/Exceptions/CustomExceptions/ServerErrorException.php',
     'App\\Exceptions\\CustomExceptions\\UnAuthorizateException' => $baseDir . '/app/Exceptions/CustomExceptions/UnAuthorizateException.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
+    'App\\Http\\Controllers\\AuditContoller' => $baseDir . '/app/Http/Controllers/AuditContoller.php',
     'App\\Http\\Controllers\\AuthController' => $baseDir . '/app/Http/Controllers/AuthController.php',
     'App\\Http\\Controllers\\CaseOrdersController' => $baseDir . '/app/Http/Controllers/CaseOrdersController.php',
     'App\\Http\\Controllers\\CentralOfficeController' => $baseDir . '/app/Http/Controllers/CentralOfficeController.php',
@@ -38,6 +40,7 @@ return array(
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\ValidateSignature' => $baseDir . '/app/Http/Middleware/ValidateSignature.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
+    'App\\Listeners\\ChangeProfesionalListener' => $baseDir . '/app/Listeners/ChangeProfesionalListener.php',
     'App\\Listeners\\CitaDeletedListener' => $baseDir . '/app/Listeners/CitaDeletedListener.php',
     'App\\Listeners\\SaveAuditListener' => $baseDir . '/app/Listeners/SaveAuditListener.php',
     'App\\Listeners\\citaCanceledListener' => $baseDir . '/app/Listeners/citaCanceledListener.php',

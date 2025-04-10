@@ -53,7 +53,7 @@ class AuditMappers
 
         $description = "El usuario {$usuario} creó un total de {$numCitas} cita(s) desde el día {$start} hasta el día {$end} para el cliente {$cliente}, asignadas al profesional {$profesional} el día {$now}. IDs: {$idsStr}";
 
-        return ['descripcion' => $description, 'modulo' => 'citas'];
+        return ['descripcion' =>strtolower( $description), 'modulo' => 'citas'];
     }
 
     private static function deleteCitaRegister($data)
@@ -66,7 +66,7 @@ class AuditMappers
 
         $description = "El usuario {$usuario} eliminó la cita con ID {$id} asignada al {$clientOrProfesional} {$profesional} el día {$now}.";
 
-        return ['descripcion' => $description, 'modulo' => 'citas'];
+        return ['descripcion' =>strtolower( $description), 'modulo' => 'citas'];
     }
 
     private static function cancelCita($data)
@@ -78,7 +78,7 @@ class AuditMappers
 
         $description = "El usuario {$usuario} canceló la cita con IDs {$ids} del cliente {$cliente} el día {$now}.";
 
-        return ['descripcion' => $description, 'modulo' => 'citas'];
+        return ['descripcion' =>strtolower( $description), 'modulo' => 'citas'];
     }
 
     private static function changeProfesional($data)

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitc6aa34ff63955639def55b5839db763e
+class ComposerStaticInite4b6cda99df118100f0b1b0d36b8fef9
 {
     public static $files = array (
         '6e3fae29631ef280660b3cdad06f25a8' => __DIR__ . '/..' . '/symfony/deprecation-contracts/function.php',
@@ -345,13 +345,13 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         ),
         'Spatie\\LaravelIgnition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
-            1 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/laravel-ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/laravel-ignition',
         ),
         'Spatie\\Ignition\\' => 
         array (
-            0 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
-            1 => __DIR__ . '/..' . '/spatie/ignition/src',
+            0 => __DIR__ . '/..' . '/spatie/ignition/src',
+            1 => __DIR__ . '/..' . '/spatie/error-solutions/legacy/ignition',
         ),
         'Spatie\\Holidays\\' => 
         array (
@@ -612,6 +612,7 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
     public static $classMap = array (
         'App\\Console\\Commands\\ClearLogs' => __DIR__ . '/../..' . '/app/Console/Commands/ClearLogs.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
+        'App\\Events\\ChangeProfesionalEvent' => __DIR__ . '/../..' . '/app/Events/ChangeProfesionalEvent.php',
         'App\\Events\\CitaDeletedEvent' => __DIR__ . '/../..' . '/app/Events/CitaDeletedEvent.php',
         'App\\Events\\citaCanceledEvent' => __DIR__ . '/../..' . '/app/Events/citaCanceledEvent.php',
         'App\\Events\\citaCreateEvent' => __DIR__ . '/../..' . '/app/Events/citaCreateEvent.php',
@@ -621,6 +622,7 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'App\\Exceptions\\CustomExceptions\\ServerErrorException' => __DIR__ . '/../..' . '/app/Exceptions/CustomExceptions/ServerErrorException.php',
         'App\\Exceptions\\CustomExceptions\\UnAuthorizateException' => __DIR__ . '/../..' . '/app/Exceptions/CustomExceptions/UnAuthorizateException.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
+        'App\\Http\\Controllers\\AuditContoller' => __DIR__ . '/../..' . '/app/Http/Controllers/AuditContoller.php',
         'App\\Http\\Controllers\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/AuthController.php',
         'App\\Http\\Controllers\\CaseOrdersController' => __DIR__ . '/../..' . '/app/Http/Controllers/CaseOrdersController.php',
         'App\\Http\\Controllers\\CentralOfficeController' => __DIR__ . '/../..' . '/app/Http/Controllers/CentralOfficeController.php',
@@ -642,6 +644,7 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
         'App\\Http\\Middleware\\TrustProxies' => __DIR__ . '/../..' . '/app/Http/Middleware/TrustProxies.php',
         'App\\Http\\Middleware\\ValidateSignature' => __DIR__ . '/../..' . '/app/Http/Middleware/ValidateSignature.php',
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
+        'App\\Listeners\\ChangeProfesionalListener' => __DIR__ . '/../..' . '/app/Listeners/ChangeProfesionalListener.php',
         'App\\Listeners\\CitaDeletedListener' => __DIR__ . '/../..' . '/app/Listeners/CitaDeletedListener.php',
         'App\\Listeners\\SaveAuditListener' => __DIR__ . '/../..' . '/app/Listeners/SaveAuditListener.php',
         'App\\Listeners\\citaCanceledListener' => __DIR__ . '/../..' . '/app/Listeners/citaCanceledListener.php',
@@ -7469,9 +7472,9 @@ class ComposerStaticInitc6aa34ff63955639def55b5839db763e
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitc6aa34ff63955639def55b5839db763e::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitc6aa34ff63955639def55b5839db763e::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitc6aa34ff63955639def55b5839db763e::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInite4b6cda99df118100f0b1b0d36b8fef9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInite4b6cda99df118100f0b1b0d36b8fef9::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInite4b6cda99df118100f0b1b0d36b8fef9::$classMap;
 
         }, null, ClassLoader::class);
     }

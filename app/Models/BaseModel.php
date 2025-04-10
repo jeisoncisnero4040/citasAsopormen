@@ -33,8 +33,7 @@ class BaseModel extends Model
                     return DB::select($query, $bindings);
                 case 'insert':
                     DB::insert($query, $bindings);
-                    $lastId = DB::getPdo()->lastInsertId();
-                    return DB::select("SELECT * FROM casos_ordenes WHERE id = ?", [$lastId]);
+                    return $lastId = DB::getPdo()->lastInsertId();
                 case 'update':
                     return DB::update($query, $bindings);
                 case 'delete':

@@ -17,7 +17,8 @@ class CaseOrderModel extends BaseModel
         $columns = self::makeValues($case);
         $table = (new self())->table;
         $query = "INSERT INTO  $table ($columns) VALUES ($placeholders)";
-        return self::senqQuery($query,array_values($case),'insert');
+        $id=self::senqQuery($query,array_values($case),'insert');
+        return self::getCaseById('id')[0];
     }
     
     public static function CreateCaseParticularUser(array $case){

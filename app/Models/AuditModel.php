@@ -16,7 +16,8 @@ class AuditModel extends BaseModel
 
     // Método para crear un registro en la tabla de auditoría
     public function create($dataAction)
-    {
+
+    {   
         $table = (new self())->table;
         $bindings = array_values($dataAction);
         $placeholders = self::makePlaceholders($dataAction);
