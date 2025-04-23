@@ -1,0 +1,219 @@
+CREATE TABLE motivos_pqr (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100) NOT NULL,
+	parent_id INT NULL,
+	nivel VARCHAR(50) NOT NULL, 
+	FOREIGN KEY (parent_id) REFERENCES motivos_pqr(id) ON DELETE NO ACTION
+);
+
+
+CREATE TABLE canales_pqr (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100)
+);
+
+CREATE TABLE tipos_pqr (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100)
+);
+
+CREATE TABLE areas_o_servicos_pqr (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100)
+);
+
+CREATE TABLE caracteristicas_sogcs (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100)
+);
+
+CREATE TABLE pqrs (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	descripcion TEXT,
+	nombre_quien_registra VARCHAR(100),
+	identificacion_usuario VARCHAR(50),
+	celular_usuario VARCHAR(50),
+	email_usuario VARCHAR(100),
+	canal_id INT NOT NULL,
+	tipo_id INT NOT NULL,
+	tipo_usuario VARCHAR(50), -- USUARIO o EPS
+	nombre_usuario VARCHAR(100),
+	referencia VARCHAR(100),
+	sede_id INT NOT NULL,
+	area_id INT NOT NULL,
+	sogcs_id INT NOT NULL,
+	motivo_id INT NOT NULL,
+	fecha_envio_area SMALLDATETIME DEFAULT NULL,
+	nombre_cordinador_area VARCHAR(100),
+	fecha_respuesta SMALLDATETIME DEFAULT NULL,
+	respuesta TEXT NULL,
+	medio_respuesta_usuario VARCHAR(100) NULL,
+	fecha_respuesta_usuario SMALLDATETIME DEFAULT NULL,
+	acciones_implementadas VARCHAR(1000) NULL,
+	dias_oportunidad_res_area INT DEFAULT NULL,
+	dias_aportunidad_res_calidad INT DEFAULT NULL,
+	estado VARCHAR(100) DEFAULT 'activa',
+	fecha_creacion SMALLDATETIME DEFAULT GETDATE(),
+	
+);
+
+
+CREATE TABLE evidencias (
+	id INT IDENTITY(1,1),
+	id_pqr INT NOT NULL,
+	nombre VARCHAR(100),
+	FOREIGN KEY (id_pqr) REFERENCES pqrs(id)
+);
+
+·consulta obtener todos los motivos
+WITH MotivosRecursivos AS (
+    SELECT 
+        id,
+        nombre,
+        parent_id,
+        nivel,
+        1 AS nivel_jerarquico
+    FROM motivos_pqr
+    WHERE parent_id IS NULL
+
+    UNION ALL
+
+    SELECT 
+        m.id,
+        m.nombre,
+        m.parent_id,
+        m.nivel,
+        mr.nivel_jerarquico + 1
+    FROM motivos_pqr m
+    INNER JOIN MotivosRecursivos mr ON m.parent_id = mr.id
+)
+
+-- Unir todos los niveles en una misma tabla
+SELECT 
+    id AS id_motivo,
+    nombre,
+    parent_id AS id_padre,
+    'macromotivo' AS nivel
+FROM MotivosRecursivos
+WHERE nivel_jerarquico = 1
+
+UNION ALL
+
+SELECT 
+    id,
+    nombre,
+    parent_id,
+    'general'
+FROM MotivosRecursivos
+WHERE nivel_jerarquico = 2
+
+UNION ALL
+
+SELECT 
+    id,
+    nombre,
+    parent_id,
+    'especifico'
+FROM MotivosRecursivos
+WHERE nivel_jerarquico = 3
+
+UNION ALL
+
+SELECT 
+    id,
+    nombre,
+    parent_id,
+    'tipo'
+FROM MotivosRecursivos
+WHERE nivel_jerarquico = 4
+
+UNION ALL
+
+SELECT 
+    id,
+    nombre,
+    parent_id,
+    'causa'
+FROM MotivosRecursivos
+WHERE nivel_jerarquico = 5
+
+
+#####cosulya_obtener_pqr###
+-- CTE para jerarquizar motivos
+WITH MotivosJerarquizados AS (
+    SELECT 
+        id,
+        nombre,
+        parent_id,
+        nivel,
+        id AS id_macromotivo,
+        NULL AS id_general,
+        NULL AS id_especifico,
+        NULL AS id_tipo,
+        NULL AS id_causa
+    FROM motivos_pqr
+    WHERE nivel = 'macromotivo'
+
+    UNION ALL
+
+    SELECT 
+        m.id,
+        m.nombre,
+        m.parent_id,
+        m.nivel,
+        CASE WHEN mj.nivel = 'macromotivo' THEN mj.id ELSE mj.id_macromotivo END,
+        CASE WHEN mj.nivel = 'general' THEN mj.id ELSE mj.id_general END,
+        CASE WHEN mj.nivel = 'especifico' THEN mj.id ELSE mj.id_especifico END,
+        CASE WHEN mj.nivel = 'tipo' THEN mj.id ELSE mj.id_tipo END,
+        CASE WHEN mj.nivel = 'causa' THEN mj.id ELSE mj.id_causa END
+    FROM motivos_pqr m
+    INNER JOIN MotivosJerarquizados mj ON m.parent_id = mj.id
+)
+
+-- Consulta principal
+SELECT 
+    p.id,
+    p.descripcion,
+    p.nombre_quien_registra,
+    p.identificacion_usuario,
+    p.celular_usuario,
+    p.email_usuario,
+    p.tipo_usuario,
+    p.nombre_usuario,
+    p.referencia,
+    p.fecha_envio_area,
+    p.nombre_cordinador_area,
+    p.fecha_respuesta,
+    p.respuesta,
+    p.medio_respuesta_usuario,
+    p.fecha_respuesta_usuario,
+    p.acciones_implementadas,
+    p.dias_oportunidad_res_area,
+    p.dias_aportunidad_res_calidad,
+    p.estado,
+    p.fecha_creacion,
+
+    -- Canales, tipos, áreas, sogcs
+    c.nombre AS canal,
+    t.nombre AS tipo_pqr,
+    a.nombre AS area_servicio,
+    s.nombre AS sogcs,
+
+    -- Motivos desglosados
+    mm.nombre AS macromotivo,
+    mg.nombre AS motivo_general,
+    me.nombre AS motivo_especifico,
+    mt.nombre AS tipo_motivo,
+    mc.nombre AS causa_motivo
+
+FROM pqrs p
+INNER JOIN canales_pqr c ON p.canal_id = c.id
+INNER JOIN tipos_pqr t ON p.tipo_id = t.id
+INNER JOIN areas_o_servicos_pqr a ON p.area_id = a.id
+INNER JOIN caracteristicas_sogcs s ON p.sogcs_id = s.id
+INNER JOIN MotivosJerarquizados mj ON p.motivo_id = mj.id
+LEFT JOIN motivos_pqr mm ON mj.id_macromotivo = mm.id
+LEFT JOIN motivos_pqr mg ON mj.id_general = mg.id
+LEFT JOIN motivos_pqr me ON mj.id_especifico = me.id
+LEFT JOIN motivos_pqr mt ON mj.id_tipo = mt.id
+LEFT JOIN motivos_pqr mc ON mj.id_causa = mc.id
