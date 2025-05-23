@@ -18,6 +18,7 @@ import UpdateUser from "./components/clientsPage/UpdateUser";
 import Sedes from "./components/clientsPage/Sedes";
 import UsuarioHistory from "./components/clientsPage/UsuarioHistory";
 import IndexOrdersCase from "./components/caseOrdersPage/Components/index";
+import IndexInformes from "./components/Informes/Components/IndexInformes";
 
 
 function App() {
@@ -37,6 +38,7 @@ function App() {
               <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
               <Route path="/reasignador_citas" element={<ReassingCitasPage/>}/> 
               <Route path="/orders" element={<IndexOrdersCase/>}/> 
+              <Route path="/informes" element={<IndexInformes/>}/> 
 
           </Route>
           <Route element={<ProtectedRouteClient/> }>

@@ -20,6 +20,9 @@ const NavbarCitas = ({user}) => {
     const  redirectToOrdesrsCase=()=>{
         navigate('/orders',{ state:user });
     }
+    const  redirectToInformes=()=>{
+        navigate('/informes',{ state:user });
+    }
 
     const handleLogout = () => {
         localStorage.removeItem('authToken');
@@ -50,17 +53,10 @@ const NavbarCitas = ({user}) => {
                         <a onClick={redirectToRecoverReassingCitas}>Reasignar Citas</a>
                         <a onClick={redirectToChatBotHistory}>Historial Chat</a>
                         {/*<a onClick={redirectToOrdesrsCase}>Casos de Ordenes</a>*/}
+                        <a onClick={redirectToInformes}>Informes</a>
                     </div>
                 )}
             </div>
-           {/* 
-            <div className="link">
-                <a href={whileAddFunction}>Clinico</a>
-            </div>
-           
-           */} 
-
-            
             <div className="card">
                 <div className="card-header" onClick={toggleUserCard}>
                     <button className="card-btn">{user.usuario}</button>
