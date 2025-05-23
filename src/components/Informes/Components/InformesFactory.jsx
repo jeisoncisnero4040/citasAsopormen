@@ -60,9 +60,11 @@ const InformesFactory = () => {
         <p>INFORMES</p>
       </div>
 
+      <p className="text-subtitles-form-informes">Informe Paciente nuevos y sus citas programas:</p>
       {/* Primer formulario */}
       <div className="form-get-informe">
         <div className="inputs-date-form-informes">
+          
           <input type="date" value={from1} onChange={(e) => setFrom1(e.target.value)} />
           <input type="date" value={to1} onChange={(e) => setTo1(e.target.value)} />
         </div>
@@ -75,8 +77,10 @@ const InformesFactory = () => {
         </div>
       </div>
 
+        <p className="text-subtitles-form-informes">Pacientes Nuevos sin programacion de Citas:</p>
       {/* Segundo formulario */}
       <div className="form-get-informe">
+
         <div className="inputs-date-form-informes">
           <input type="date" value={from2} onChange={(e) => setFrom2(e.target.value)} />
           <input type="date" value={to2} onChange={(e) => setTo2(e.target.value)} />
