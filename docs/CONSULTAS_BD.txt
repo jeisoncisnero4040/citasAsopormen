@@ -7,6 +7,12 @@ CREATE TABLE motivos_pqr (
 );
 
 
+CREATE TABLE  usuarios_pqrs (
+	id INT IDENTITY (1,1),
+	nombre varchar(100)
+)
+
+
 CREATE TABLE canales_pqr (
 	id INT IDENTITY(1,1) PRIMARY KEY,
 	nombre VARCHAR(100)
@@ -36,7 +42,7 @@ CREATE TABLE pqrs (
 	email_usuario VARCHAR(100),
 	canal_id INT NOT NULL,
 	tipo_id INT NOT NULL,
-	tipo_usuario VARCHAR(50), -- USUARIO o EPS
+	tipo_usuario VARCHAR(50), -- USUARIO o EPS--
 	nombre_usuario VARCHAR(100),
 	referencia VARCHAR(100),
 	sede_id INT NOT NULL,
@@ -61,7 +67,7 @@ CREATE TABLE pqrs (
 CREATE TABLE evidencias (
 	id INT IDENTITY(1,1),
 	id_pqr INT NOT NULL,
-	nombre VARCHAR(100),
+	url VARCHAR(100),
 	FOREIGN KEY (id_pqr) REFERENCES pqrs(id)
 );
 

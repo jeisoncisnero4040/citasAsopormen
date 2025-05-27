@@ -1,0 +1,34 @@
+--insertar usuarios 
+
+INSERT INTO usuarios_pqrs (nombre) 
+VALUES 
+('sanitas'),
+('Salud Total'),
+('Famisanar'),
+('Nueva Eps'),
+('Fomag'),
+('Sura'),
+('Fiscalia General'),
+('Particular'),
+('Secretaria De Salud Departamental'),
+('Med Plus');
+
+--insertar tipos
+INSERT INTO tipos_pqr(nombre) VALUES 
+	('Queja'),
+	('Petición'),
+	('Reclamo'),
+	('Solicitud'),
+	('Sugerencia'),
+	('Felicitación'),
+	('Solicitud De Citas');
+
+--insertar canales
+INSERT INTO canales_pqr (nombre) VALUES 
+	('Correo Electrónico'),
+	('Buzón'),
+	('Presencial'),
+	('Documento Físico'),
+	('Contacto Telefónico'),
+	('Página Web'),
+	('Redes Sociales');

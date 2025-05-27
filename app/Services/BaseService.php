@@ -19,7 +19,7 @@ class BaseService{
             throw new NotFoundException("$tag no fué encontrado",500);
         }
     }
-    protected function driveResponse(mixed $response, string $tag)
+    protected function driveResponsePersistence(mixed $response, string $tag)
     {
         if (is_array($response)) {
             self::sourceDidFound($response, $tag);

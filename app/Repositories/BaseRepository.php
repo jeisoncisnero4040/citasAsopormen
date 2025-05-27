@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\DB;
 class BaseRepository 
 {
 
-    protected static function makePlaceholders(array $data)
+    protected static function makePlaceholders(array $data):string
     {
         $numPlaceholders = count($data);
         return implode(', ', array_fill(0, $numPlaceholders, '?'));
     }
-    protected static function makeColumns(array $data)
+    protected static function makeColumns(array $data):string
     {
         return implode(', ', array_keys($data));
     }
@@ -26,6 +26,16 @@ class BaseRepository
     {
         $columns = array_keys($data);
         return implode(', ', array_map(fn($col) => "$col = ?", $columns));
+    }
+    protected static function makeBindingsInsertActionsPqrs($actions,$id){
+        $bindings = [];
+        foreach ($actions as $action) {
+            foreach ($action as $value) {
+                $bindings[] = $value;
+            }
+            $bindings[] = $id; 
+        }
+        return $bindings;
     }
     
     protected static function senqQuery(string $query, ?array $bindings = [], string $typeConsult = 'select')
