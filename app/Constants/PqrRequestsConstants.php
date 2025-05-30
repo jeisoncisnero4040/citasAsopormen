@@ -96,9 +96,12 @@ class PqrRequestsConstants{
     public const RULES_DATES_RANGE = [
         'from' => 'required|date|before_or_equal:to',
         'to' => 'required|date|after_or_equal:from',
+        'from_tendencie' => 'required|date|before_or_equal:to_tendencie',
+        'to_tendencie' => 'required|date|after_or_equal:from_tendencie',
     ];
 
     public const MESSAGES_ERROR_DATES_RANGE = [
+
         'from.required' => 'La fecha inicial es obligatoria.',
         'from.date' => 'La fecha inicial no tiene un formato válido.',
         'from.before_or_equal' => 'La fecha inicial debe ser anterior o igual a la fecha final.',
@@ -106,11 +109,22 @@ class PqrRequestsConstants{
         'to.required' => 'La fecha final es obligatoria.',
         'to.date' => 'La fecha final no tiene un formato válido.',
         'to.after_or_equal' => 'La fecha final debe ser posterior o igual a la fecha inicial.',
+
+        'from_tendencie.required' => 'La fecha inicial para la tendencia es obligatoria.',
+        'from_tendencie.date' => 'La fecha inicial para la tendencia no tiene un formato válido.',
+        'from_tendencie.before_or_equal' => 'La fecha inicial para la tendencia debe ser anterior o igual a la fecha final de la tendencia.',
+
+        'to_tendencie.required' => 'La fecha final para la tendencia es obligatoria.',
+        'to_tendencie.date' => 'La fecha final para la tendencia no tiene un formato válido.',
+        'to_tendencie.after_or_equal' => 'La fecha final para la tendencia debe ser posterior o igual a la fecha inicial de la tendencia.',
     ];
+
 
     public const KEYS_ALLOWED_DATES_RANGE = [
         'from',
-        'to'
+        'to',
+        'from_tendencie',
+        'to_tendencie'
     ];
 
 }

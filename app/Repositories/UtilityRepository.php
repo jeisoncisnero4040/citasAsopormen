@@ -35,12 +35,6 @@ class UtilityRepository extends BaseRepository implements UtilsPqrRepositoryInte
             select 
                 id,
                 nombre,
-                'area' as tipo
-            FROM areas_o_servicos_pqr
-            union 
-            select 
-                id,
-                nombre,
                 'usuario' as tipo
             FROM usuarios_pqrs
             union 

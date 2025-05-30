@@ -20,7 +20,11 @@ class DataAnlitycsPqrsService extends BaseService
     public function getDataAnalisysPqrs($request){
         PqrValidator::validateDataToGetDataPqrs(data:$request);
         $mappedDaterange=PqrsMapper::mapDateRange(data:$request);
-        $data=$this->dataAnalitycsRepository->pqrsHistory(from:$mappedDaterange['from'],to:$mappedDaterange['to']);
+        $data=$this->dataAnalitycsRepository->pqrsHistory(from:$mappedDaterange['from'],
+                                                            to:$mappedDaterange['to'],
+                                                            fromTendencie:$mappedDaterange['from_tendencie'],
+                                                            toTendencie:$mappedDaterange['to_tendencie']
+                                                        );
         return $this->responseManager->success($data);
         
     }

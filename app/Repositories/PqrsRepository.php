@@ -43,8 +43,7 @@ class PqrsRepository extends BaseRepository implements PqrRepositoryInterface{
     public function find(int $pqrId, ?string $estado = null): mixed
     {
         $bindings = [$pqrId,$pqrId];
-        $query = "
-            SELECT 
+        $query = "SELECT 
                 p.id,
                 p.descripcion,
                 p.fecha_creacion,
@@ -113,8 +112,7 @@ class PqrsRepository extends BaseRepository implements PqrRepositoryInterface{
     public function getPqrs(?string $estado=null):mixed
     {
         $bindings = [];
-        $query = "
-            SELECT 
+        $query = "SELECT 
                 p.id,
                 p.descripcion,
                 p.fecha_creacion,

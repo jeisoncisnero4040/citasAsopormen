@@ -1,0 +1,67 @@
+--crear canales
+CREATE TABLE canales_pqr (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100)
+);
+--insertar canales
+INSERT INTO canales_pqr (nombre) VALUES 
+	('Correo Electrónico'),
+	('Buzón'),
+	('Presencial'),
+	('Documento Físico'),
+	('Contacto Telefónico'),
+	('Página Web'),
+	('Redes Sociales');
+
+--crear tipos pqrs
+CREATE TABLE tipos_pqr (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100),
+	dias_respuesta INTEGER NOT NULL
+);
+--insertar tipos de pqrs
+INSERT INTO tipos_pqr(nombre,dias_respuesta) VALUES 
+	('Queja',5),
+	('Petición',10),
+	('Reclamo',3),
+	('Solicitud',3),
+	('Sugerencia',3),
+	('Felicitación',3),
+	('Solicitud De Citas',3);
+
+
+
+--crear_tabla pqrs
+CREATE TABLE  usuarios_pqrs (
+	id INT IDENTITY (1,1),
+	nombre varchar(100)
+)
+--inserta tipos de usuarios
+INSERT INTO usuarios_pqrs (nombre) 
+VALUES 
+('sanitas'),
+('Salud Total'),
+('Famisanar'),
+('Nueva Eps'),
+('Fomag'),
+('Sura'),
+('Fiscalia General'),
+('Particular'),
+('Secretaria De Salud Departamental'),
+('Med Plus');
+
+use Baseconta;
+--crear tabla de caracteristicas sogsc
+CREATE TABLE caracteristicas_sogcs (
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	nombre VARCHAR(100)
+);
+--insertar caracteristicas sogcs
+INSERT INTO caracteristicas_sogcs (nombre) VALUES 
+('Accesibilidad'),
+('Oportunidad'),
+('Seguridad'),
+('Continuidad'),
+('Pertinencia'),
+('Satisfacción'),
+('Solicitud de Informacion o Documento');

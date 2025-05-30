@@ -14,6 +14,12 @@ class PqrsMapper
         if (isset($data['to'])) {
             $data['to'] = Carbon::parse($data['to'])->format('Y-m-d H:i:s');
         }
+        if (isset($data['from_tendencie'])) {
+            $data['from_tendencie'] = Carbon::parse($data['from_tendencie'])->format('Y-m-d H:i:s');
+        }
+        if (isset($data['to_tendencie'])) {
+            $data['to_tendencie'] = Carbon::parse($data['to_tendencie'])->format('Y-m-d H:i:s');
+        }
 
         return $data;
     }
