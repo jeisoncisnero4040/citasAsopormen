@@ -19,6 +19,7 @@ import Sedes from "./components/clientsPage/Sedes";
 import UsuarioHistory from "./components/clientsPage/UsuarioHistory";
 import IndexOrdersCase from "./components/caseOrdersPage/Components/index";
 import IndexInformes from "./components/Informes/Components/IndexInformes";
+import IndexClonePage from "./components/cloneSchedulePage/Components/IndexClonePage";
 
 
 function App() {
@@ -38,7 +39,8 @@ function App() {
               <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
               <Route path="/reasignador_citas" element={<ReassingCitasPage/>}/> 
               <Route path="/orders" element={<IndexOrdersCase/>}/> 
-              <Route path="/informes" element={<IndexInformes/>}/> 
+              <Route path="/informes" element={<IndexInformes/>}/>
+              <Route path="/replicar-horario" element={<IndexClonePage/>}/>  
 
           </Route>
           <Route element={<ProtectedRouteClient/> }>

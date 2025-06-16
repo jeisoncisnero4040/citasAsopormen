@@ -23,7 +23,9 @@ const NavbarCitas = ({user}) => {
     const  redirectToInformes=()=>{
         navigate('/informes',{ state:user });
     }
-
+    const  redirectToCloneSchedule=()=>{
+        navigate('/replicar-horario',{ state:user });
+    }
     const handleLogout = () => {
         localStorage.removeItem('authToken');
         navigate('/');
@@ -39,6 +41,7 @@ const NavbarCitas = ({user}) => {
     const redirectToRecoverPassword = () => {
         navigate('/update_password');
     };
+
     return (
         <div className="subnavbar">
             <img src={logo} alt="asopormen" />
@@ -54,6 +57,7 @@ const NavbarCitas = ({user}) => {
                         <a onClick={redirectToChatBotHistory}>Historial Chat</a>
                         {/*<a onClick={redirectToOrdesrsCase}>Casos de Ordenes</a>*/}
                         <a onClick={redirectToInformes}>Informes</a>
+                        <a onClick={redirectToCloneSchedule}>Replicar Horario</a>
                     </div>
                 )}
             </div>

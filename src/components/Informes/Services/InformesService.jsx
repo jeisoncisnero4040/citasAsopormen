@@ -26,9 +26,15 @@ export class InformesService{
         }catch (error) {
             return ResponseManager.error(error.message || error);
         }
-        
-
-
     }
-   
+   async getAppoimentsByEntity(to,from){
+        const endpoint="informes/appoiments-by-entity"
+        const params=`?from=${encodeURIComponent(to)}&to=${encodeURIComponent(from)}`
+        try{
+            const response=await this.apiRequestManager.getMethod(`${endpoint}${params}`)
+            return ResponseManager.success(response.data.data, false);
+        }catch (error) {
+            return ResponseManager.error(error.message || error);
+        }
+   }
 }
