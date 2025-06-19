@@ -1,23 +1,15 @@
 // src/App.js
-import React from "react";
 import { Route, Routes } from "react-router-dom";
 import HomePage from "./components/HomePage";
-import FormCitas from "./components/FormCitas";
 import ProtectedRoute from "./util/ProtectedRout";
-import ProtectedRouteClient from "./util/ProtecteRouteClient";
-import RecoverPasswordPage from "./components/RecoverPasswordPage";
-import UpdatePasswordPage from "./components/UpdatePassword";
+import RecoverPasswordPage from "./components/Pqrs/Auth/Components/RecoverPasswordPage";
 import "./styles/app.css";
-import ReassingCitasPage from "./components/ReassingCitas/ReassingCitasPage";
-import IndexClients from "./components/clientsPage/indexClients";
-import RequestPasswordClients from "./components/clientsPage/RequestPasswordClients";
-import ClientsPage from "./components/clientsPage/ClientsPage";
-import HistoryChatbotPage from "./components/HistoyChatbot/HistoryChatbotPage";
-import UsuariosCitas from "./components/clientsPage/UsuariosCitas";
-import UpdateUser from "./components/clientsPage/UpdateUser";
-import Sedes from "./components/clientsPage/Sedes";
-import UsuarioHistory from "./components/clientsPage/UsuarioHistory";
-import IndexOrdersCase from "./components/caseOrdersPage/Components/index";
+import IndexCreatePqrs from "./components/Pqrs/Components/indexCreatePqrs";
+import IndexViewPqrs from "./components/Pqrs/Components/indexViewPqrs";
+import AnswerPqrsForm from "./components/Pqrs/Components/AnswerPqrsForm";
+import IndexInformesPqrs from "./components/Pqrs/Components/IndexInformesPqrs";
+import UpdatePasswordPage from "./components/Pqrs/Auth/Components/UpdatePassword";
+
 
 
 function App() {
@@ -25,31 +17,16 @@ function App() {
     
       <div className="app-container">
         <Routes>
-          
+
           <Route path="/recover_password" element={<RecoverPasswordPage/>} />
           <Route path="/" element={<HomePage />} />
-          <Route path="/clientes" element={<IndexClients/>} />
-          <Route path="/solicitar_contraseña" element={<RequestPasswordClients/>} />
-          
+          <Route path="/pqrs/responder/:id-encoded" element={<AnswerPqrsForm/>}/> 
           <Route element={<ProtectedRoute/> }>
-              <Route path="/history_chatbot" element={<HistoryChatbotPage/>}/> 
-              <Route path="/formcitas" element={<FormCitas />} />
-              <Route path="/update_password" element={<UpdatePasswordPage/>}/> 
-              <Route path="/reasignador_citas" element={<ReassingCitasPage/>}/> 
-              <Route path="/orders" element={<IndexOrdersCase/>}/> 
-
+              <Route path="/update_password" element={<UpdatePasswordPage/>}/>
+              <Route path="/pqrs/crear" element={<IndexCreatePqrs/>}/> 
+              <Route path="/pqrs" element={<IndexViewPqrs/>}/> 
+              <Route path="/pqrs/informes" element={<IndexInformesPqrs/>}/>
           </Route>
-          <Route element={<ProtectedRouteClient/> }>
-              <Route path="/clientes_citas" element={<ClientsPage/>}/>
-              <Route path="/clientes_citas/citas" element={<UsuariosCitas/>}/>  
-              <Route path="/clientes_citas/actualizar-datos" element={<UpdateUser/>}/>  
-              <Route path="/clientes_citas/nuestras-sedes" element={< Sedes />}/> 
-              <Route path="/clientes_citas/historial" element={<UsuarioHistory  />}/>   
-              
-          </Route>
-          
-           
-          
         </Routes>
       </div>
             

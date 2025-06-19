@@ -1,8 +1,9 @@
 class Constans {
     static apiUrl() {
-      return "https://citas.asopormen.co:8081/api/"
-      //return "http://localhost:8001/api/";
+      //return "https://pqrs.asopormen.co:8083/api/"
+      return "http://localhost:8000/api/";
     }
+
     
 }
 

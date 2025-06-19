@@ -1,0 +1,61 @@
+.warning-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.warning-modal {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  animation: slideFadeIn 0.3s ease;
+}
+
+.warning-title {
+  color: #d9534f;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.warning-message {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.warning-close {
+  background-color: #d9534f;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.warning-close:hover {
+  background-color: #c9302c;
+}
+
+@keyframes slideFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

@@ -1,0 +1,105 @@
+/* Estilos generales */
+.pqrs-form-container {
+    max-width: 100%;
+    padding: 1%;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+    font-family: 'Arial', sans-serif;
+  }
+  .title-new-pqr-page{
+    color: #ffffff;
+  }
+  
+  /* Estructura general */
+  .form-create-pqr{
+    margin-top: 1%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  /* Grupos de secciones */
+  .contacs-pqr,
+  .config-pqr,
+  .reasons_pqr {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    border:1px solid #ccc;
+    padding: 1%;
+    border-radius: 20px;
+  }
+  .reasons_pqr {
+    display: block;
+    gap: 1.5rem;
+    border:1px solid #ccc;
+    padding: 1%;
+    border-radius: 20px;
+  }
+  .contacs-pqr h2,
+  .config-pqr h2,
+  .reasons_pqr h2 {
+    grid-column: 1 / -1;
+    color: #333;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Inputs y selects */
+  .input-pqr,
+  .select-pqr {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .input-pqr label,
+  .select-pqr label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    color: #333333;
+  }
+  
+  .input-pqr input,
+  .input-pqr textarea,
+  .select-pqr select {
+    padding: 0.75rem 1rem;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+  }
+  
+  .input-pqr input:focus,
+  .select-pqr select:focus {
+    border-color: #0066ff;
+    outline: none;
+    background-color: #ffffff;
+  }
+  
+  .button-send-pqr {
+    background-color: #236db8;
+    font-size: 150%;
+    font-weight: 800;
+    cursor: pointer;
+    margin:0%;
+    padding: 1% 0%;
+  }
+  
+  .button-send-pqr:hover {
+    background-color: #236db8;
+    color:black;
+  }
+  /* Responsivo */
+  @media (max-width: 600px) {
+    .contacs-pqr,
+    .config-pqr,
+    .reasons_pqr {
+      grid-template-columns: 1fr;
+    }
+  }
+  

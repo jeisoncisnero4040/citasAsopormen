@@ -1,24 +1,21 @@
 import React, { useState } from "react";
 import '../styles/NabvarCitas.css';
-import logo from "../assets/logo.png";
+
 import { useNavigate } from 'react-router-dom';
 
 const NavbarCitas = ({user}) => {   
-    const [isOpcionesCardOpen, setIsOpcionesCardOpen] = useState(false);
+
     const [isUserCardOpen, setIsUserCardOpen] = useState(false);
+    const [isQualityCardOpen,setIsQualityCardOpen]=useState(false);
     const navigate = useNavigate();
     
-    const whileAddFunction = () => {
-        navigate('/formcitas', { state: user });
+
+    const redirectToCreatepQRfORM=()=>{
+        navigate('/pqrs/crear',{ state: user })
     }
-    const redirectToRecoverReassingCitas= () => {
-        navigate('/reasignador_citas', { state: user });
-    }
-    const redirectToChatBotHistory=()=>{
-        navigate('/history_chatbot',{ state:user });
-    }
-    const  redirectToOrdesrsCase=()=>{
-        navigate('/orders',{ state:user });
+
+    const redirectToPqrsPage=()=>{
+        navigate('/pqrs',{ state: user })
     }
 
     const handleLogout = () => {
@@ -26,39 +23,37 @@ const NavbarCitas = ({user}) => {
         navigate('/');
     };
 
-    const toggleOpcionesCard = () => {
-        setIsOpcionesCardOpen(prev => !prev);
-    };
+
 
     const toggleUserCard = () => {
         setIsUserCardOpen(prev => !prev);
     };
+    const toggleQualityCard=()=>{
+        setIsQualityCardOpen(prev=>!prev);
+    }
     const redirectToRecoverPassword = () => {
         navigate('/update_password');
     };
+
+    const redirectToInformesPqrs=()=>{
+        navigate('/pqrs/informes',{ state: user });
+    }
     return (
         <div className="subnavbar">
-            <img src={logo} alt="asopormen" />
+            <img src={"https://res.cloudinary.com/dxalvdckk/image/upload/v1747435854/descarga_ztjs3h.png"} alt="asopormen" />
             
             <div className="card">
-                <div className="card-header" onClick={toggleOpcionesCard}>
-                    <button className="card-btn">Programador</button>
+                <div className="card-header" onClick={toggleQualityCard}>
+                    <button className="card-btn">Calidad</button>
                 </div>
-                {isOpcionesCardOpen && (
+                {isQualityCardOpen && (
                     <div className="card-body">
-                        <a onClick={whileAddFunction}>Cargar Agenda</a>
-                        <a onClick={redirectToRecoverReassingCitas}>Reasignar Citas</a>
-                        <a onClick={redirectToChatBotHistory}>Historial Chat</a>
-                        {/*<a onClick={redirectToOrdesrsCase}>Casos de Ordenes</a>*/}
+                        <a onClick={redirectToPqrsPage}>Pqrs</a>
+                        <a onClick={redirectToCreatepQRfORM}>Crear Pqr</a>
+                        <a onClick={redirectToInformesPqrs}>Informes</a>
                     </div>
                 )}
             </div>
-           {/* 
-            <div className="link">
-                <a href={whileAddFunction}>Clinico</a>
-            </div>
-           
-           */} 
 
             
             <div className="card">

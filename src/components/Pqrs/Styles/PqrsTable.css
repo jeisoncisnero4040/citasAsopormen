@@ -1,0 +1,173 @@
+/* Tabla base */
+.pqrs-table {
+  font-size: 16px;
+  border-collapse: collapse;
+  width: 100%;
+  border-spacing: 0;
+  border-radius: 20px;
+}
+
+/* Encabezado de tabla */
+.pqrs-table th {
+  background-color: #1b0dd3;
+  color: #ffffff;
+  height: 30px;
+  cursor: pointer;
+}
+
+/* Fila general */
+.row-table-pqrs {
+  padding: 0px 8px;
+  margin: 0px;
+  border: 1px solid #ccc;
+  text-align: center;
+  line-height: 1;
+  max-height: 36px;
+}
+
+/* Estilo base de botones de tabla */
+.button-table-pqrs,
+.button-area-respondido,
+.button-en-area,
+.button-respondido {
+  font-size: 14px;
+  margin: 0px;
+  text-align: center;
+  padding: 0%;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  min-height: 36px;
+}
+
+/* Botón: Activa (azul claro) */
+.button-table-pqrs,
+.row-table-pqrs-activa {
+  background-color: #e6f0ff;
+  color: #1a4f7a;
+  border: 1px solid #1a4f7a;
+
+}
+
+/* Botón: Area Respondido (verde claro) */
+.button-area-respondido,
+.row-table-pqrs-area-respondido {
+  background-color: #e6ffed;
+  color: #1a7f37;
+  border: 1px solid #1a7f37;
+}
+
+/* Botón: En Área (amarillo claro) */
+.button-en-area,
+.row-table-pqrs-en-area {
+  background-color: #fff4e5;
+  color: #c05600;
+  border: 1px solid #c05600;
+}
+
+/* Botón: Respondido (amarillo oscuro) */
+.button-respondido,
+.row-table-pqrs-respondido {
+  background-color: #fff9d1;
+  color: #a68c00;
+  border: 1px solid #a68c00;
+}
+.row-table-pqrs-indefinido,
+.row-table-pqrs-0 {
+    background-color: #ffe5e5;   
+    color: #b30000;              
+    border: 1px solid #b30000;  
+}
+.row-table-pqrs-cerrado,
+.row-table-pqrs-1 {
+    background-color: #e6f4e6;   
+    color: #0b3d0b;              
+    border: 1px solid #0b3d0b;   
+}
+
+/* Hover en filas */
+.row-table-pqrs-activa:hover,
+.row-table-pqrs-en-area:hover,
+.row-table-pqrs-area-respondido:hover,
+.row-table-pqrs-respondido:hover {
+  filter: brightness(0.95);
+  cursor: pointer;
+}
+
+/* Hover en botones */
+.button-table-pqrs:hover,
+.button-area-respondido:hover,
+.button-en-area:hover,
+.button-respondido:hover {
+  filter: brightness(0.95);
+  cursor: pointer;
+}
+
+/* Navegación de tabla */
+.button-navigate-table-pqrs {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.btn-previous-page,
+.btn-next-page {
+  font-size: 13px;
+  padding: 6px 14px;
+  border: 1px solid #1b0dd3;
+  background-color: transparent;
+  color: #1b0dd3;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 35%;
+}
+
+.btn-previous-page:hover,
+.btn-next-page:hover {
+  background-color: #1b0dd3;
+  color: #fff;
+}
+
+.btn-previous-page:disabled,
+.btn-next-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  border-color: #ccc;
+  color: #aaa;
+}
+
+/* Indicador de página */
+.page-indicator {
+  font-size: 14px;
+  color: #333;
+  font-weight: 500;
+}
+.button-navigate-table-orders{
+    width: 96%;
+    margin-left: 2%;
+    margin-right: 2%;
+    margin-bottom: 2%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+}
+.button-navigate-table-orders button{
+    width: 10%;
+    height: 40px;
+    background-color: gray; /* Rojo suave */
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+.button-navigate-table-orders button:hover{
+    background-color: #c82333; 
+    transform: scale(1.05);
+}

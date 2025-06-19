@@ -1,25 +1,31 @@
 import axios from 'axios';
+import Constans from '../../../js/Constans';
 
-class ApiRequestManager {
- 
+class ApiRequestsManagerService {
+    static urlBase = Constans.apiUrl();
+
     getToken = () => {
-        return localStorage.getItem('authToken')
-    }
+        return localStorage.getItem('authToken');
+    };
+
     setToken = (newToken) => {
         localStorage.setItem('authToken', newToken);
-    }
+    };
+
     handleAuthError = (error) => {
-        if(!error.response){
-            throw  "Uppps al parecer estamos teniendo un problema con la red"
+        if (!error.response) {
+            throw "Uppps, al parecer estamos teniendo un problema con la red";
         }
-        if (error.response && error.response.status === 401) {
-            window.location.href = '/clinico';
+        if (error.response.status === 401) {
+            window.location.href = '/calidad';
             throw error.response.data.message;
         } else {
-            throw error.response.data.error?error.response.data.error:'error al hacer la peticion'  
+            throw error.response.data.error ? error.response.data.error : 'Error al hacer la petición';
         }
-    }
-    postMethod = async (url, payload) => {
+    };
+
+    postMethod = async (endPoint, payload) => {
+        const url = ApiRequestsManagerService.urlBase + endPoint;
         const token = this.getToken();
         try {
             const response = await axios.post(url, payload, {
@@ -28,21 +34,20 @@ class ApiRequestManager {
                 },
             });
 
- 
             const newToken = response.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
                 this.setToken(newToken.replace('Bearer ', ''));
             }
-
-             
+            
             return response;
-
         } catch (error) {
-             
             return this.handleAuthError(error);
         }
-    }
-    getMethod = async (url) => {
+    };
+
+    getMethod = async (endPoint) => {
+        
+        const url = ApiRequestsManagerService.urlBase + endPoint;
         const token = this.getToken();
         try {
             const response = await axios.get(url, {
@@ -50,22 +55,21 @@ class ApiRequestManager {
                     'Authorization': `Bearer ${token}`,
                 },
             });
+
             const newToken = response.headers.Authorization;
-             
             if (newToken && newToken !== `Bearer ${token}`) {
-                
                 this.setToken(newToken.replace('Bearer ', ''));
             }
-
-             
+          
+            
             return response;
-
         } catch (error) {
-             
             return this.handleAuthError(error);
         }
-    }
-    deleteMethod=async (url)=>{
+    };
+
+    deleteMethod = async (endPoint) => {
+        const url = ApiRequestsManagerService.urlBase + endPoint;
         const token = this.getToken();
         try {
             const response = await axios.delete(url, {
@@ -75,16 +79,13 @@ class ApiRequestManager {
             });
             const newToken = response.headers.Authorization;
             if (newToken && newToken !== `Bearer ${token}`) {
-                 
                 this.setToken(newToken.replace('Bearer ', ''));
             }
             return response;
         } catch (error) {
             return this.handleAuthError(error);
         }
-    }
+    };
 }
 
-export default ApiRequestManager;
-
-
+export default ApiRequestsManagerService;

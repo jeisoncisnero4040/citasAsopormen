@@ -1,0 +1,98 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+  }
+  
+  .modal-content-pqrs {
+    background: #ffffff;
+    border-radius: 20px;
+    min-width: 60vw;
+    max-width: 70vw;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    overflow-y: scroll;
+  }
+
+
+  
+  .modal-content-pqrs h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+    text-align: center;
+    color: #333;
+  }
+  
+  .modal-item-pqrs {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+    gap: 1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+  
+  .modal-item-pqrs p {
+    margin: 0;
+    font-weight: 600;
+    flex: 1;
+    color: #555;
+  }
+  
+  .modal-item-pqrs strong {
+    flex: 2;
+    text-align: left;
+    word-break: break-word;
+    color: #222;
+  }
+  
+  .modal-content-pqrs button {
+    margin-top: 1.5rem;
+    padding: 0.5rem 1.2rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #1e90ff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    align-self: flex-end;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-content-pqrs button:hover {
+    background-color: #1c86ee;
+  }
+  .title-and-close-button{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+  .title-and-close-button p{
+    font-size: 120%;
+    color: #4C69FF;
+    font-weight: 900;
+    text-align: center;
+    font-family: 'Montserrat', sans-serif;
+    width: 90%;
+  }
+  .title-and-close-button a{
+      
+      width: auto;
+      background-color: #ffffff;
+      padding: 2px;
+      border-radius: 50%;
+      border: 2px solid #4C69FF;
+      text-align: center;
+      
+  }

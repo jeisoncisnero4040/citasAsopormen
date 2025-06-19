@@ -5,9 +5,10 @@
     align-items: center;
 }
 .subnavbar img{
-    width: 70%;
+    width: 50%;
     height: auto;
     margin-top: 10%;
+    margin-bottom: 10%;
 }
 
 .card {
