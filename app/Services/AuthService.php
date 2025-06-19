@@ -27,7 +27,7 @@ class AuthService extends BaseService{
         //validarLogin
 
         $user =User::where('cedula', $request['cedula'])
-        ->select('cedula','usuario','password','estado','permisomc','rol_id')
+        ->select('cedula','usuario','password','estado','permiso_hd')
         ->first();
 
 
@@ -37,7 +37,7 @@ class AuthService extends BaseService{
         if ($user->estado=='INACTIVO'){
             throw new BadRequestException( "El usuario no se encuentra activo",400);
         }
-        if ($user->permisomc=='0'){
+        if ($user->permiso_hd=='0'){
             throw new BadRequestException( "El usuario no tiene permisos para esta acción",400);
         }
         if(!Hash::check($request['password'], $user->password)){

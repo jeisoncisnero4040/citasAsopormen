@@ -11,6 +11,7 @@ use App\Events\RegisterLogPqrsSendedAreaEvent;
 use App\Services\StorageService;
 use App\Services\EmailService;
 use App\Exceptions\CustomExceptions\BadRequestException;
+use App\Utils\DateManager;
 use Illuminate\Http\UploadedFile;
 
 
@@ -28,9 +29,17 @@ class PqrService extends BaseService{
         $this->emailService=$emailService;
         $this->tag='pqr(s)';
     }
-    public function createPqr(array $request):array
-    {
+    public function createPqr(array $request,$file):array
+    {   
+
         PqrValidator::validateNewPqrRequest(newPqrData:$request);
+
+        $url=null;
+        if ($file){
+            $responseStorage = $this->storageService->uploadEvidencie($file, 'documentos');
+            $url=$responseStorage['data']['url']??null;
+        }
+        $request['url_pdf_info']=$url;
         $idNewPqr=$this->pqrRepository->create(newPqrData:$request);
         $pqr=$this->pqrRepository->find(pqrId:$idNewPqr);
         return $this->responseManager->created($pqr);
@@ -78,7 +87,7 @@ class PqrService extends BaseService{
     }
     public function getPqrsByIdHashed($pqrsIdHashed){
         $id=$this->idHasheToIdInteger($pqrsIdHashed);
-        return $this->findPqrById($id,[]);
+        return $this->findPqrById($id,['estado'=>'en area']);
     }
     public function changeAreaPqrs($idPqrs, $newDataPqrs)
     {   
@@ -95,6 +104,7 @@ class PqrService extends BaseService{
         $id=(int)$request['id'];
         $responseStorage = $this->storageService->uploadEvidencie($pdf, 'documentos');
         $url=$responseStorage['data']['url']??'No Registra';
+        $request['date']=DateManager::dateToStringFormat($request['date']);
         $this->emailService->answerPqrsClient($request,$pdf,$adjunts);
         $update=$this->pqrRepository->saveAnswerToUser($id,['url_respuesta'=>$url]);
         return $this->findPqrById($id,[]);

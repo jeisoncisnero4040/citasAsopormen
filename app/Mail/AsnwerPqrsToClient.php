@@ -28,7 +28,7 @@ class AsnwerPqrsToClient extends Mailable
         $this->canal = $data['canal'];
         $this->userType = $data['user_type'];
         $this->response = $response;
-        $this->customAttachments = $attachments;  // Uso el nombre cambiado
+        $this->customAttachments = $attachments;  
     }
 
     public function envelope(): Envelope

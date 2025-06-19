@@ -1,52 +1,62 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Notificación respuesta de PQRS</title>
+  <title>Notificación de Respuesta PQRS</title>
 </head>
-<body style="margin:0; padding:0; font-family: Arial, sans-serif;">
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f9fafb;">
 
-  <table width="100%" cellpadding="0" cellspacing="0" border="0"
-         background="https://res.cloudinary.com/dxalvdckk/image/upload/v1747664162/Captura_de_pantalla_2025-05-19_090111_jmprza.png"
-         style="background-size: cover; background-repeat: no-repeat; background-position: center;">
-
+  <!-- Contenedor principal -->
+  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color: #f9fafb;" background="https://res.cloudinary.com/dxalvdckk/image/upload/v1747664162/Captura_de_pantalla_2025-05-19_090111_jmprza.png">
     <tr>
-      <td>
+      <td align="center">
 
         <!-- Encabezado -->
         <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1b0dd3;">
           <tr>
-            <td style="padding-left: 5%;">
+            <td align="left" style="padding: 10px 5%;">
               <img src="https://res.cloudinary.com/dxalvdckk/image/upload/v1747435854/descarga_ztjs3h.png"
-                   alt="Logo" style="max-height: 100px; width: auto; object-fit: cover;">
+                   alt="Instituto Asopormen" style="max-height: 100px; width: auto;">
             </td>
           </tr>
         </table>
 
-        <!-- Cuerpo -->
-        <table width="90%" align="center" cellpadding="0" cellspacing="0" style="background-color: #f1f1f1; margin: 30px auto; padding: 20px;">
+        <!-- Contenido -->
+        <table width="80%" cellpadding="0" cellspacing="0" style="background-color: #ffffff; margin: 30px 30px; padding: 30px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
           <tr>
             <td>
-              <h2 style="color: #333;">Estimado(a) Jeison Cisneros,</h2>
-              <p style="line-height: 1.5; color: #333;">
-                La Institución Asopormen y su Área de Calidad se complacen en comunicarle que han dado respuesta 
-                a la PQRS recibida a través de web, en fecha martes 16 de abril de 2026.
+
+              <!-- Saludo -->
+              <h2 style="margin-top: 0; color: #1f2937;">Cordial y atento saludo, {{ $user }}</h2>
+
+              <!-- Cuerpo del mensaje -->
+              <p style="line-height: 1.6; margin: 20px 0; color: #374151;">
+                Desde el área de <strong>Experiencia de Servicio al Cliente</strong>, nos permitimos informarle que su solicitud PQRS, asignada el día <strong>{{ $date }}</strong>, ha sido gestionada oportunamente conforme a los lineamientos institucionales y al compromiso permanente con la mejora continua, con el objetivo de ofrecer un servicio de calidad a nuestros usuarios.
               </p>
-              <p style="line-height: 1.5; color: #333;">
-                Para su comodidad y conocimiento detallado, adjuntamos a este correo los documentos que contienen 
-                las acciones realizadas como parte de la respuesta.
+
+              <p style="line-height: 1.6; margin: 20px 0; color: #374151;">
+                Lamentamos sinceramente los inconvenientes presentados durante el uso de nuestros servicios. Le aseguramos que el equipo de trabajo de <strong>Asopormen</strong> ha atendido su caso con la debida diligencia, orientado a resolver la situación y a fortalecer nuestros procesos para evitar futuras recurrencias.
               </p>
-              <h4 style="color: #333;">Detalles de la PQRS:</h4>
-              <!-- Aquí puedes insertar más detalles si es necesario -->
+
+              <!-- Archivos adjuntos -->
+              <p style="line-height: 1.6; margin: 20px 0; color: #374151;">
+                Para consultar el contenido completo de la respuesta, le invitamos a revisar los documentos adjuntos a este mensaje.
+              </p>
+
+              <!-- Nota al pie -->
+              <p style="font-size: 12px; color: #6b7280; margin-top: 40px;">
+                Este mensaje ha sido generado automáticamente. Por favor, no responda a este correo. Si requiere información adicional, comuníquese a través de los canales oficiales de atención.
+              </p>
+
             </td>
           </tr>
         </table>
 
         <!-- Pie de página -->
-        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1b0dd3; text-align: center; color: #f1f1f1; padding: 15px 0;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #1b0dd3; text-align: center; color: #ffffff; padding: 20px 0;">
           <tr>
             <td>
-              <strong>&copy; 2024 <a href="https://asopormen.org.co" target="_blank" style="color: #ffffff; text-decoration: none;">Instituto Asopormen</a>.</strong>
+              <strong>&copy; 2024 <a href="https://asopormen.org.co" target="_blank" style="color: #ffffff; text-decoration: underline;">Instituto Asopormen</a></strong><br>
               Todos los derechos reservados.
             </td>
           </tr>

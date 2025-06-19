@@ -23,6 +23,7 @@ class PqrsNotificator extends Mailable
     public $specificMotivetivePqrs;
     public $typeMotivetivePqrs;
     public $causeMotivetivePqrs;
+    public $urlPdfInfo;
 
     /**
      * Create a new message instance.
@@ -39,6 +40,7 @@ class PqrsNotificator extends Mailable
         $this->specificMotivetivePqrs = $PqrsInfo['motivo_especifico'];
         $this->typeMotivetivePqrs = $PqrsInfo['tipo_motivo'];
         $this->causeMotivetivePqrs = $PqrsInfo['causa_motivo'];
+        $this->urlPdfInfo=$PqrsInfo['url_pdf_info']??null;
     }
 
     public function envelope(): Envelope

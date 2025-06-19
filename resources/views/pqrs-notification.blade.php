@@ -95,10 +95,14 @@
     </div>
     <div class="body">
         <div class="text">
-            <h2>Hola estimado {{ $nameArea }},</h2>
-            <p>El área de Calidad le informa que tiene una nueva PQRS que debe ser atendida.</p>
+            <h2> Cordial y atento saludo {{ $nameArea }},</h2>
+            <p>Desde el área de Experiencia de Servicio al Cliente, le informamos que se ha asignado 
+            una nueva solicitud de PQRS a su proceso para su respectiva atención.
+            Agradecemos su gestión oportuna conforme a los lineamientos institucionales y el 
+            compromiso con la mejora continua. Su trabajo colaborativo es fundamental para brindar 
+            una respuesta adecuada al usuario, contribuyendo a fortalecer la experiencia en la prestación de nuestros servicios.</p>
 
-            <h4>Detalles de la PQRS:</h4>
+            <p>A continuación, se detalla la información del caso:</p>
             <ul>
                 <li><strong>Tipo de PQRS:</strong> {{ $PqrType }}</li>
                 <li><strong>Usuario:</strong> {{ $userPqrName }}</li>
@@ -110,11 +114,17 @@
                 <li><strong>Descripción:</strong> {{ $descriptionPqrs }}</li>
             </ul>
 
-            <p>Pueden ingresar al siguiente enlace para revisar y responder esta solicitud:</p>
-
+            <p>Para dar respuesta al caso, por favor, ingresar al siguiente enlace:</p>
             <p>
                 <a href="{{ $urlFormAnswerPqr }}">Responder PQRS</a>
             </p>
+
+            @if ($urlPdfInfo)
+                <p>También puede consultar la información adicional del caso en el siguiente enlace:</p>
+                <p>
+                    <a href="{{ $urlPdfInfo }}">Ver Información PQRS</a>
+                </p>
+            @endif
 
             <p><strong>Nota:</strong> A partir de esta notificación cuentan con un plazo de <strong>36 horas hábiles</strong> para dar respuesta a la solicitud registrada.</p>
 
@@ -122,6 +132,7 @@
             <small>Este correo se ha generado automáticamente, por favor no respondas a él.</small>
         </div>
     </div>
+
     <div class="footer">
         <strong>&copy; 2024
             <a target="_blank" href="https://asopormen.org.co">Instituto Asopormen</a>.

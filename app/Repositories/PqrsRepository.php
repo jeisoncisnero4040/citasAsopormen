@@ -18,7 +18,7 @@ class PqrsRepository extends BaseRepository implements PqrRepositoryInterface{
     
         // Consulta con subconsulta simplificada
         $query = "
-                INSERT INTO {$this->table} ($columns, referencia)
+                INSERT INTO {$this->table} ($columns, referencia,fecha_creacion,estado)
                 VALUES (
                     $placeholders,
                     (
@@ -29,7 +29,8 @@ class PqrsRepository extends BaseRepository implements PqrRepositoryInterface{
                         )
                         FROM tipos_pqr tp
                         WHERE tp.id = ?
-                    )
+                    ),GETDATE(),
+                    'activa'
                 )
             ";
     
@@ -42,12 +43,13 @@ class PqrsRepository extends BaseRepository implements PqrRepositoryInterface{
     
     public function find(int $pqrId, ?string $estado = null): mixed
     {
-        $bindings = [$pqrId,$pqrId];
+        $bindings = [$pqrId];
         $query = "SELECT 
                 p.id,
                 p.descripcion,
                 p.fecha_creacion,
                 p.estado,
+                p.url_pdf_info,
 
                 -- Datos del usuario
                 p.nombre_quien_registra,
@@ -117,6 +119,7 @@ class PqrsRepository extends BaseRepository implements PqrRepositoryInterface{
                 p.descripcion,
                 p.fecha_creacion,
                 p.estado,
+                url_pdf_info,
 
                 -- Datos del usuario
                 p.nombre_quien_registra,

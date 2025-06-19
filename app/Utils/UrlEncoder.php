@@ -8,7 +8,7 @@ class UrlEncoder{
     public static function getHashIdAttribute($id)
     {
         $idEncoded=Hashids::encode($id);
-        $baseUrl=env("URL_WEB_CLINICO_ASOPORMEN",'http://127.0.0.1:3000/clinico/pqrs/responder');
+        $baseUrl=env("URL_WEB_CLINICO_ASOPORMEN",'https://asopormen.co/helpdesk/pqrs/responder');
         return "{$baseUrl}/{$idEncoded}";
     }
     public static function getIdFromHasing($hashing){

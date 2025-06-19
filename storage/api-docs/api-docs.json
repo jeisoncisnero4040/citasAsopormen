@@ -1,0 +1,2266 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "API de PQRS",
+        "description": "Documentación de la API para gestionar PQRS (Peticiones, Quejas, Reclamos y Sugerencias).",
+        "contact": {
+            "email": "soporte@tusitio.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/data/pqrs": {
+            "get": {
+                "tags": [
+                    "Analytics"
+                ],
+                "summary": "Obtener datos analíticos de PQRS",
+                "description": "Retorna una colección de datos analizados de PQRS para visualización gráfica: históricos, tendencias, porcentajes por sede, área, característica, causa, entre otros.",
+                "operationId": "4bf05ff87b90a572c47ef7a52a18a726",
+                "parameters": [
+                    {
+                        "name": "from",
+                        "in": "query",
+                        "description": "Fecha inicial del rango de análisis (YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-05-01"
+                        }
+                    },
+                    {
+                        "name": "to",
+                        "in": "query",
+                        "description": "Fecha final del rango de análisis (YYYY-MM-DD)",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-05-31"
+                        }
+                    },
+                    {
+                        "name": "from_tendencie",
+                        "in": "query",
+                        "description": "Fecha inicial del rango de tendencia (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-04-01"
+                        }
+                    },
+                    {
+                        "name": "to_tendencie",
+                        "in": "query",
+                        "description": "Fecha final del rango de tendencia (YYYY-MM-DD)",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "format": "date",
+                            "example": "2025-04-30"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Datos analíticos obtenidos correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "history": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoTypes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoTypesByDate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoCanals": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoCanalsByDate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoSedes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoSedeByDate": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPorcentsPqrsBySede": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsTendencie": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsTendencieByUsers": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsvsSedes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsbyArea": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsVsSedesVsAreas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsVsAreasVsSedes": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "tendenciePqrsByAreas": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsByCharacter": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsVsCharacterVsArea": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "infoPqrsByCause": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "tendenceRangeTimeResponsePqrs": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "tendenciaPqrsOnTime": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                },
+                                                "dataResponseTimeByArea": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Parámetros inválidos en la solicitud",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation failed"
+                                        },
+                                        "errors": {
+                                            "properties": {
+                                                "from": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                },
+                                                "to": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pqrs": {
+            "get": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Listar todos los PQRs",
+                "description": "Obtiene una lista de todos los PQRs registrados. Puede filtrarse por estado usando un parámetro de consulta.",
+                "operationId": "7a59a0b99e2cdf0ae3dc8b84dc14e5d6",
+                "parameters": [
+                    {
+                        "name": "estado",
+                        "in": "query",
+                        "description": "Filtrar por estado del PQR",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "area respondido"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista de PQRs obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 18
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "el usuario solicita un historial de citas del mes de febrero"
+                                                    },
+                                                    "fecha_creacion": {
+                                                        "type": "string",
+                                                        "example": "2025-05-08 11:54:00"
+                                                    },
+                                                    "estado": {
+                                                        "type": "string",
+                                                        "example": "area respondido"
+                                                    },
+                                                    "nombre_quien_registra": {
+                                                        "type": "string",
+                                                        "example": "Jeison Olegario Cisneros"
+                                                    },
+                                                    "identificacion_usuario": {
+                                                        "type": "string",
+                                                        "example": "1085896127"
+                                                    },
+                                                    "celular_usuario": {
+                                                        "type": "string",
+                                                        "example": "3222551222"
+                                                    },
+                                                    "email_usuario": {
+                                                        "type": "string",
+                                                        "example": "legoladhojaverde@gmail.com"
+                                                    },
+                                                    "nombre_usuario": {
+                                                        "type": "string",
+                                                        "example": "Jeison Cisneros"
+                                                    },
+                                                    "tipo_usuario": {
+                                                        "type": "string",
+                                                        "example": "Secretaria De Salud Departamental"
+                                                    },
+                                                    "referencia": {
+                                                        "type": "string",
+                                                        "example": "Q_4_20250508"
+                                                    },
+                                                    "fecha_envio_area": {
+                                                        "type": "string",
+                                                        "example": "2025-05-12 15:08:00"
+                                                    },
+                                                    "fecha_respuesta": {
+                                                        "type": "string",
+                                                        "example": "2025-05-12 15:11:00"
+                                                    },
+                                                    "respuesta": {
+                                                        "type": "string",
+                                                        "example": "la llegada de xavi alonso"
+                                                    },
+                                                    "usuario_respuesta_area": {
+                                                        "type": "string",
+                                                        "example": "jeison olegario cisneros figueroa"
+                                                    },
+                                                    "medio_respuesta_usuario": {
+                                                        "type": "string",
+                                                        "nullable": true
+                                                    },
+                                                    "fecha_respuesta_usuario": {
+                                                        "type": "string",
+                                                        "example": "2025-05-19 14:15:00"
+                                                    },
+                                                    "horas_oportunidad_respuesta_area": {
+                                                        "type": "string",
+                                                        "example": "36"
+                                                    },
+                                                    "canal": {
+                                                        "type": "string",
+                                                        "example": "Correo Electrónico"
+                                                    },
+                                                    "tipo_pqr": {
+                                                        "type": "string",
+                                                        "example": "Queja"
+                                                    },
+                                                    "area_servicio": {
+                                                        "type": "string",
+                                                        "example": "ADMINISTRATIVO - ABA"
+                                                    },
+                                                    "cordinador_area": {
+                                                        "type": "string",
+                                                        "example": "Desarrollo pruebas"
+                                                    },
+                                                    "email_cordinador": {
+                                                        "type": "string",
+                                                        "example": "dev1@asopormen.org.co"
+                                                    },
+                                                    "sogcs": {
+                                                        "type": "string",
+                                                        "example": "Continuidad"
+                                                    },
+                                                    "macromotivo": {
+                                                        "type": "string",
+                                                        "example": "Macromotivo 1"
+                                                    },
+                                                    "motivo_general": {
+                                                        "type": "string",
+                                                        "example": "Motivo General 1"
+                                                    },
+                                                    "motivo_especifico": {
+                                                        "type": "string",
+                                                        "example": "Motivo Específico 1"
+                                                    },
+                                                    "tipo_motivo": {
+                                                        "type": "string",
+                                                        "example": "Tipo de Motivo 1"
+                                                    },
+                                                    "causa_motivo": {
+                                                        "type": "string",
+                                                        "example": "Causa de Motivo 1"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Crear un nuevo PQR",
+                "description": "Crea un nuevo registro de PQR (Petición, Queja, Reclamo o Sugerencia). Valida los campos requeridos y devuelve el PQR creado.",
+                "operationId": "5f4a553c40e030454032e7e9d95c1fd1",
+                "requestBody": {
+                    "description": "Datos requeridos para crear un PQR",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "descripcion",
+                                    "nombre_quien_registra",
+                                    "identificacion_usuario",
+                                    "celular_usuario",
+                                    "email_usuario",
+                                    "canal_id",
+                                    "tipo_id",
+                                    "tipo_usuario",
+                                    "nombre_usuario",
+                                    "sede_id",
+                                    "area_id",
+                                    "sogcs_id",
+                                    "motivo_id"
+                                ],
+                                "properties": {
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "el usuario solicita un historial de citas del mes de febrero"
+                                    },
+                                    "nombre_quien_registra": {
+                                        "type": "string",
+                                        "example": "Jeison Olegario Cisneros"
+                                    },
+                                    "identificacion_usuario": {
+                                        "type": "string",
+                                        "example": "1085896127"
+                                    },
+                                    "celular_usuario": {
+                                        "type": "string",
+                                        "example": "3222551222"
+                                    },
+                                    "email_usuario": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "legoladhojaverde@gmail.com"
+                                    },
+                                    "canal_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "tipo_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "tipo_usuario": {
+                                        "type": "string",
+                                        "example": "Secretaria De Salud Departamental"
+                                    },
+                                    "nombre_usuario": {
+                                        "type": "string",
+                                        "example": "Jeison Cisneros"
+                                    },
+                                    "referencia": {
+                                        "type": "string",
+                                        "example": "Q_4_20250508"
+                                    },
+                                    "sede_id": {
+                                        "type": "integer",
+                                        "example": 3
+                                    },
+                                    "area_id": {
+                                        "type": "integer",
+                                        "example": 4
+                                    },
+                                    "sogcs_id": {
+                                        "type": "integer",
+                                        "example": 5
+                                    },
+                                    "motivo_id": {
+                                        "type": "integer",
+                                        "example": 6
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "PQR creado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "created"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 201
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 18
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "el usuario solicita un historial de citas del mes de febrero"
+                                                },
+                                                "fecha_creacion": {
+                                                    "type": "string",
+                                                    "format": "date-time",
+                                                    "example": "2025-05-08 11:54:00"
+                                                },
+                                                "estado": {
+                                                    "type": "string",
+                                                    "example": "area respondido"
+                                                },
+                                                "nombre_quien_registra": {
+                                                    "type": "string",
+                                                    "example": "Jeison Olegario Cisneros"
+                                                },
+                                                "identificacion_usuario": {
+                                                    "type": "string",
+                                                    "example": "1085896127"
+                                                },
+                                                "celular_usuario": {
+                                                    "type": "string",
+                                                    "example": "3222551222"
+                                                },
+                                                "email_usuario": {
+                                                    "type": "string",
+                                                    "example": "legoladhojaverde@gmail.com"
+                                                },
+                                                "nombre_usuario": {
+                                                    "type": "string",
+                                                    "example": "Jeison Cisneros"
+                                                },
+                                                "tipo_usuario": {
+                                                    "type": "string",
+                                                    "example": "Secretaria De Salud Departamental"
+                                                },
+                                                "fecha_envio_area": {
+                                                    "type": "string",
+                                                    "example": "2025-05-12 15:08:00"
+                                                },
+                                                "fecha_respuesta": {
+                                                    "type": "string",
+                                                    "example": "2025-05-12 15:11:00"
+                                                },
+                                                "respuesta": {
+                                                    "type": "string",
+                                                    "example": "la llegada de xavi alonso"
+                                                },
+                                                "causas": {
+                                                    "type": "string",
+                                                    "example": "2200 millones de brasileños"
+                                                },
+                                                "usuario_respuesta_area": {
+                                                    "type": "string",
+                                                    "example": "jeison olegario cisneros figueroa"
+                                                },
+                                                "fecha_respuesta_usuario": {
+                                                    "type": "string",
+                                                    "example": "2025-05-19 14:15:00"
+                                                },
+                                                "horas_oportunidad_respuesta_area": {
+                                                    "type": "string",
+                                                    "example": "36"
+                                                },
+                                                "medio_respuesta_usuario": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "dias_aportunidad_res_calidad": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "canal": {
+                                                    "type": "string",
+                                                    "example": "Correo Electrónico"
+                                                },
+                                                "tipo_pqr": {
+                                                    "type": "string",
+                                                    "example": "Queja"
+                                                },
+                                                "area_servicio": {
+                                                    "type": "string",
+                                                    "example": "ADMINISTRATIVO - ABA"
+                                                },
+                                                "cordinador_area": {
+                                                    "type": "string",
+                                                    "example": "Desarrollo pruebas"
+                                                },
+                                                "celular_coordinador": {
+                                                    "type": "string",
+                                                    "example": "3222551222"
+                                                },
+                                                "email_cordinador": {
+                                                    "type": "string",
+                                                    "example": "dev1@asopormen.org.co"
+                                                },
+                                                "sogcs": {
+                                                    "type": "string",
+                                                    "example": "Continuidad"
+                                                },
+                                                "macromotivo": {
+                                                    "type": "string",
+                                                    "example": "Macromotivo 1"
+                                                },
+                                                "motivo_general": {
+                                                    "type": "string",
+                                                    "example": "Motivo General 1"
+                                                },
+                                                "motivo_especifico": {
+                                                    "type": "string",
+                                                    "example": "Motivo Específico 1"
+                                                },
+                                                "tipo_motivo": {
+                                                    "type": "string",
+                                                    "example": "Tipo de Motivo 1"
+                                                },
+                                                "causa_motivo": {
+                                                    "type": "string",
+                                                    "example": "Causa de Motivo 1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "El campo nombre_quien_registra es obligatorio"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error inesperado al crear el PQR"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {}
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pqrs/{id}": {
+            "get": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Obtener un PQR por su ID",
+                "description": "Obtiene la información detallada de un PQR dado su ID. Puede filtrarse opcionalmente por estado.",
+                "operationId": "35d2c054c00117c8d3371268f070cc65",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID del PQR",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 18
+                        }
+                    },
+                    {
+                        "name": "estado",
+                        "in": "query",
+                        "description": "Estado opcional para filtrar el PQR",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "example": "area respondido"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PQR encontrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 18
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "el usuario solicita un historial de citas del mes de febrero"
+                                                },
+                                                "fecha_creacion": {
+                                                    "type": "string",
+                                                    "example": "2025-05-08 11:54:00"
+                                                },
+                                                "estado": {
+                                                    "type": "string",
+                                                    "example": "area respondido"
+                                                },
+                                                "nombre_quien_registra": {
+                                                    "type": "string",
+                                                    "example": "Jeison Olegario Cisneros"
+                                                },
+                                                "identificacion_usuario": {
+                                                    "type": "string",
+                                                    "example": "1085896127"
+                                                },
+                                                "celular_usuario": {
+                                                    "type": "string",
+                                                    "example": "3222551222"
+                                                },
+                                                "email_usuario": {
+                                                    "type": "string",
+                                                    "example": "legoladhojaverde@gmail.com"
+                                                },
+                                                "nombre_usuario": {
+                                                    "type": "string",
+                                                    "example": "Jeison Cisneros"
+                                                },
+                                                "tipo_usuario": {
+                                                    "type": "string",
+                                                    "example": "Secretaria De Salud Departamental"
+                                                },
+                                                "referencia": {
+                                                    "type": "string",
+                                                    "example": "Q_4_20250508"
+                                                },
+                                                "fecha_envio_area": {
+                                                    "type": "string",
+                                                    "example": "2025-05-12 15:08:00"
+                                                },
+                                                "fecha_respuesta": {
+                                                    "type": "string",
+                                                    "example": "2025-05-12 15:11:00"
+                                                },
+                                                "respuesta": {
+                                                    "type": "string",
+                                                    "example": "la llegada de xavi alonso"
+                                                },
+                                                "causas": {
+                                                    "type": "string",
+                                                    "example": "2200 millones de brasileños"
+                                                },
+                                                "usuario_respuesta_area": {
+                                                    "type": "string",
+                                                    "example": "jeison olegario cisneros figueroa"
+                                                },
+                                                "medio_respuesta_usuario": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "fecha_respuesta_usuario": {
+                                                    "type": "string",
+                                                    "example": "2025-05-19 14:15:00"
+                                                },
+                                                "horas_oportunidad_respuesta_area": {
+                                                    "type": "string",
+                                                    "example": "36"
+                                                },
+                                                "dias_aportunidad_res_calidad": {
+                                                    "type": "string",
+                                                    "nullable": true
+                                                },
+                                                "canal": {
+                                                    "type": "string",
+                                                    "example": "Correo Electrónico"
+                                                },
+                                                "tipo_pqr": {
+                                                    "type": "string",
+                                                    "example": "Queja"
+                                                },
+                                                "area_servicio": {
+                                                    "type": "string",
+                                                    "example": "ADMINISTRATIVO - ABA"
+                                                },
+                                                "cordinador_area": {
+                                                    "type": "string",
+                                                    "example": "Desarrollo pruebas"
+                                                },
+                                                "celular_coordinador": {
+                                                    "type": "string",
+                                                    "example": "3222551222"
+                                                },
+                                                "email_cordinador": {
+                                                    "type": "string",
+                                                    "example": "dev1@asopormen.org.co"
+                                                },
+                                                "sogcs": {
+                                                    "type": "string",
+                                                    "example": "Continuidad"
+                                                },
+                                                "macromotivo": {
+                                                    "type": "string",
+                                                    "example": "Macromotivo 1"
+                                                },
+                                                "motivo_general": {
+                                                    "type": "string",
+                                                    "example": "Motivo General 1"
+                                                },
+                                                "motivo_especifico": {
+                                                    "type": "string",
+                                                    "example": "Motivo Específico 1"
+                                                },
+                                                "tipo_motivo": {
+                                                    "type": "string",
+                                                    "example": "Tipo de Motivo 1"
+                                                },
+                                                "causa_motivo": {
+                                                    "type": "string",
+                                                    "example": "Causa de Motivo 1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "PQR no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "PQR no encontrado"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pqrs/notify-area": {
+            "post": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Notificar PQR al área correspondiente",
+                "description": "Este endpoint notifica por correo al área correspondiente que existe un nuevo PQR. Además, se genera y envía un enlace público para que dicha área pueda responder el PQR. Retorna el PQR actualizado.",
+                "operationId": "67de7f3342b035de3dbede1d063e5dfe",
+                "requestBody": {
+                    "description": "Información del PQR que se va a notificar",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "cordinador_area",
+                                    "url_form",
+                                    "nombre_usuario",
+                                    "descripcion",
+                                    "tipo_pqr",
+                                    "macromotivo",
+                                    "motivo_general",
+                                    "motivo_especifico",
+                                    "tipo_motivo",
+                                    "causa_motivo"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "integer",
+                                        "example": 18
+                                    },
+                                    "cordinador_area": {
+                                        "type": "string",
+                                        "example": "Desarrollo pruebas"
+                                    },
+                                    "url_form": {
+                                        "type": "string",
+                                        "example": "https://miapp.com/responder/Q_4_20250508"
+                                    },
+                                    "nombre_usuario": {
+                                        "type": "string",
+                                        "example": "Jeison Cisneros"
+                                    },
+                                    "descripcion": {
+                                        "type": "string",
+                                        "example": "el usuario solicita un historial de citas del mes de febrero"
+                                    },
+                                    "tipo_pqr": {
+                                        "type": "string",
+                                        "example": "Queja"
+                                    },
+                                    "macromotivo": {
+                                        "type": "string",
+                                        "example": "Macromotivo 1"
+                                    },
+                                    "motivo_general": {
+                                        "type": "string",
+                                        "example": "Motivo General 1"
+                                    },
+                                    "motivo_especifico": {
+                                        "type": "string",
+                                        "example": "Motivo Específico 1"
+                                    },
+                                    "tipo_motivo": {
+                                        "type": "string",
+                                        "example": "Tipo de Motivo 1"
+                                    },
+                                    "causa_motivo": {
+                                        "type": "string",
+                                        "example": "Causa de Motivo 1"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "PQR actualizado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 18
+                                                },
+                                                "estado": {
+                                                    "type": "string",
+                                                    "example": "notificado"
+                                                },
+                                                "url_form": {
+                                                    "type": "string",
+                                                    "example": "https://miapp.com/responder/Q_4_20250508"
+                                                },
+                                                "cordinador_area": {
+                                                    "type": "string",
+                                                    "example": "Desarrollo pruebas"
+                                                },
+                                                "email_cordinador": {
+                                                    "type": "string",
+                                                    "example": "dev1@asopormen.org.co"
+                                                },
+                                                "nombre_usuario": {
+                                                    "type": "string",
+                                                    "example": "Jeison Cisneros"
+                                                },
+                                                "descripcion": {
+                                                    "type": "string",
+                                                    "example": "el usuario solicita un historial de citas del mes de febrero"
+                                                },
+                                                "tipo_pqr": {
+                                                    "type": "string",
+                                                    "example": "Queja"
+                                                },
+                                                "macromotivo": {
+                                                    "type": "string",
+                                                    "example": "Macromotivo 1"
+                                                },
+                                                "motivo_general": {
+                                                    "type": "string",
+                                                    "example": "Motivo General 1"
+                                                },
+                                                "motivo_especifico": {
+                                                    "type": "string",
+                                                    "example": "Motivo Específico 1"
+                                                },
+                                                "tipo_motivo": {
+                                                    "type": "string",
+                                                    "example": "Tipo de Motivo 1"
+                                                },
+                                                "causa_motivo": {
+                                                    "type": "string",
+                                                    "example": "Causa de Motivo 1"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Solicitud inválida",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Faltan campos requeridos"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "PQR no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "PQR no encontrado"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Server error"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pqrs/answer-area": {
+            "post": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Responder PQR desde el área correspondiente",
+                "description": "Este endpoint permite que el área correspondiente responda un PQR, adjuntando acciones correctivas y evidencias. Guarda los archivos en el storage y actualiza el estado del PQR a 'respondido-area'.",
+                "operationId": "eb8685c407566320e2eb3b16c14bda87",
+                "requestBody": {
+                    "description": "Información de la respuesta y acciones correctivas del área",
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "usuario_respuesta_area",
+                                    "respuesta",
+                                    "causas",
+                                    "actions"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "string",
+                                        "example": "Q_4_20250508"
+                                    },
+                                    "usuario_respuesta_area": {
+                                        "type": "string",
+                                        "example": "Carlos Rodríguez"
+                                    },
+                                    "respuesta": {
+                                        "type": "string",
+                                        "example": "Se revisó el historial y se generó un reporte con las citas del mes de febrero."
+                                    },
+                                    "causas": {
+                                        "type": "string",
+                                        "example": "Falta de información en la base de datos."
+                                    },
+                                    "actions[0][descripcion]": {
+                                        "type": "string",
+                                        "example": "Se implementó un sistema de alertas para evitar el error."
+                                    },
+                                    "actions[0][persona_responsable]": {
+                                        "type": "string",
+                                        "example": "Andrea Gómez"
+                                    },
+                                    "actions[0][evidence]": {
+                                        "description": "Archivo de imagen JPG/PNG (máx. 2MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    },
+                                    "actions[1][descripcion]": {
+                                        "type": "string",
+                                        "example": "Capacitación al equipo sobre el nuevo procedimiento."
+                                    },
+                                    "actions[1][persona_responsable]": {
+                                        "type": "string",
+                                        "example": "Luis Pérez"
+                                    },
+                                    "actions[1][evidence]": {
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Respuesta del área registrada correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 18
+                                                },
+                                                "estado": {
+                                                    "type": "string",
+                                                    "example": "respondido-area"
+                                                },
+                                                "respuesta": {
+                                                    "type": "string"
+                                                },
+                                                "acciones": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "properties": {
+                                                            "descripcion": {
+                                                                "type": "string"
+                                                            },
+                                                            "persona_responsable": {
+                                                                "type": "string"
+                                                            },
+                                                            "evidencia_url": {
+                                                                "type": "string"
+                                                            }
+                                                        },
+                                                        "type": "object"
+                                                    }
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Datos inválidos o faltantes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "bad request"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Debe agregar al menos una acción correctiva"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 400
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno al guardar respuesta",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "error": {
+                                            "type": "string",
+                                            "example": "Error al guardar respuesta del área"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "object",
+                                            "example": []
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pqrs/{pqr_id}/actions": {
+            "get": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Obtener acciones registradas para un PQRS",
+                "description": "Devuelve una lista de acciones correctivas asociadas a un PQRS específico, incluyendo la descripción, el responsable y la URL de la evidencia (imagen).",
+                "operationId": "cc79566da23db883b4284f6bc243364d",
+                "parameters": [
+                    {
+                        "name": "pqr_id",
+                        "in": "path",
+                        "description": "ID del PQRS",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 18
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Acciones recuperadas correctamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "21"
+                                                    },
+                                                    "id_pqrs": {
+                                                        "type": "string",
+                                                        "example": "18"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "aksdkasdk ajsdnasdmasd"
+                                                    },
+                                                    "persona_responsable": {
+                                                        "type": "string",
+                                                        "example": "xavi alonso"
+                                                    },
+                                                    "url_evidencia": {
+                                                        "type": "string",
+                                                        "format": "url",
+                                                        "example": "https://res.cloudinary.com/dxalvdckk/image/upload/v1747080686/pqrs/evidencias/tnnd8dfgwmczugf1ljjk.png"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "PQRS no encontrado o sin acciones registradas",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno al recuperar acciones",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/pqrs/{pqr_id_encoded}/encoded": {
+            "get": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Obtener información de un PQRS por ID codificado",
+                "description": "Retorna los datos completos de un PQRS utilizando su ID hasheado (hash).",
+                "operationId": "78a7fcafed193c82f41f83367474f1e5",
+                "parameters": [
+                    {
+                        "name": "pqr_id_encoded",
+                        "in": "path",
+                        "description": "ID codificado (hash) del PQRS",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "example": "qwe123zxc456"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PQRS encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "18"
+                                                    },
+                                                    "descripcion": {
+                                                        "type": "string",
+                                                        "example": "el usuario solicita un historial de citas del mes de febrero"
+                                                    },
+                                                    "fecha_creacion": {
+                                                        "type": "string",
+                                                        "example": "2025-05-08 11:54:00"
+                                                    },
+                                                    "estado": {
+                                                        "type": "string",
+                                                        "example": "area respondido"
+                                                    },
+                                                    "nombre_quien_registra": {
+                                                        "type": "string",
+                                                        "example": "Jeison Olegario Cisneros"
+                                                    },
+                                                    "identificacion_usuario": {
+                                                        "type": "string",
+                                                        "example": "1085896127"
+                                                    },
+                                                    "celular_usuario": {
+                                                        "type": "string",
+                                                        "example": "3222551222"
+                                                    },
+                                                    "email_usuario": {
+                                                        "type": "string",
+                                                        "example": "legoladhojaverde@gmail.com"
+                                                    },
+                                                    "nombre_usuario": {
+                                                        "type": "string",
+                                                        "example": "Jeison Cisneros"
+                                                    },
+                                                    "tipo_usuario": {
+                                                        "type": "string",
+                                                        "example": "Secretaria De Salud Departamental"
+                                                    },
+                                                    "referencia": {
+                                                        "type": "string",
+                                                        "example": "Q_4_20250508"
+                                                    },
+                                                    "fecha_envio_area": {
+                                                        "type": "string",
+                                                        "example": "2025-05-12 15:08:00"
+                                                    },
+                                                    "fecha_respuesta": {
+                                                        "type": "string",
+                                                        "example": "2025-05-12 15:11:00"
+                                                    },
+                                                    "respuesta": {
+                                                        "type": "string",
+                                                        "example": "la llegada de xavi alonso"
+                                                    },
+                                                    "causas": {
+                                                        "type": "string",
+                                                        "example": "2200 millones de brasileños"
+                                                    },
+                                                    "usuario_respuesta_area": {
+                                                        "type": "string",
+                                                        "example": "jeison olegario cisneros figueroa"
+                                                    },
+                                                    "medio_respuesta_usuario": {
+                                                        "type": "string",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "fecha_respuesta_usuario": {
+                                                        "type": "string",
+                                                        "example": "2025-05-19 14:15:00"
+                                                    },
+                                                    "horas_oportunidad_respuesta_area": {
+                                                        "type": "string",
+                                                        "example": "36"
+                                                    },
+                                                    "dias_aportunidad_res_calidad": {
+                                                        "type": "string",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "canal": {
+                                                        "type": "string",
+                                                        "example": "Correo Electrónico"
+                                                    },
+                                                    "tipo_pqr": {
+                                                        "type": "string",
+                                                        "example": "Queja"
+                                                    },
+                                                    "area_servicio": {
+                                                        "type": "string",
+                                                        "example": "ADMINISTRATIVO - ABA"
+                                                    },
+                                                    "cordinador_area": {
+                                                        "type": "string",
+                                                        "example": "Desarrollo pruebas"
+                                                    },
+                                                    "celular_coordinador": {
+                                                        "type": "string",
+                                                        "example": "3222551222"
+                                                    },
+                                                    "email_cordinador": {
+                                                        "type": "string",
+                                                        "example": "dev1@asopormen.org.co"
+                                                    },
+                                                    "sogcs": {
+                                                        "type": "string",
+                                                        "example": "Continuidad"
+                                                    },
+                                                    "macromotivo": {
+                                                        "type": "string",
+                                                        "example": "Macromotivo 1"
+                                                    },
+                                                    "motivo_general": {
+                                                        "type": "string",
+                                                        "example": "Motivo General 1"
+                                                    },
+                                                    "motivo_especifico": {
+                                                        "type": "string",
+                                                        "example": "Motivo Específico 1"
+                                                    },
+                                                    "tipo_motivo": {
+                                                        "type": "string",
+                                                        "example": "Tipo de Motivo 1"
+                                                    },
+                                                    "causa_motivo": {
+                                                        "type": "string",
+                                                        "example": "Causa de Motivo 1"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "PQRS no encontrado con ese ID codificado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "not found"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 404
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error interno al recuperar el PQRS",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "failed"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 500
+                                        },
+                                        "data": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pqrs/answer/client": {
+            "post": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Responder PQRS al cliente",
+                "description": "Envía una respuesta al cliente vía email indicando que el PQRS fue resuelto, adjuntando un documento PDF obligatorio y evidencias opcionales. Actualiza el estado del PQRS a respondido y retorna el PQRS actualizado.",
+                "operationId": "8e9cb43224d57022b048d81935fc2639",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "id",
+                                    "user",
+                                    "date",
+                                    "canal",
+                                    "user_type",
+                                    "file"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID del PQRS a responder",
+                                        "type": "string",
+                                        "example": "18"
+                                    },
+                                    "user": {
+                                        "description": "Nombre del usuario que responde",
+                                        "type": "string",
+                                        "example": "Jeison Cisneros"
+                                    },
+                                    "date": {
+                                        "description": "Fecha de la respuesta",
+                                        "type": "string",
+                                        "format": "date-time",
+                                        "example": "2025-05-19T14:15:00Z"
+                                    },
+                                    "canal": {
+                                        "description": "Canal por el que se responde",
+                                        "type": "string",
+                                        "example": "Correo Electrónico"
+                                    },
+                                    "user_type": {
+                                        "description": "Tipo de usuario que responde",
+                                        "type": "string",
+                                        "example": "Secretaria De Salud Departamental"
+                                    },
+                                    "file": {
+                                        "description": "Documento PDF obligatorio con la respuesta",
+                                        "type": "file"
+                                    },
+                                    "files_adjunt": {
+                                        "description": "Archivos de evidencias opcionales",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "file"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Respuesta exitosa con el PQRS actualizado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Pqrs"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Error de validación de datos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Validation error"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/pqrs/{pqr_id}/close": {
+            "post": {
+                "tags": [
+                    "Pqrs"
+                ],
+                "summary": "Cerrar PQRS",
+                "description": "Establece el PQRS identificado por su ID en estado 'cerrado'. Retorna la información actualizada del PQRS.",
+                "operationId": "263c9deb3ebaec4e0b9071e459d60800",
+                "parameters": [
+                    {
+                        "name": "pqr_id",
+                        "in": "path",
+                        "description": "ID del PQRS a cerrar",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 18
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "PQRS cerrado exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Pqrs"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "PQRS no encontrado",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "PQRS not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/reasons": {
+            "get": {
+                "tags": [
+                    "Reasons"
+                ],
+                "summary": "Listar motivos PQRS",
+                "description": "Retorna un listado de motivos por los cuales se realizan PQRS. Cada motivo incluye nivel, nombre, y relaciones jerárquicas.",
+                "operationId": "d4f1a2fac4c7758be4b59a4909925907",
+                "responses": {
+                    "200": {
+                        "description": "Lista de motivos obtenida exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id_motivo": {
+                                                        "type": "string",
+                                                        "example": "1"
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "INSATISFACCIÓN RELACIONADA CON LA  ATENCIÓN EN SALUD"
+                                                    },
+                                                    "id_padre": {
+                                                        "type": "string",
+                                                        "example": null,
+                                                        "nullable": true
+                                                    },
+                                                    "nivel": {
+                                                        "type": "string",
+                                                        "example": "macromotivo"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron motivos",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Reasons not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/utils": {
+            "get": {
+                "tags": [
+                    "Utils"
+                ],
+                "summary": "Obtener datos utilitarios para creación de PQRS",
+                "description": "Retorna una lista de elementos como áreas, sedes, tipos de usuario, características, sogcs, tipos de PQRS, entre otros, necesarios para la creación de un PQRS.",
+                "operationId": "bfc5d7ef14524ad02d856e107bdc0e7a",
+                "responses": {
+                    "200": {
+                        "description": "Datos utilitarios obtenidos exitosamente",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "success"
+                                        },
+                                        "status": {
+                                            "type": "integer",
+                                            "example": 200
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string",
+                                                        "example": "1"
+                                                    },
+                                                    "nombre": {
+                                                        "type": "string",
+                                                        "example": "ADMINISTRATIVO - DIRECCIÓN O SUBDIRECCIÓN"
+                                                    },
+                                                    "tipo": {
+                                                        "description": "Categoría del dato utilitario: sede, area, caracteristica, sogsc, tipo_usuario, etc.",
+                                                        "type": "string",
+                                                        "example": "area"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "No se encontraron datos utilitarios",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Utils not found"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Error del servidor",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Internal Server Error"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Pqrs": {
+                "title": "PQRS",
+                "description": "Estructura completa de un PQRS",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 18
+                    },
+                    "descripcion": {
+                        "type": "string",
+                        "example": "El usuario solicita un historial de citas del mes de febrero."
+                    },
+                    "fecha_creacion": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-08 11:54:00"
+                    },
+                    "estado": {
+                        "type": "string",
+                        "example": "cerrado"
+                    },
+                    "nombre_usuario": {
+                        "type": "string",
+                        "example": "Jeison Cisneros"
+                    },
+                    "tipo_usuario": {
+                        "type": "string",
+                        "example": "Secretaria De Salud Departamental"
+                    },
+                    "respuesta": {
+                        "type": "string",
+                        "example": "Respuesta del área."
+                    },
+                    "usuario_respuesta_area": {
+                        "type": "string",
+                        "example": "Coordinador PQRS"
+                    },
+                    "url_respuesta": {
+                        "type": "string",
+                        "example": "https://example.com/respuesta.pdf"
+                    },
+                    "fecha_respuesta": {
+                        "type": "string",
+                        "format": "date-time",
+                        "example": "2025-05-12 15:11:00"
+                    },
+                    "canal": {
+                        "type": "string",
+                        "example": "Correo Electrónico"
+                    },
+                    "area_servicio": {
+                        "type": "string",
+                        "example": "ADMINISTRATIVO - ABA"
+                    },
+                    "cordinador_area": {
+                        "type": "string",
+                        "example": "Desarrollo pruebas"
+                    },
+                    "macromotivo": {
+                        "type": "string",
+                        "example": "Macromotivo 1"
+                    },
+                    "motivo_general": {
+                        "type": "string",
+                        "example": "Motivo General 1"
+                    },
+                    "motivo_especifico": {
+                        "type": "string",
+                        "example": "Motivo Específico 1"
+                    },
+                    "tipo_motivo": {
+                        "type": "string",
+                        "example": "Tipo de Motivo 1"
+                    },
+                    "causa_motivo": {
+                        "type": "string",
+                        "example": "Causa de Motivo 1"
+                    }
+                },
+                "type": "object"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Analytics",
+            "description": "Analytics"
+        },
+        {
+            "name": "Pqrs",
+            "description": "Pqrs"
+        },
+        {
+            "name": "Reasons",
+            "description": "Reasons"
+        },
+        {
+            "name": "Utils",
+            "description": "Utils"
+        }
+    ]
+}

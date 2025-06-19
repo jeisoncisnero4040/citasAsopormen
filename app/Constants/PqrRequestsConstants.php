@@ -53,11 +53,11 @@ class PqrRequestsConstants{
     public const  RULES_TO_ANSWER_PQRS_FROM_AREA = [
         'usuario_respuesta_area' => 'required|string|max:255',
         'respuesta' => 'required|string',
-        'causas' => 'required|string|max:255',
+        'causas' => 'required|string',
         'id' => 'required|string',
         'actions' => 'required|array|min:1',
-        'actions.*.descripcion' => 'required|string|max:500',
-        'actions.*.persona_responsable' => 'required|string|max:255',
+        'actions.*.descripcion' => 'required|string',
+        'actions.*.persona_responsable' => 'required|string',
         'actions.*.evidence' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
     ];
     public const  MESSAGES_ERROR_ANSWER_PQRS_FROM_AREA = [

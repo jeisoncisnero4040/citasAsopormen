@@ -4,7 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Services\AuthService;
 use Illuminate\Http\Request;
-
+/**
+ * @OA\Info(
+ *     title="API de PQRS",
+ *     version="1.0.0",
+ *     description="Documentación de la API para gestionar PQRS (Peticiones, Quejas, Reclamos y Sugerencias).",
+ *     @OA\Contact(
+ *         email="soporte@tusitio.com"
+ *     ),
+ *     @OA\License(
+ *         name="MIT",
+ *         url="https://opensource.org/licenses/MIT"
+ *     )
+ * )
+ */
 class AuthController extends Controller
 {
     private AuthService $authService;

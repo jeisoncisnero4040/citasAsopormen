@@ -24,7 +24,7 @@ class StorageService extends BaseService
         }
 
         if (!$uploadedFile || !$uploadedFile->isValid()) {
-            throw new ServerErrorException("Error al subir el archivo: No fue entregado un archivo válido");
+            throw new ServerErrorException("Error al subir el archivo: No fue entregado un archivo válido",500);
         }
 
         try {  
@@ -58,7 +58,7 @@ class StorageService extends BaseService
                     Cloudinary::destroy($file->url_evidencia);
                 }
             } catch (\Exception $e) {
-                \Log::error("Error al eliminar archivo de Cloudinary: {$file}. Error: " . $e->getMessage());
+                throw new ServerErrorException("Error al subir la imagen: " . $e->getMessage(), 500);
             }
         }
     }
