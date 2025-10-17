@@ -11,12 +11,12 @@ class BaseService{
     protected static function sourceDidFound(array $response,string $tag):void
     {
         if(empty($response)){
-            throw new NotFoundException("$tag no fué encontrado",500);
+            throw new NotFoundException("$tag no fué encontrado",404);
         }
     }
     protected static function ensureRowUpdated(int $response,string $tag):void{
         if($response == 0){
-            throw new NotFoundException("$tag no fué encontrado",500);
+            throw new NotFoundException("$tag no fué encontrado",404);
         }
     }
     protected function driveResponse(mixed $response, string $tag)

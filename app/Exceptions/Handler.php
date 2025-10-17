@@ -4,7 +4,9 @@ namespace App\Exceptions;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 use App\Exceptions\CustomExceptions\BadRequestException;
+use App\Exceptions\CustomExceptions\ForbidenException;
 use App\Exceptions\CustomExceptions\NotFoundException;
+use App\Exceptions\CustomExceptions\PersistenceError;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Exceptions\CustomExceptions\UnAuthorizateException;
 use App\Utils\ResponseManager;
@@ -42,5 +44,17 @@ class Handler extends ExceptionHandler
             $response = $responseManager->NotFound(($e->getMessage()));
             return response()->json($response,404);
         });
+        $this->renderable(function (ForbidenException $e, $request) {
+            $responseManager = app(ResponseManager::class);
+            $response = $responseManager->forbidden(($e->getMessage()));
+            return response()->json($response,403);
+        });
+        $this->renderable(function (PersistenceError $e, $request) {
+            $responseManager = app(ResponseManager::class);
+            $response = $responseManager->serverError(("No se ha podido completar la Acción"));
+            $e->log();
+            return response()->json($response,500);
+        });
+
     }
 }

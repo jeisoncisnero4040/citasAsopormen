@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Exceptions\CustomExceptions;
-use App\Exceptions\CustomExceptions\BadRequestException;
 use Exception;
 
 class ServerErrorException extends Exception {

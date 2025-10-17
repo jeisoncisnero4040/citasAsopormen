@@ -3,21 +3,37 @@
 namespace App\Repositories;
 
 
-use Illuminate\Database\Eloquent\Model;
+
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
+
 
 class BaseRepository 
 {
 
+
     protected static function makePlaceholders(array $data)
     {
-        $numPlaceholders = count($data);
-        return implode(', ', array_fill(0, $numPlaceholders, '?'));
+        $columns = array_keys($data);
+
+        return implode(',', array_map(
+            fn($col) => Str::startsWith($col, 'sdt_')
+                ? 'CONVERT(smalldatetime,?,120)'
+                : (Str::startsWith($col, 'stt_')
+                    ? 'CONVERT(time,?,120)'
+                    : '?'),
+            $columns
+        ));
     }
+    
+    protected static function makePlaceholdersPlains(array $items){
+         return implode(', ', array_fill(0, count($items), '?'));
+    }
+
     protected static function makeColumns(array $data)
     {
-        return implode(', ', array_keys($data));
+        return implode(', ', array_map(fn($col) => str_replace(['sdt_','stt_'],'',$col),array_keys($data)));
     }
     protected static function makeValues(array $data):array{
         return array_values($data);
@@ -28,7 +44,7 @@ class BaseRepository
         return implode(', ', array_map(fn($col) => "$col = ?", $columns));
     }
     
-    protected static function senqQuery(string $query, ?array $bindings = [], string $typeConsult = 'select')
+    protected static function sendQuery(string $query, ?array $bindings = [], string $typeConsult = 'select')
     {
         try {
             $bindings = $bindings ?? [];  
@@ -38,7 +54,7 @@ class BaseRepository
                     return DB::select($query, $bindings);
                 case 'insert':
                     DB::insert($query, $bindings);
-                    return $lastId = DB::getPdo()->lastInsertId();
+                    return  DB::getPdo()->lastInsertId();
                 case 'update':
                     return DB::update($query, $bindings);
                 case 'delete':

@@ -64,4 +64,12 @@ class ResponseManager{
         ];
         return $response;
     }
+    public function forbidden($message){
+        return [
+            'message' => 'forbidden',
+            'error' => $message,
+            'status' => 403,
+            'data' => []
+        ];
+}
 }

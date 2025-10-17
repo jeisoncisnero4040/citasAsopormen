@@ -1,66 +1,168 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 🏥 Backend del Sistema Clínico Asopormen
 
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <img src="https://res.cloudinary.com/dxalvdckk/image/upload/v1747435854/descarga_ztjs3h.png" width="200" alt="Logo Asopormen">
 </p>
 
-## About Laravel
+1. [Descripción General](#-descripción-general)  
+2. [Arquitectura del Proyecto](#-arquitectura-del-proyecto)  
+3. [Tecnologías Utilizadas](#-tecnologías-utilizadas)  
+4. [Requisitos Previos](#-requisitos-previos)  
+5. [Instalación y Configuración](#-instalación-y-configuración)  
+6. [Estructura de Carpetas](#-estructura-de-carpetas)  
+7. [Flujos Principales](#-flujos-principales)  
+8. [Variables de Entorno](#-variables-de-entorno)  
+9. [Base de Datos](#-base-de-datos)  
+10. [Servicios Externos](#-servicios-externos)  
+11. [Rutas API](#-rutas-api)  
+12. [Estándares de Código](#-estándares-de-código)  
+13. [Estrategias de Seguridad](#-estrategias-de-seguridad)  
+14. [Despliegue](#-despliegue)  
+15. [Mantenimiento y Buenas Prácticas](#-mantenimiento-y-buenas-prácticas)  
+16. [Autores y Créditos](#-autores-y-créditos)  
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 📜 Descripción General
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+El **Backend del Sistema Clínico Asopormen** es el núcleo que orquesta la gestión integral de pacientes, citas, autorizaciones, diagnósticos, evoluciones y reportes.  
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
 
-## Learning Laravel
+Principales características:
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+- Gestión de citas médicas con trazabilidad completa.
+- Evolución clínica de pacientes (EVO) totalmente integrada.
+- Manejo de autorizaciones y control de diagnósticos.
+- Reportes optimizados con procedimientos almacenados.
+- Integración con **Redis** para cache y optimización de consultas.
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🏛 Arquitectura del Proyecto
 
-## Laravel Sponsors
+**Patrón principal:** MVC + Arquitectura Limpia.  
+Separación clara de capas para garantizar bajo acoplamiento:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- **Service:** Contiene la lógica de negocio, orquesta las operaciones y llama a componentes auxiliares como mappers, validators y utils.
+- **Persistence:** Encapsula la lógica de acceso a datos utilizando patrón *Adapter* para desacoplar la fuente de datos.
+- **Controllers:** Gestionan la comunicación HTTP con el cliente, aplicando DTOs para estructurar la información de entrada/salida.
 
-### Premium Partners
+**Características adicionales:**
+- **Cache:** Redis para almacenamiento temporal y reducción de tiempos de respuesta.
+- **Jobs & Listeners:** Para procesamiento asíncrono y eventos del sistema.
+- **Validadores dedicados:** Para garantizar la integridad de los datos.
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+---
 
-## Contributing
+## 🛠 Tecnologías Utilizadas
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- **Lenguaje:** PHP 8.x
+- **Framework:** Laravel 10.x
+- **Base de Datos:** SQL Server
+- **Cache:** Redis
+- **Control de versiones:** Git
 
-## Code of Conduct
+**Dependencias clave:**
+- `laravel/framework`
+- `predis/predis`
+- `nesbot/carbon`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## 📦 Requisitos Previos
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- PHP 8.1+
+- Composer 2.x
+- Redis
+- SQL Server
+- Extensiones PHP necesarias:
+  - `pdo_sqlsrv`
+  - `redis`
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## ⚙ Instalación y Configuración
+
+bash
+# 1. Clonar repositorio
+git clone https://github.com/usuario/backend-asopormen.git
+
+# 2. Entrar en el proyecto
+cd backend-asopormen
+
+# 3. Instalar dependencias
+composer install
+
+# 4. Configurar variables de entorno
+cp .env.example .env
+
+# 5. Generar key de la aplicación
+php artisan key:generate
+
+
+## 📂 Estructura de Carpetas
+app/
+ ├── Constants/
+ ├── Dtos/
+ ├── Http/
+ │    ├── Controllers/
+ │    ├── Middleware/
+ ├── Events/
+ ├── Exceptions/
+ ├── Services/
+ ├── Mappers/
+ ├── Interfaces/
+ ├── Jobs/
+ ├── Listeners/
+ ├── Mail/
+ ├── Repositories/
+ ├── Utils/
+ └── Models/
+
+routes/
+ ├── api.php
+ ├── web.php
+ 
+
+## 🔄 Flujos Principales
+
+Gestión de Citas:
+    permite consultar citas por profesional 
+    permite marcar asistencia de cita, creando admision y reap electronico automatico
+
+Evolución Médica (EVO)
+
+
+Autorizaciones
+
+## 🔐 Variables de Entorno
+Variable	Descripción
+DB_CONNECTION	Tipo de base de datos (sqlsrv, mysql)
+REDIS_HOST	Host de Redis
+APP_ENV	Entorno (local, production)
+🗄 Base de Datos
+
+Migraciones: Laravel Migrations
+
+Modelos: Eloquent ORM
+
+Procedimientos Almacenados: Uso para reportes complejos.
+
+## 🌐 Rutas API
+
+Ver documentación detallada en /api/documentaion o en la colección Postman.
+
+## 🛡 Estrategias de Seguridad
+
+Autenticación con JWT
+Implementacion endpoint a endpoint con sistema roles y permisos ABAC
+
+Validación de entradas con Form Requests
+
+Escapado de datos para prevenir inyecciones
+
+
+
+## 🚀 Despliegue
+
+## 👑 Autores y Créditos
+
+Area Sistemas Asopormen
