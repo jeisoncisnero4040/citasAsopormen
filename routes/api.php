@@ -11,6 +11,7 @@ use App\Http\Controllers\UtilitiesController;
 use App\Http\Controllers\BufferController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\EvoController;
+use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\RolesAndPermissionsController;
 use App\Http\Controllers\SignaturesController;
 
@@ -80,3 +81,4 @@ Route::get('/firmas/{path}', [SignaturesController::class, 'serve'])
 
 Route::post('audit/create-print-evos-audit',[AuditController::class,'savePrintEvosAudit']);
 
+Route::get('metrics',[PrometheusController::class,'metrics']);

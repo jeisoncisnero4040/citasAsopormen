@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Services\Prometheus\PrometheusService;
 use Illuminate\Support\ServiceProvider;
 use Carbon\Carbon;
 
@@ -11,7 +12,9 @@ class AppServiceProvider extends ServiceProvider
      * Register any application services.
      */
     public function register()
-    {
+    
+    {   
+        $this->app->singleton( PrometheusService::class, PrometheusService::class );
         $this->app->bind(
             \App\Interfaces\ProfesionalRepositoryInterface::class,
             \App\Repositories\ProfesionalRepository::class

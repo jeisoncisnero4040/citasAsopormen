@@ -45,6 +45,9 @@ class TemplatesQuerys{
             CASE
                 WHEN ci.asistio = '1' OR ci.cancelada = '1'
                     THEN '0'
+                WHEN GETDATE() BETWEEN cif.fecha_completa 
+                                AND CAST(DATEADD(DAY, 1, GETDATE()) AS date)
+                    THEN '1'
                 WHEN ci.fecha_evo_ampliada = '1'
                     AND CAST(cif.fecha_completa AS date) < CAST(GETDATE() AS date)
                     THEN '1'
