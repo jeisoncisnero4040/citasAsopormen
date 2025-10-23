@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Constants\AuditTemplates;
+use App\Dtos\SetAutorizAppoDto;
 use App\Dtos\ABAEvoDto;
 use App\Dtos\BasicEvoDto;
 use App\Dtos\PsicoEvoDto;
@@ -168,6 +169,32 @@ class AppoimentService{
         );
         
     }
+    public function getAuthsAvailablesToChange(int $idAppo){
+        return $this->responseManager->success(
+            $this->appoimentRepository->getAutorizAvailablesToChangeByAppoId(id:$idAppo)
+        );
+    }
+    public function setAutorizAppoById(int $id,SetAutorizAppoDto $dto){
+        $rows=$this->appoimentRepository->updateAppoById(id:$id,data:$dto->toPersistence());
+        if($rows == 0){
+            throw new BadRequestException("La cita que deseas modificar no existe o no esta disponible",404);
+        }
+        $appo=$this->appoimentRepository->getAppoimentsById([$id]);
+        
+        $msmAudit=AuditTemplates::renderSerAutorizAppoTemplate(
+            profesional:$dto->getProfesional(),
+            id:$id,
+            client:$dto->getClient(),
+            old:$dto->getOld(),
+            new:$dto->getNew()
+        );
+        event(new AuditEvent($msmAudit));
+        return $this->responseManager->success(
+            $appo
+        );
+
+    }
+    
     private function prepareEvoData(array $ids): array {
         if (empty($ids)) {
             throw new BadRequestException("No se han seleccionado citas a evolucionar",400);
@@ -202,5 +229,6 @@ class AppoimentService{
 
         return $this->responseManager->success($apposEvo);
     }
+    
 
 }   

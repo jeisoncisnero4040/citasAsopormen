@@ -34,6 +34,7 @@ Route::post('auth/refresh',[AuthController::class, 'refresh']);
 Route::post('auth/me',[AuthController::class, 'me']);
 Route::post('auth/forgot-password',[AuthController::class, 'forgotPassword']);
 Route::post('auth/change-password',[AuthController::class,'changePassword']);
+Route::post('auth/add-pass',[AuthController::class,'defaultPass']);
 
 Route::get('profesional/get-daily-schedule',[ProfesionalController::class,'getDaylSchedule'])->middleware('login.check:agenda');
 Route::get('profesional/get-schedule',[ProfesionalController::class,'getSchedule'])->middleware('login.check:agenda');
@@ -48,6 +49,9 @@ Route::post('appoiments/evo-ABA',[AppoimentController::class,'evoABA'])->middlew
 Route::get('appoiments/dispo-info',[AppoimentController::class,'getInfoDispoAppoById'])->middleware('login.check:agenda');
 Route::get('appoiments/dx-historico',[AppoimentController::class,'getHistAppoId'])->middleware('login.check:agenda');
 Route::patch('appoiments/opoen-past',[AppoimentController::class,'openPastAppos']);
+Route::get('appoiments/get-auths-avaibles',[AppoimentController::class,'getAuthsToChange'])->middleware('login.check:agenda');
+Route::patch('/appoiments/{id}/set-auth', [AppoimentController::class, 'changeAuthAppo'])->middleware('login.check:agenda');
+
 
 Route::patch('/auths/close',[AuthsController::class,'closeAuth'])->middleware('login.check:agenda');
 

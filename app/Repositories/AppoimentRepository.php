@@ -353,11 +353,45 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
         $numEvo=$this->sendQuery(query:$query,bindings:[$history]);
         return new NumEvoModel($numEvo[0]);
     }
+    public function getAutorizAvailablesToChangeByAppoId(int $id): array
+    {
+        $query="SELECT TOP 3 code
+            FROM (
+                SELECT DISTINCT
+                    au.n_autoriza AS code,
+                    au.fecha
+                FROM autoriza au
+                INNER JOIN citas ci
+                    ON ci.tiempo = au.procedi
+                    AND ci.nro_hist = au.historia
+                WHERE au.f_vence >= CAST(GETDATE() AS DATE)
+                AND au.f_inicial <= CAST(GETDATE() AS DATE)
+                AND (au.anulada = 0 OR (au.suspendida = 1 AND au.anulada = 1))
+                AND au.cerrar_ord_asp != '1'
+                AND ci.id = ?
+                AND NOT EXISTS (
+                    SELECT 1
+                    FROM ven_det
+                    WHERE ven_det.autoriz = au.n_autoriza
+                        AND ven_det.codigo = ci.nro_hist
+                        AND ven_det.detalle = ''
+                )
+            ) AS auths
+            ORDER BY fecha DESC";
+        return self::sendQuery(query:$query,bindings:[$id]);
+    }
 
     public function openPastApposByIds(array $ids):void{
         $placeholders = implode(',', array_fill(0, count($ids), '?'));
         self::sendQuery(query:"UPDATE citas set na='0',fecha_evo_ampliada = '1' WHERE id in ($placeholders)",
                         bindings:$ids,typeConsult:'update');
+    }
+    public function updateAppoById(int $id,array $data): int
+    {
+        $setClause=self::makeSetClause($data);
+        $values=self::makeValues($data);
+        $query="UPDATE citas SET $setClause WHERE id = ?";
+        return self::sendQuery(query:$query,bindings:[...$values,$id],typeConsult:'update');
     }
     private function getConsecutive():string {
         $consecutivoRow = DB::selectOne("

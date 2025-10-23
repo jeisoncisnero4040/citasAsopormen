@@ -384,9 +384,7 @@ class BasicEvoDto
     }
     public function toBufferArray():array{
         return  [
-            'companion'           => $this->companion,
             'place'               => $this->place,
-            'kinred'              => $this->kinred,
             'entryRoute'          => $this->entryRoute,
             'externalCause'       => $this->externalCause,
             'purpose'             => $this->purpose,

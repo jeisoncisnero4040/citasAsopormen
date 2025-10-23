@@ -42,17 +42,21 @@ class TemplatesQuerys{
                         THEN ' PM'
                     ELSE ' AM'
                 END AS fin,
-            CASE
-                WHEN ci.asistio = '1' OR ci.cancelada = '1'
-                    THEN '0'
-                WHEN GETDATE() BETWEEN cif.fecha_completa 
-                                AND CAST(DATEADD(DAY, 1, GETDATE()) AS date)
-                    THEN '1'
-                WHEN ci.fecha_evo_ampliada = '1'
-                    AND CAST(cif.fecha_completa AS date) < CAST(GETDATE() AS date)
-                    THEN '1'
-                ELSE '0'
-            END AS evolucionable,
+                CASE
+
+                    WHEN ci.asistio = '1' OR ci.cancelada = '1'
+                        THEN '0'
+
+                    WHEN cif.fecha_completa > GETDATE()
+                        THEN '0'
+
+
+                    WHEN CAST(cif.fecha_completa AS date) < CAST(GETDATE() AS date)
+                        AND ci.fecha_evo_ampliada = '0'
+                        THEN '0'
+
+                    ELSE '1'
+                END AS evolucionable,
             CASE 
                 WHEN GETDATE() BETWEEN cif.fecha_completa 
                                 AND DATEADD(MINUTE, pro.duraccion, cif.fecha_completa) 

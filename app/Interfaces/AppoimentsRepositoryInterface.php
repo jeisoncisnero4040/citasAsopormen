@@ -23,4 +23,6 @@ interface AppoimentsRepositoryInterface{
     public function getDxHistoryByAppoId(int $id):DxHistoryModel|null;
     public function getNumEvoPsicologyByHistory(string $history):NumEvoModel;
     public function openPastApposByIds(array $ids):void;
+    public function getAutorizAvailablesToChangeByAppoId(int $id):array;
+    public function updateAppoById(int $id,array $data):int;
 }

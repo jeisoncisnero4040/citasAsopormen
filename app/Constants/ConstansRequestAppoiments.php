@@ -61,7 +61,7 @@ class ConstansRequestAppoiments{
     ];
 
     public const RULES_TO_EVO_APPOS = [
-        'companion' => 'required|string',
+        'companion' => 'nullable|string',
         'place' => 'required|string',
         'kindred' => 'required|string',
 
@@ -91,7 +91,7 @@ class ConstansRequestAppoiments{
     ];
 
     public const ERRORS_TO_EVO_APPOS = [
-        'companion.required' => 'Debe indicar el acompañante.',
+
         'companion.string' => 'El acompañante debe ser una cadena de texto.',
 
         'place.required' => 'Debe indicar el lugar.',

@@ -17,6 +17,8 @@ class AuditTemplates
 
     CONST GET_EVO_TEMPLATE="EL usuario {{nombre}} consulto las evoluciones del paciente {{client}} desde las fechas {{from}} hasta {{to}} el dia {{fecha}}";
     const PRINT_EVO_TEMPLATE="El usuario {{nombre}} imprimio las evoluciones con ids {{ids}} pertenecientes al paciente {{client}}, en un rango de fechas {{from}} a {{to}} desde la direccion ip {{ip}} el dia {{fecha}}";
+    const SET_AUTORIZ_APPO_TEMPLATE = "El profesional {{nombre}} cambio la autorizacion de la cita {{id}} de un valor {{old}} a {{new}} perteneciente al usuario {{usuario}} el dia {{fecha}}";
+
 
     const VARS_FORGOT_PASSWORD_AUDIT = ['{{nombre}}', '{{email}}', '{{fecha}}'];
     const VARS_LOGIN_AUDIT = ['{{nombre}}', '{{fecha}}','{{ip}}'];
@@ -28,6 +30,7 @@ class AuditTemplates
     const VARS_CLOSE_AUTH =['{{nombre}}','{{autorizacion}}','{{id}}','{{ids}}','{{usuario}}','{{fecha}}'];
     const VARS_GET_EVO=['{{nombre}}','{{client}}','{{from}}','{{to}}','{{fecha}}'];
     const VARS_PRINT_EVO=['{{nombre}}','{{ids}}','{{client}}','{{from}}','{{to}}','{{ip}}','{{fecha}}'];
+    const VARS_SET_AUTORIZ_APPO = ['{{nombre}}','{{id}}','{{old}}','{{new}}','{{usuario}}','{{fecha}}'];
 
     
 
@@ -68,6 +71,16 @@ class AuditTemplates
                 Carbon::now()->format('Y-m-d H:i:s')
             ],
             self::PRINT_EVO_TEMPLATE
+        );
+    }
+
+    public static function renderSerAutorizAppoTemplate(string $profesional, string $id, string $client, string $old, string $new) {
+        $values = [$profesional, $id,  $old, $new,$client,Carbon::now()->format('Y-m-d H:i:s') ];
+
+        return str_replace(
+            self::VARS_SET_AUTORIZ_APPO, 
+            $values,                     
+            self::SET_AUTORIZ_APPO_TEMPLATE 
         );
     }
     

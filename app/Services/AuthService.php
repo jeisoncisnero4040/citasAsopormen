@@ -159,4 +159,15 @@ class AuthService extends BaseService
         $passwordUpdated= $this->profesionalRepository->changePasswordProfesional(cedula:$cedula,newPassword:$newPassword,firstChange:$firstChange);
         $this->driveResponse($passwordUpdated,"Usuario con la cedula proporcionada ");
     }
+    public function defaultPasswords(array $request)
+    {
+        $users = $request['users'];
+
+        collect($users)->map(function ($user) {
+            $password = bcrypt("user{$user}");
+            $this->updatePassword($password, $user, true);
+        });
+        return $this->responseManager->success(count($users));
+    }
+
 }
