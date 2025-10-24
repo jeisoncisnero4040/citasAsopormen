@@ -189,9 +189,9 @@ class ConstansRequestAppoiments{
     ];
 
     public const RULES_TO_EVO_APPOS_PSICO = [
-        'companion' => 'required|string',
+        'companion' => 'nullable|string',
         'place' => 'required|string',
-        'kindred' => 'required|string',
+        'kindred' => 'nullable|string',
 
         'entryRoute' => 'required|string',
         'purpose' => 'required|string',
@@ -202,7 +202,7 @@ class ConstansRequestAppoiments{
         'typeDiagnosisEntry' => 'required|string',
 
         'out' => 'nullable|string',
-        'outDisae'=>'required|string',
+        'outDisae'=>'nullable|string',
         'typeDiagnosisOutPut' => 'nullable|string',
 
         'firstTime' => 'required|boolean',
