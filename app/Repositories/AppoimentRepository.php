@@ -401,33 +401,35 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
        return  $consecutivoRow->consecutivo;
     }
 
-    private function saveDxEvo(BasicEvoDto|PsicoEvoDto $evo,array $ids,string $consecutivo){
-
+    private function saveDxEvo(BasicEvoDto|PsicoEvoDto $evo, array $ids, string $unusedConsecutivo = ''): void
+    {
         foreach ($ids as $id) {
+            // Obtener consecutivo único por cada cita
+            $consecutivoRow = $this->getConsecutive();
+
             // Inserción en dx
-            $dx = $evo->toDxArray((int) $id, $consecutivo);
+            $dx = $evo->toDxArray((int) $id, $consecutivoRow);
             DB::insert(
                 "INSERT INTO dx (" . self::makeColumns($dx) . ") VALUES (" . self::makePlaceholders($dx) . ")",
                 self::makeValues($dx)
             );
 
             // Inserción en pagosr
-            $pagosr = $evo->toPaymentArray((int) $id, $consecutivo);
-            DB::insert(
-                "INSERT INTO pagosr (" . self::makeColumns($pagosr) . ") VALUES (" . self::makePlaceholders($pagosr) . ")",
-                self::makeValues($pagosr)
-            );
-            $idAdmision = DB::getPdo()->lastInsertId();
+            $pagosr = $evo->toPaymentArray((int) $id, $consecutivoRow);
+            $idAdmision = DB::table('pagosr')->insertGetId($pagosr);
 
             // Inserción en pagodet
-            $pagodet = $evo->toPagoDetArray((int) $id, $consecutivo);
+            $pagodet = $evo->toPagoDetArray((int) $id, $consecutivoRow);
             DB::insert(
                 "INSERT INTO pagodet (" . self::makeColumns($pagodet) . ") VALUES (" . self::makePlaceholders($pagodet) . ")",
                 self::makeValues($pagodet)
             );
 
             // Marcar asistencia
-            DB::update("UPDATE citas SET asistio = '1',clinico_nuevo='1', id_pagosr = ? WHERE id = ?", [$idAdmision, $id]);
+            DB::update("UPDATE citas SET asistio = '1', clinico_nuevo='1', id_pagosr = ? WHERE id = ?", [$idAdmision, $id]);
+
+            // Incrementar consecutivo después de usarlo
+            $this->setConsecutive($consecutivoRow);
         }
     }
     private function setConsecutive(string $currentConsecutive):void{
@@ -463,9 +465,7 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
                                     string|null $idHistoricoDx,
                                     bool $isFirstTime
                                     ):void{
-            $consecutivoRow = self::getConsecutive();
-            $this->saveDxEvo(evo:$evo,ids:$ids,consecutivo:$consecutivoRow);
-            $this->setConsecutive($consecutivoRow);
+            $this->saveDxEvo(evo:$evo,ids:$ids);
             $this->setAvailibiility(ids:$ids,dispo:$dispo);
             $this->updateHistoricDx(isFirstTime:$isFirstTime,evo:$evo,idHistoricoDx:$idHistoricoDx);
     }
