@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Dtos\EvoBufferDto;
+use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Utils\ResponseManager;
 use Illuminate\Support\Facades\Redis;
@@ -14,11 +15,14 @@ class CacheService
     public function __construct(ResponseManager $responseManager){
         $this->responseManager=$responseManager;
     }
-    public function getEvoInBuffer(EvoBufferDto $evoInBuffer){
-        $key='evo:' . $evoInBuffer->getCedula() . ':' . $evoInBuffer->getHistoria() . ':' . $evoInBuffer->getAutoriz();
-        return $this->responseManager->success($this->get(key:$key));
+    public function getEvoInBuffer(EvoBufferDto $evoInBuffer)
+    {
+        $key = 'evo:' . $evoInBuffer->getCedula() . ':' . $evoInBuffer->getHistoria() . ':' . $evoInBuffer->getAutoriz();
+        $data = $this->get(key: $key);
+        if (empty($data)) {
+            throw new NotFoundException("Información de evolución en caché no encontrada", 404);}
+        return $this->responseManager->success($data);
     }
-
     public function add(string $key, mixed $data, ?int $ttl = null): void
     {
         $this->sendQuery(
