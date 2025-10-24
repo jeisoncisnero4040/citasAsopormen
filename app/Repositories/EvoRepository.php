@@ -82,7 +82,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
                 SUBSTRING(CONVERT(varchar, fonoaudiologia_2.hora_inicio),1,5) as hora_ter,
                 fonoaudiologia_2.text1 as sesiones,
                 fonoaudiologia_2.historia,
-                fonoaudiologia_2.medico AS cedula,
+                fonoaudiologia_2.text3 AS cedula,
                 fonoaudiologia_2.mh7 AS objetivos,
                 fonoaudiologia_2.mh8 AS descripcion,
                 fonoaudiologia_2.mh9 as resultados,
