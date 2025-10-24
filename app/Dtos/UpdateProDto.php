@@ -18,6 +18,7 @@ class UpdateProDto{
         $this->direction=$data['direccion']??null;
         $this->cel=$data['celular']??null;
         $this->email=$data['email']??null;
+        $this->urlAvatar=null;
 
         $this->validate();
 
