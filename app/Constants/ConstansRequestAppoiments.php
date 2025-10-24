@@ -249,7 +249,6 @@ class ConstansRequestAppoiments{
         'typeDiagnosisEntry.string' => 'El tipo de diagnóstico de entrada debe ser una cadena de texto.',
 
         'out.string' => 'El diagnóstico de salida debe ser una cadena de texto.',
-        'outDisae.required' => 'Debe especificar la enfermedad asociada al diagnóstico de salida.',
         'outDisae.string' => 'La enfermedad asociada al diagnóstico de salida debe ser una cadena de texto.',
 
         'typeDiagnosisOutPut.string' => 'El tipo de diagnóstico de salida debe ser una cadena de texto.',
@@ -336,7 +335,7 @@ class ConstansRequestAppoiments{
         'typeDiagnosisEntry' => 'required|string',
 
         'out' => 'nullable|string',
-        'outDisae'=>'required|string',
+        'outDisae'=>'nullable|string',
         'typeDiagnosisOutPut' => 'nullable|string',
 
         'firstTime' => 'required|boolean',
@@ -384,7 +383,7 @@ class ConstansRequestAppoiments{
         'typeDiagnosisEntry.string' => 'El tipo de diagnóstico de entrada debe ser una cadena de texto.',
 
         'out.string' => 'El diagnóstico de salida debe ser una cadena de texto.',
-        'outDisae.required' => 'Debe especificar la enfermedad asociada al diagnóstico de salida.',
+
         'outDisae.string' => 'La enfermedad asociada al diagnóstico de salida debe ser una cadena de texto.',
 
         'typeDiagnosisOutPut.string' => 'El tipo de diagnóstico de salida debe ser una cadena de texto.',
