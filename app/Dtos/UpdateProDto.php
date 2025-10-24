@@ -3,7 +3,7 @@
 namespace App\Dtos;
 
 use App\Exceptions\CustomExceptions\BadRequestException;
-use Illuminate\Auth\Events\Validated;
+
 
 class UpdateProDto{
     private ?string $cedula;
@@ -34,7 +34,6 @@ class UpdateProDto{
             'url_imagen' => $this->urlAvatar,
         ];
 
-        // Filtra los valores nulos (y vacíos si quieres)
         return array_filter($data, fn($value) => !is_null($value));
     }
 
