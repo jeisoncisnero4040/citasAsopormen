@@ -97,7 +97,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
                 RTRIM(emp.tarjetap) AS tarjetap
             FROM fonoaudiologia_2
             INNER JOIN emplea emp ON fonoaudiologia_2.text3 = emp.ecc
-			INNER JOIN parentezco pa ON fonoaudiologia_2.parentezco_acompaniante_asp = pa.codigo
+			LEFT JOIN parentezco pa ON fonoaudiologia_2.parentezco_acompaniante_asp = pa.codigo
             WHERE fonoaudiologia_2.fecha BETWEEN CONVERT(smalldatetime,?,120) and   CONVERT(smalldatetime,?,120) 
 			AND fonoaudiologia_2.historia = ?";
 

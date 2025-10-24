@@ -59,7 +59,7 @@ class NeuroEvoModel{
             '',
             $this->signaturePath
         );
-        return str_replace('\\', '/', $relativePath);
+        return trim(str_replace('\\', '/', $relativePath));
     }
     public function toArray(): array
     {

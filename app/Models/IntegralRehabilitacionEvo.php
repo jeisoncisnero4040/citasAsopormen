@@ -15,7 +15,7 @@ class IntegralRehabilitacionEvo extends NeuroEvoModel
     public string $description;
     public string $result;
     public int $id;
-    public string $procedipro;
+    public ?string $procedipro;
     public string $formatPrint;
     public string $profesional;
     public string $tituloUni;

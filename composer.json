@@ -13,6 +13,7 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "predis/predis": "^3.2",
+        "promphp/prometheus_client_php": "2.14.1",
         "tymon/jwt-auth": "^2.2"
     },
     "require-dev": {

@@ -6,12 +6,11 @@ use Illuminate\Support\Facades\File;
 
 class SignaturesController extends Controller
 {
-
-    public function serve($filename)
+    public function serve($path)
     {
-
-        $filename = basename($filename);
-        $fullPath = "/home/Firmas/{$filename}";
+        // Sanitiza el path (evita ".." para prevenir traversal attacks)
+        $safePath = str_replace('..', '', $path);
+        $fullPath = "/home/Firmas/{$safePath}";
 
         if (!File::exists($fullPath)) {
             abort(404, 'Firma no encontrada');
@@ -22,7 +21,7 @@ class SignaturesController extends Controller
 
         return Response::make($content, 200, [
             'Content-Type' => $mime,
-            'Content-Disposition' => 'inline; filename="'. $filename .'"'
+            'Content-Disposition' => 'inline; filename="' . basename($safePath) . '"'
         ]);
     }
 }
