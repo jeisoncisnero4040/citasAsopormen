@@ -428,13 +428,13 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
 
             // Marcar asistencia
             DB::update("UPDATE citas SET asistio = '1',clinico_nuevo='1', id_pagosr = ? WHERE id = ?", [$idAdmision, $id]);
+
+            $consecutivo=$this->consecutivoIncrementer($consecutivo);
         }
+        return $consecutivo;
     }
-    private function setConsecutive(string $currentConsecutive):void{
-        DB::update(
-            "UPDATE con_inv SET consecu = ? WHERE sigla = 'OR'",
-            [$this->consecutivoIncrementer($currentConsecutive)]
-        );
+    private function setConsecutive(string $newConsecutive):void{
+        DB::update("UPDATE con_inv SET consecu = ? WHERE sigla = 'OR'",[$newConsecutive]);
     }
     private function setAvailibiility(array $ids,DisponilityEvoModel $dispo):void{
         DB::update(
@@ -464,8 +464,8 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
                                     bool $isFirstTime
                                     ):void{
             $consecutivoRow = self::getConsecutive();
-            $this->saveDxEvo(evo:$evo,ids:$ids,consecutivo:$consecutivoRow);
-            $this->setConsecutive($consecutivoRow);
+            $consecutivoNew=$this->saveDxEvo(evo:$evo,ids:$ids,consecutivo:$consecutivoRow);
+            $this->setConsecutive($consecutivoNew);
             $this->setAvailibiility(ids:$ids,dispo:$dispo);
             $this->updateHistoricDx(isFirstTime:$isFirstTime,evo:$evo,idHistoricoDx:$idHistoricoDx);
     }

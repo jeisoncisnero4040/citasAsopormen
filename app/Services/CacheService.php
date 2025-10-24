@@ -69,7 +69,7 @@ class CacheService
                 case 'get':
                     $data = Redis::get($key);
                     if ($data === null) { 
-                        return null;
+                        return [];
                     }
                     return $this->isJson($data) ? json_decode($data, true) : $data;
 

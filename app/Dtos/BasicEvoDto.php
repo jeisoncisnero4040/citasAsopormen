@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class BasicEvoDto
 {
-    protected string $companion;
+    protected string|null $companion;
     protected string $place;
     protected string $kinred;
 
@@ -67,7 +67,7 @@ class BasicEvoDto
 
         $this->validate($request->all());
 
-        $this->companion = $request->input('companion');
+        $this->companion = $request->input('companion')??null;
         $this->place = $request->input('place');
         $this->kinred = $request->input('kindred');
         $this->entryRoute = $request->input('entryRoute');
