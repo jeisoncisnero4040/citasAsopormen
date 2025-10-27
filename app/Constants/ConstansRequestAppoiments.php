@@ -77,7 +77,7 @@ class ConstansRequestAppoiments{
 
         'firstTime' => 'required|boolean',
 
-        'target' => 'required|string',
+        'target' => 'required|string|min:100',
         'descript' => 'required|string',
         'result' => 'required|string',
  
@@ -126,7 +126,7 @@ class ConstansRequestAppoiments{
 
         'target.required' => 'Debe ingresar el objetivo de la atención.',
         'target.string' => 'El objetivo debe ser una cadena de texto.',
-        'target.min' => 'El objetivo debe tener al menos 2000 caracteres.',
+        'target.min' => 'El objetivo debe tener al menos 100 caracteres.',
 
         'descript.required' => 'Debe ingresar la descripción de la evolución.',
         'descript.string' => 'La descripción debe ser una cadena de texto.',
@@ -207,7 +207,7 @@ class ConstansRequestAppoiments{
 
         'firstTime' => 'required|boolean',
 
-        'target' => 'required|string|min:200',
+        'target' => 'required|string|min:100',
         'plan' => 'required|string|min:200',
         'analisys' => 'required|string|min:200',
         'evolution' => 'required|string|min:200',
@@ -258,7 +258,7 @@ class ConstansRequestAppoiments{
 
         'target.required' => 'Debe ingresar el objetivo de la atención.',
         'target.string' => 'El objetivo debe ser una cadena de texto.',
-        'target.min' => 'El objetivo debe tener al menos 200 caracteres.',
+        'target.min' => 'El objetivo debe tener al menos 100 caracteres.',
 
         'plan.required' => 'Debe ingresar el plan terapéutico.',
         'plan.string' => 'El plan terapéutico debe ser una cadena de texto.',
@@ -340,7 +340,7 @@ class ConstansRequestAppoiments{
 
         'firstTime' => 'required|boolean',
 
-        'target' => 'required|string|min:200',
+        'target' => 'required|string|min:100',
         'plan' => 'required|string|min:200',
         'analisys' => 'required|string|min:200',
         'evolution' => 'required|string|min:200',
@@ -393,7 +393,7 @@ class ConstansRequestAppoiments{
 
         'target.required' => 'Debe ingresar el objetivo de la atención.',
         'target.string' => 'El objetivo debe ser una cadena de texto.',
-        'target.min' => 'El objetivo debe tener al menos 200 caracteres.',
+        'target.min' => 'El objetivo debe tener al menos 100 caracteres.',
 
         'plan.required' => 'Debe ingresar el plan terapéutico.',
         'plan.string' => 'El plan terapéutico debe ser una cadena de texto.',

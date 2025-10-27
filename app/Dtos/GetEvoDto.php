@@ -3,6 +3,8 @@
 namespace App\Dtos;
 
 use App\Requests\EvoRequest;
+use App\Utils\DateManager;
+use Carbon\Carbon;
 
 
 class GetEvoDto{
@@ -34,7 +36,7 @@ class GetEvoDto{
 
     public function getAutoriz():?string{return $this->autoriz;}
     public function getFrom():?string{return $this->from;}
-    public function getTo():?string{return $this->to;}
+    public function getTo():?string{return Carbon::parse($this->to)->addDay()->format('Y-m-d');}
     public function getProcedipro():string{return $this->procedipro;}
     public function getHistory():string{return $this->history;}
     public function getProfesional():string{return $this->profesional;}
