@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CitasController;
+use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\TwillioController;
 use App\Http\Controllers\WhatsappController;
 
@@ -14,3 +15,5 @@ Route::post('/whatsapp/confirm_programation', [WhatsappController::class, 'sendC
 Route::post('/citas/wait/', [CitasController::class, 'sendCitaToWait']);
 Route::get('/whatsapp/history/{number}', [TwillioController::class ,'getHistoryMsm']);
 Route::post('/test',[WhatsappController::class, 'test']);
+
+Route::get('metrics',[PrometheusController::class,'metrics']);

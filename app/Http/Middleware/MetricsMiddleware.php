@@ -21,7 +21,7 @@ class MetricsMiddleware
             return $next($request);
         }
 
-        $service = 'citas'; 
+        $service = 'crm'; 
         $method = $request->method();
         $route = $request->route();
         $endpoint = $route ? $route->uri() : $request->path();
