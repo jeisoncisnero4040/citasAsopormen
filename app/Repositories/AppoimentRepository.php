@@ -401,9 +401,16 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
        return  $consecutivoRow->consecutivo;
     }
 
-    private function saveDxEvo(BasicEvoDto|PsicoEvoDto $evo,array $ids,string $consecutivo){
+    private function saveDxEvo(BasicEvoDto|PsicoEvoDto $evo, array $ids)
+    {
+        // 🟩 Obtener consecutivo actual una sola vez
+        $consecutivoRow = $this->getConsecutive();
+        $prefijo = substr($consecutivoRow, 0, 2);
+        $numero = (int) substr($consecutivoRow, 2);
 
         foreach ($ids as $id) {
+            $consecutivo = $prefijo . str_pad($numero, 8, '0', STR_PAD_LEFT);
+
             // Inserción en dx
             $dx = $evo->toDxArray((int) $id, $consecutivo);
             DB::insert(
@@ -417,6 +424,7 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
                 "INSERT INTO pagosr (" . self::makeColumns($pagosr) . ") VALUES (" . self::makePlaceholders($pagosr) . ")",
                 self::makeValues($pagosr)
             );
+
             $idAdmision = DB::getPdo()->lastInsertId();
 
             // Inserción en pagodet
@@ -427,14 +435,17 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
             );
 
             // Marcar asistencia
-            DB::update("UPDATE citas SET asistio = '1',clinico_nuevo='1', id_pagosr = ? WHERE id = ?", [$idAdmision, $id]);
+            DB::update("UPDATE citas SET asistio = '1', clinico_nuevo='1', id_pagosr = ? WHERE id = ?", [$idAdmision, $id]);
 
-            $consecutivo=$this->consecutivoIncrementer($consecutivo);
+            // 🟩 Incrementar el número para el siguiente ciclo
+            $numero++;
         }
-        return $consecutivo;
+
+        // 🟩 Guardar el nuevo consecutivo al final del proceso
+        $this->setConsecutive($numero);
     }
-    private function setConsecutive(string $newConsecutive):void{
-        DB::update("UPDATE con_inv SET consecu = ? WHERE sigla = 'OR'",[$newConsecutive]);
+    private function setConsecutive(string $currentConsecutive):void{
+        DB::update("UPDATE con_inv SET consecu = ? WHERE sigla = 'OR'",[str_pad($currentConsecutive, 8, '0', STR_PAD_LEFT)]);
     }
     private function setAvailibiility(array $ids,DisponilityEvoModel $dispo):void{
         DB::update(
@@ -463,9 +474,8 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
                                     string|null $idHistoricoDx,
                                     bool $isFirstTime
                                     ):void{
-            $consecutivoRow = self::getConsecutive();
-            $consecutivoNew=$this->saveDxEvo(evo:$evo,ids:$ids,consecutivo:$consecutivoRow);
-            $this->setConsecutive($consecutivoNew);
+
+            $this->saveDxEvo(evo:$evo,ids:$ids);
             $this->setAvailibiility(ids:$ids,dispo:$dispo);
             $this->updateHistoricDx(isFirstTime:$isFirstTime,evo:$evo,idHistoricoDx:$idHistoricoDx);
     }
@@ -474,14 +484,7 @@ class AppoimentRepository extends BaseRepository implements AppoimentsRepository
     private function toModel(array $data): array{
         return collect($data)->mapInto(AppoimentModel::class)->toArray();
     }
-    private function consecutivoIncrementer(string $consecutivo){
-        $numero = substr($consecutivo, 2);
-        $numeroNuevo = (int)$numero + 1;
-        $numeroFormateado = str_pad($numeroNuevo, 8, '0', STR_PAD_LEFT);
 
-        return  $numeroFormateado;
-
-    }
 }
 
 

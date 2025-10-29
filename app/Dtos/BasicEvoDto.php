@@ -267,8 +267,8 @@ class BasicEvoDto
             'fisica'                => $this->isFisio ? '1' : '0',
             'hidrica'               => $this->isHidric ? '1' : '0',
             'pelvico'               => $this->isPelvic ? '1' : '0',
-            'sdt_hculminacion_sesion'=> $this->dateAppo,
-            'stt_hora_inicio'       => $this->endAppo,
+            'stt_hculminacion_sesion'=> $this->endAppo,
+            'sdt_hora_inicio'       => $this->dateAppo,
             'num_sesiones'          => $this->numSessions ?? 0,
             'id_cita'               => isset($this->idsToEvo[0]) ? (int)$this->idsToEvo[0] : 0,
             'procedipro'            => $this->procediproCode,
@@ -304,7 +304,8 @@ class BasicEvoDto
             'via_ingreso'=>$this->entryRoute,
             'id_cita'=>$idCita,
             'admision'=>$admision,
-            'tipo_cita'=>$this->tipoAppo
+            'tipo_cita'=>$this->tipoAppo,
+            'clinico_nuevo'=>1
 
         ];
     }
@@ -335,6 +336,7 @@ class BasicEvoDto
             'sede_old'=>$this->central,
             'centro_no_change'=>1,
             'usuario'=>$this->registro,
+            'clinico_nuevo'=>1
             
         ];
     }
@@ -379,7 +381,8 @@ class BasicEvoDto
             'tipo_cita'=>'01',
             'via_ingreso'=>$this->entryRoute,
             'finalidad'=>$this->purpose,
-            'dxp'=>$this->entry
+            'dxp'=>$this->entry,
+            'clinico_nuevo'=>1
         ];
     }
     public function toBufferArray():array{

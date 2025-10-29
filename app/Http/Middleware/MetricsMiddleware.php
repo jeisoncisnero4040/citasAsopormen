@@ -16,7 +16,7 @@ class MetricsMiddleware
 
     public function handle($request, Closure $next)
     {
-        // Evita medir el propio endpoint de m  tricas
+        // Evita medir el propio endpoint de métricas
         if ($request->is('api/metrics')) {
             return $next($request);
         }
@@ -24,10 +24,11 @@ class MetricsMiddleware
         $service = 'clinico'; 
         $method = $request->method();
         $route = $request->route();
-
-        // Normaliza el endpoint (quita par  metros din  micos)
         $endpoint = $route ? $route->uri() : $request->path();
-        $endpoint = preg_replace('/\{[^}]+\}/', '{var}', $endpoint);
+
+        // Reemplazo de números o hashes para reducir series (opcional, puedes comentar si no quieres)
+        $endpoint = preg_replace('/\d+/', '{var}', $endpoint);
+        $endpoint = preg_replace('/[a-f0-9]{6,}/i', '{var}', $endpoint);
 
         $start = microtime(true);
 
@@ -40,23 +41,34 @@ class MetricsMiddleware
         }
 
         $duration = microtime(true) - $start;
-        // Contador de peticiones
+
+        // Contador de peticiones (misma métrica que ya tienes)
         $counter = $this->registry->getOrRegisterCounter(
-            'http_requests',
+            'http_requests', // mismo nombre
             'total',
             'Total HTTP requests',
             ['service', 'method', 'endpoint', 'status']
         );
-        $counter->incBy(1, [$service, $method, $endpoint, $status]);
+        $counter->incBy(1, [
+            (string)$service,
+            (string)$method,
+            (string)$endpoint,
+            (string)$status
+        ]);
 
-        // Histograma de latencia
+        // Histograma de latencia (misma métrica que ya tienes)
         $histogram = $this->registry->getOrRegisterHistogram(
-            'http_requests',
+            'http_requests', // mismo nombre
             'latency_seconds',
             'Request latency in seconds',
-            ['service', 'method', 'endpoint']
+            ['service', 'method', 'endpoint'],
+            [0.01, 0.05, 0.1, 0.3, 0.5, 1, 2, 5, 10] // buckets predefinidos
         );
-        $histogram->observe($duration, [$service, $method, $endpoint]);
+        $histogram->observe($duration, [
+            (string)$service,
+            (string)$method,
+            (string)$endpoint
+        ]);
 
         return $response;
     }

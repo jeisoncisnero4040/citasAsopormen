@@ -6,7 +6,6 @@ use App\Constants\AuditTemplates;
 use App\Events\AuditEvent;
 use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
-use App\Exceptions\CustomExceptions\UnAuthorizateException;
 use App\Interfaces\JwtInterface;
 use App\Interfaces\ProfesionalRepositoryInterface;
 use App\Interfaces\RolesAndPermissionsRepositoryInterface;

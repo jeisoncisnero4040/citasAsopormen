@@ -31,7 +31,9 @@ class UtilitiesService {
         if(!trim($param)){
             throw new BadRequestException("El text de diagnostico debe ser un texto valido",400);
         }
-        $dx=$this->utilitiesRepository->searchDx(strtoupper($param));
-        return $this->responseManager->success($dx->toArray());
+        $dxs=$this->utilitiesRepository->searchDx(strtoupper($param));
+        return $this->responseManager->success(
+            collect($dxs)->map(fn($dx)=>$dx->toArray())->toArray()
+        );
     }
 }

@@ -53,18 +53,31 @@ class UtilitiesRepository extends BaseRepository implements UtilitiesInterface{
 
         return collect($evoUtilities)->mapInto(UtilityModel::class)->toArray();
     }
-    public function searchDx(string $param): DxModel
+    public function searchDx(string $param): array
     {
-        $bindings=[$param,"%{$param}%"];
-        $query="SELECT  top 1
+        $bindings = ["%{$param}%", "%{$param}%", "%{$param}%"];
+
+        $query = "
+            SELECT TOP 10
                 codigo,
-                RTRIM(enfermedad) as enfermedad
+                RTRIM(enfermedad) AS enfermedad
             FROM enferm
-            WHERE codigo = ? or enfermedad like ?";
-        $dx=self::sendQuery(query:$query,bindings:$bindings);
-        if(empty($dx)){
-            throw new NotFoundException("No se han encontrado Diagnosticos coincidentes",404);
+            WHERE codigo LIKE ? OR enfermedad LIKE ?
+            ORDER BY 
+                CASE 
+                    WHEN codigo LIKE ? THEN 0  -- Prioriza los que coinciden en código
+                    ELSE 1 
+                END,
+                codigo ASC
+        ";
+
+        $dxs = self::sendQuery(query: $query, bindings: $bindings);
+
+        if (empty($dxs)) {
+            throw new NotFoundException('No se han encontrado Diagnósticos coincidentes', 404);
         }
-        return new DxModel($dx[0]);
+
+        return collect($dxs)->mapInto(DxModel::class)->toArray();
     }
+
 }
