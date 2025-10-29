@@ -21,7 +21,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
                 evo.acompaniante_asp as acompaniante,
                 pa.parentezco,
                 evo.plam , 
-                emp.firma, 
+                UPPER(emp.firma), 
                 emp.enombre, 
                 emp.titulouni, 
                 emp.tarjetap,
