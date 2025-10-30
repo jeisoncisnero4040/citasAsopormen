@@ -7,7 +7,7 @@ use App\Models\NeuroEvoModel;
 use App\Models\IntegralRehabilitacionEvo;
 
 class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
-    public function getPsicoEvoInRangeTime(string $historia, string $from, string $to): array
+    public function getPsicoEvoInRangeTime(string $historia, string $from, string $to,string $procedipro): array
     {
         $query="SELECT 
                 evd.fecha AS fecha_registro,    
@@ -21,7 +21,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
                 evo.acompaniante_asp as acompaniante,
                 pa.parentezco,
                 evo.plam , 
-                UPPER(emp.firma), 
+                UPPER(emp.firma) AS firma, 
                 emp.enombre, 
                 emp.titulouni, 
                 emp.tarjetap,
@@ -42,7 +42,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
 
     }
 
-    public function getAbaEvoInRangeTime(string $historia, string $from, string $to){
+    public function getAbaEvoInRangeTime(string $historia, string $from, string $to,string $procedipro){
         $query="SELECT 
                 evd.fecha AS fecha_registro,    
                 evd.historia AS historia, 
@@ -55,7 +55,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
                 evo.acompaniante_asp as acompaniante,
                 pa.parentezco,
                 evo.plam , 
-                emp.firma, 
+                UPPER(emp.firma) AS firma, 
                 emp.enombre, 
                 emp.titulouni, 
                 emp.tarjetap,
@@ -75,7 +75,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
 
     }
 
-    public function getEvoIntegralReabilitationByRangeDate(string $historia, string $from, string $to, bool $isFono=false): array
+    public function getEvoIntegralReabilitationByRangeDate(string $historia, string $from, string $to, bool $isFono=false,string $procedipro): array
     {
 
         $query = "SELECT  fonoaudiologia_2.fecha_registro,
@@ -91,7 +91,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
 				fonoaudiologia_2.acompaniante_asp as acompaniante,
 				pa.parentezco,
                 'rehabilitacion_integral' AS formato,
-                emp.firma,
+                UPPER(emp.firma) AS firma, 
                 emp.enombre,
                 RTRIM(emp.titulouni) AS titulouni,
                 RTRIM(emp.tarjetap) AS tarjetap

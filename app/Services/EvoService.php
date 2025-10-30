@@ -5,10 +5,7 @@ use App\Constants\AuditTemplates;
 use App\Dtos\GetEvoDto;
 use App\Events\AuditEvent;
 use App\Exceptions\CustomExceptions\NotFoundException;
-use App\Interfaces\EvoRepositoryInterface;
 use App\Interfaces\ProcediproRepositoryInterface;
-use App\Repositories\ProcediproRepository;
-use App\Strategies\Evo\EvoStrategy;
 use App\Strategies\EvoStrategyFactory;
 use App\Utils\ResponseManager;
 
@@ -37,7 +34,7 @@ class EvoService{
         $procedipro = $this->procediproRepository->getProcediproByCod((int) $procediCode);
 
         $strategy = $this->evoStrategyFactory->make(procedipro:$procedipro);
-        $evolutions = $strategy->getEvolutions(dto:$request);
+        $evolutions = $strategy->getEvolutions(dto:$request,procedipro:$procedipro);
 
         if(empty($evolutions)){
             throw new NotFoundException("No se Encontrarón Evoluciones de {$request->getClient()} en el rango de fechas 
