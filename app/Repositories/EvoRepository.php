@@ -75,7 +75,7 @@ class EvoRepository extends BaseRepository implements EvoRepositoryInterface{
 
     }
 
-    public function getEvoIntegralReabilitationByRangeDate(string $historia, string $from, string $to, bool $isFono=false,string $procedipro): array
+    public function getEvoIntegralReabilitationByRangeDate(string $historia, string $from, string $to, string $procedipro,bool $isFono=false,): array
     {
 
         $query = "SELECT  fonoaudiologia_2.fecha_registro,
