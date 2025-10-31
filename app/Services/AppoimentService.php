@@ -24,18 +24,21 @@ class AppoimentService{
     private ResponseManager $responseManager;
     private ProcediproRepositoryInterface $procediproRepository;
     private CacheService $cache;
+    private FeesProfesionalService $feesService;
 
     public function __construct(
         AppoimentsRepositoryInterface $appoimentRepository,
         ResponseManager $responseManager,
         ProcediproRepositoryInterface $procediproRepository,
-        CacheService $cache
+        CacheService $cache,
+        FeesProfesionalService $feesService
     )
     {
         $this->appoimentRepository=$appoimentRepository;
         $this->responseManager=$responseManager;
         $this->procediproRepository=$procediproRepository;
         $this->cache=$cache;
+        $this->feesService=$feesService;
     }
 
     public function getDailyAppoimentsProfesional($identity){
@@ -88,13 +91,15 @@ class AppoimentService{
     public function saveEvoFono(BasicEvoDto $evoInDto): array {
         $now = Carbon::now()->format('Y-m-d H:i:s');
         $ids = $evoInDto->getIdsToEvo();
+        $cedula=$evoInDto->getCedula();
 
-        [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx] = $this->prepareEvoData($ids);
+        [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx,$feesAppo] = $this->prepareEvoData($ids,$cedula);
 
         $evo = AppoimentMapper::evoInDtoToEVO(
             evoDto: $evoInDto,
             appoInfo: $infoAppo,
             procedipro: $procedipro,
+            fee:$feesAppo,
             now: $now
         );
 
@@ -108,7 +113,8 @@ class AppoimentService{
     public function evoPsico(PsicoEvoDto $evoInDto): array {
         $now = Carbon::now()->format('Y-m-d H:i:s');
         $ids = $evoInDto->getIdsToEvo();
-        [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx] = $this->prepareEvoData($ids);
+        $cedula=$evoInDto->getCedula();
+        [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx,$feesAppo]  = $this->prepareEvoData($ids,$cedula);
 
         $userHist = $infoAppo->getHistory();
         $numEvoUser = $this->appoimentRepository->getNumEvoPsicologyByHistory(history:$userHist);
@@ -118,6 +124,7 @@ class AppoimentService{
             appoInfo: $infoAppo,
             procedipro: $procedipro,
             numEvoModel: $numEvoUser,
+            fee:$feesAppo,
             now: $now
         );
 
@@ -130,7 +137,8 @@ class AppoimentService{
     public function evoAba(ABAEvoDto $evoInDto):array{
         $now = Carbon::now()->format('Y-m-d H:i:s');
         $ids = $evoInDto->getIdsToEvo();
-        [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx] = $this->prepareEvoData($ids);
+        $cedula=$evoInDto->getCedula();
+        [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx,$feesAppo] = $this->prepareEvoData($ids,$cedula);
 
         $userHist = $infoAppo->getHistory();
         $numEvoUser = $this->appoimentRepository->getNumEvoPsicologyByHistory(history:$userHist);
@@ -140,6 +148,7 @@ class AppoimentService{
             appoInfo: $infoAppo,
             procedipro: $procedipro,
             numEvoModel: $numEvoUser,
+            fee:$feesAppo,
             now: $now
         );
 
@@ -195,7 +204,7 @@ class AppoimentService{
 
     }
     
-    private function prepareEvoData(array $ids): array {
+    private function prepareEvoData(array $ids,string $cedula): array {
         if (empty($ids)) {
             throw new BadRequestException("No se han seleccionado citas a evolucionar",400);
         }
@@ -210,8 +219,13 @@ class AppoimentService{
         if (!$infoDisp->isAvaible()) {
             throw new BadRequestException("La orden seleccionada no tiene disponibilidad para marcar asistencia",400);
         }
+        $feesAppo=$this->feesService->getFeesProfesional(
+            cedula:$cedula,
+            entidad:$infoAppo->getCodEps(),
+            procedipro:$procedipro->getNombre()
+        );
 
-        return [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx];
+        return [$infoAppo, $procedipro, $infoDisp, $idHistoricoDx,$feesAppo];
     }
     private function finalizeEvo(array $ids, $evo, $infoAppo): array {
         $apposEvo = $this->appoimentRepository->getAppoimentsById($ids);

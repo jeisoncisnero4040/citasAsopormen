@@ -77,6 +77,7 @@ Route::get('/evo',[EvoController::class,'getEvo'])->middleware('login.check:agen
 
 Route::get('clients/search',[ClientController::class,'searchClient'])->middleware('login.check:agenda');
 Route::get('clients/{code}',[ClientController::class,'find'])->middleware('login.check:agenda');
+Route::get('clients',[ClientController::class,'getInfoClient'])->middleware('login.check:agenda');
 
 Route::get('/firmas/{path}', [SignaturesController::class, 'serve'])
      ->where('path', '.*')

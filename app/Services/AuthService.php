@@ -21,7 +21,7 @@ class AuthService extends BaseService
     private ProfesionalRepositoryInterface $profesionalRepository;
     protected ResponseManager $responseManager;
     private JwtInterface $jwt;
-    private RolesAndPermissionsRepositoryInterface $rolesAndPermissionsRepository;
+
 
     public function __construct(
         ProfesionalRepositoryInterface $profesionalRepository,
@@ -145,10 +145,14 @@ class AuthService extends BaseService
         $newPasswordEncrypted=bcrypt($newPassword);
         $this->updatePassword(newPassword:$newPasswordEncrypted,cedula:$cedula,firstChange:$firstChange);
         SendNewPasswordEmail::dispatch($email, $newPassword,$profesional->getNombre());
-        $msmAudit=str_replace(
-            search:[AuditTemplates::VARS_FORGOT_PASSWORD_AUDIT],
-            replace:[$profesional->getNombre(),$profesional->getEmail(),DateManager::nowInLargeFormat()],
-            subject:AuditTemplates::FORGOT_PASSWORD_AUDIT
+        $msmAudit = str_replace(
+            AuditTemplates::VARS_FORGOT_PASSWORD_AUDIT,
+            [
+                $profesional->getNombre(),
+                $profesional->getEmail(),
+                DateManager::nowInLargeFormat()
+            ],
+            AuditTemplates::FORGOT_PASSWORD_AUDIT
         );
         event(new AuditEvent(auditMessage:$msmAudit));
         return $this->responseManager->success(['email'=>$email]);

@@ -74,7 +74,10 @@ class PsicoEvoDto extends BasicEvoDto{
             'id_citas_asp'          => implode('-',$this->idsToEvo),
             'entidad'               =>$this->epsCode,
             'convenio'              =>$this->covenatCode,
-            'parentezco_acompaniante_asp'=>$this->kinred];
+            'parentezco_acompaniante_asp'=>$this->kinred,
+            'valor_procedipro' =>$this->fee
+        
+        ];
     }
 
     public function toHVitailsArray():array{

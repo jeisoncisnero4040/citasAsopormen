@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Interfaces\ClientRepositoryInterface;
 use App\Utils\ResponseManager;
@@ -40,5 +41,12 @@ class ClientService{
         $client->setProcedipros(procedipros: $plainProcedipros);
 
         return $this->responseManager->success($client->toArray());
+    }
+    public function getClientInfoByCode(array $request){
+        $history=$request['history']??null;
+        if(!$history){throw new BadRequestException("No se ha proporcionado un codigo de cliente",400);}
+        return $this->responseManager->success(
+            $this->clientRepository->getInfoClient(codigo:$history)
+        );
     }
 }

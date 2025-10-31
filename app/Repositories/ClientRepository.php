@@ -60,4 +60,48 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
         $bindings=[$codigo];
         return self::sendQuery(query:$query,bindings:$bindings);
     }
+    public function getInfoClient(string $codigo):array{
+        return self::sendQuery(query:"SELECT 
+                            RTRIM(cli.codigo) AS codigo,
+                            RTRIM(cli.nombre) AS nombre,
+                            RTRIM(cli.nit_cli) AS cedula,
+                            cli.f_nacio AS fecha_nacimiento,
+                            RTRIM(cli.direcc) AS direccion,
+                            RTRIM(cli.barrio) AS barrio,
+                            RTRIM(cli.cel) AS celular,
+                            RTRIM(mun.nombre) AS municipio,
+                            cli.fechareg AS fecha_ingreso,
+                            RTRIM(cli.regim) AS regimen,
+                            RTRIM(cli.ecivil) AS estado_civil,
+                            RTRIM(cli.tip_usuario) AS tipo_usuario,
+                            RTRIM(cli.nivel) AS nivel,
+                            RTRIM(cli.ocupacion) AS ocupacion,
+                            DATEDIFF(YEAR,cli.f_nacio,GETDATE()) AS edad,
+                            cli.creado,
+                            cli.modificado AS ult_fecha_modi,
+                            RTRIM(ent.clase) AS entidad,
+                            RTRIM(cli.sexo) AS sexo,
+                            RTRIM(cli.usumodi) AS usumodi,
+                            RTRIM(cli.usucrea) AS usucrea,
+                            RTRIM(cli.telacompañante) AS celular_responsable,
+                            RTRIM(cli.nombreresponsable) AS responsable,
+                            RTRIM(cli.parentresponsable) AS parentezco_responsable,
+                            RTRIM(cli.rh) AS rh,
+                            RTRIM(cli.acompañante) AS acompaniante,
+                            RTRIM(cli.tel_acompa) AS celular_acompaniante,
+                            RTRIM(cli.parentacompañante) AS parentezco_acompaniante,
+                            CASE 
+                                WHEN cli.activo = 0 THEN 'INACTIVO' 
+                                ELSE 'ACTIVO' 
+                            END AS estado
+                        FROM 
+                            cliente cli
+                        INNER JOIN 
+                            entidades ent ON ent.codigo = cli.codent2
+                        INNER JOIN 
+                            municipio mun ON mun.codigo = cli.cod_ciudad
+                        WHERE 
+                            cli.codigo = ?;
+                        ",bindings:[$codigo]);
+    }
 }   

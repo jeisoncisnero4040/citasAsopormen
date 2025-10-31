@@ -7,6 +7,7 @@ use App\Dtos\BasicEvoDto;
 use App\Dtos\PsicoEvoDto;
 use App\Interfaces\Evolucionable;
 use App\Models\AppoimentInfoModel;
+use App\Models\FeeModel;
 use App\Models\NumEvoModel;
 use App\Models\ProcediproModel;
 
@@ -15,6 +16,7 @@ class AppoimentMapper implements Evolucionable{
     public static function evoInDtoToEVO(BasicEvoDto $evoDto, 
                                         AppoimentInfoModel $appoInfo, 
                                         ProcediproModel $procedipro,
+                                        FeeModel $fee,
                                         string $now,
                                         ): BasicEvoDto
     {
@@ -44,6 +46,8 @@ class AppoimentMapper implements Evolucionable{
         $evoDto->setIsFisio($procedipro->isFisio());
         $evoDto->setTipoAppo($procedipro->getTypeAppo());
 
+        $evoDto->setFee($fee->getFee());
+
         $evoDto->setNow($now);
         return $evoDto;
     }
@@ -51,6 +55,7 @@ class AppoimentMapper implements Evolucionable{
                                                  AppoimentInfoModel $appoInfo, 
                                                  ProcediproModel $procedipro,
                                                   NumEvoModel $numEvoModel, 
+                                                  FeeModel $fee,
                                                   string $now): PsicoEvoDto
     {
         $evoDto->setCentral($appoInfo->getSede());
@@ -76,7 +81,7 @@ class AppoimentMapper implements Evolucionable{
         $evoDto->setTipoAppo($procedipro->getTypeAppo());
 
         $evoDto->setNow($now);
-
+        $evoDto->setFee($fee->getFee());
         $numEvo=$numEvoModel->getNumEvo();
         $nexEvo=$numEvo+1;
         $evoDto->setNUmEvo($nexEvo);
@@ -87,6 +92,7 @@ class AppoimentMapper implements Evolucionable{
                                                  AppoimentInfoModel $appoInfo, 
                                                  ProcediproModel $procedipro,
                                                   NumEvoModel $numEvoModel, 
+                                                  FeeModel $fee,
                                                   string $now): ABAEvoDto
     {
         $evoDto->setCentral($appoInfo->getSede());
@@ -110,7 +116,7 @@ class AppoimentMapper implements Evolucionable{
         $evoDto->setProcedipro($procedipro->getNombre());
         $evoDto->setTipoEvo($procedipro->getTypeEvo());
         $evoDto->setTipoAppo($procedipro->getTypeAppo());
-
+        $evoDto->setFee($fee->getFee());
         $evoDto->setNow($now);
 
         $numEvo=$numEvoModel->getNumEvo();

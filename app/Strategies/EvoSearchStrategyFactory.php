@@ -4,7 +4,6 @@ namespace App\Strategies;
 
 use App\Dtos\GetEvoDto;
 use App\Exceptions\CustomExceptions\ServerErrorException;
-use App\Models\ProcediproModel;
 use App\Repositories\EvoRepository;
 use App\Strategies\Evo\Search\EvoByAuthorizationStrategy;
 use App\Strategies\Evo\Search\EvoByDateRangeStrategy;

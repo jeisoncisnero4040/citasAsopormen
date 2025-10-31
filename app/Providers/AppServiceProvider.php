@@ -60,6 +60,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\ClientRepositoryInterface::class,
             \App\Repositories\ClientRepository::class,
         );
+        $this->app->bind(
+            \App\Interfaces\ProfesionalFeesInterface::class,
+            \App\Repositories\ProfesionalFeesRepository::class,
+        );
     }
     /**
      * Bootstrap any application services.

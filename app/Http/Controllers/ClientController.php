@@ -25,4 +25,9 @@ class ClientController extends Controller {
             data:$this->clientService->findClient(code:$code,request:$request->query())
         );
     }
+    public function getInfoClient(Request $request):JsonResponse{
+        return response()->json(
+            data:$this->clientService->getClientInfoByCode(request:$request->query())
+        );
+    }
 }

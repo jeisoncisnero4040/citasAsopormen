@@ -60,6 +60,8 @@ class BasicEvoDto
     protected string|null $specialty;
     protected string|null $now;
 
+    protected float $fee;
+
     protected string $prefijo;
 
     public function __construct(Request $request)
@@ -121,6 +123,8 @@ class BasicEvoDto
         $this->isFisio             = null;
 
         $this->prefijo             ='OR'; 
+
+        $this->fee                 =0.0;
     }
     protected function validate(array $requestData):void{
         AppoimentsRequests::ValidateEvoAppoiments($requestData);
@@ -227,6 +231,10 @@ class BasicEvoDto
     public function setTipoAppo(string $tipo):void{
         $this->tipoAppo=$tipo;
     }
+
+    public function setFee(float $newFeeValue):void{
+        $this->fee=$newFeeValue*$this->numSessions;
+    }
     public function getIdsToEvo():array{
         return $this->idsToEvo;
     }
@@ -280,7 +288,8 @@ class BasicEvoDto
             'id_citas_asp'          => implode('-',$this->idsToEvo),
             'entidad'               =>$this->epsCode,
             'convenio'              =>$this->covenatCode,
-            'parentezco_acompaniante_asp'=>$this->kinred
+            'parentezco_acompaniante_asp'=>$this->kinred,
+            'valor_procedipro'        =>$this->fee,
 
         ];
     }
