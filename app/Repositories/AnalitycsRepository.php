@@ -32,7 +32,7 @@ class AnalitycsRepository extends BaseRepository implements AnalitycsRepositoryI
                     p.url_respuesta
                 FROM pqrs p 
                 WHERE
-                    p.fecha_creacion BETWEEN CONVERT(smalldatetime, '2025-04-01', 120) AND CONVERT(smalldatetime, '2025-04-30', 120)
+                    p.fecha_creacion BETWEEN CONVERT(smalldatetime,?, 120) AND CONVERT(smalldatetime,?, 120)
 
             )
 

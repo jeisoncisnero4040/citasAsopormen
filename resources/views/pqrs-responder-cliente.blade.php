@@ -31,11 +31,11 @@
 
               <!-- Cuerpo del mensaje -->
               <p style="line-height: 1.6; margin: 20px 0; color: #374151;">
-                Desde el área de <strong>Experiencia de Servicio al Cliente</strong>, nos permitimos informarle que su solicitud PQRS, asignada el día <strong>{{ $date }}</strong>, ha sido gestionada oportunamente conforme a los lineamientos institucionales y al compromiso permanente con la mejora continua, con el objetivo de ofrecer un servicio de calidad a nuestros usuarios.
+                Desde el área de <strong>Experiencia de Servicio al Cliente</strong>, nos permitimos informarle que su solicitud PQRS, recibida el día <strong>{{ $date }}</strong>, ha sido gestionada conforme a los lineamientos institucionales y en coherencia con nuestro compromiso permanente con la mejora continua, orientado a brindar un servicio de calidad a nuestros usuarios.
               </p>
 
               <p style="line-height: 1.6; margin: 20px 0; color: #374151;">
-                Lamentamos sinceramente los inconvenientes presentados durante el uso de nuestros servicios. Le aseguramos que el equipo de trabajo de <strong>Asopormen</strong> ha atendido su caso con la debida diligencia, orientado a resolver la situación y a fortalecer nuestros procesos para evitar futuras recurrencias.
+                Valoramos y agradecemos la información suministrada, la cual será tenida en cuenta como un insumo importante para el fortalecimiento de nuestros procesos. Su aporte contribuye significativamente a mejorar la experiencia institucional y avanzar hacia la excelencia institucional que promovemos como organización.
               </p>
 
               <!-- Archivos adjuntos -->
@@ -45,7 +45,7 @@
 
               <!-- Nota al pie -->
               <p style="font-size: 12px; color: #6b7280; margin-top: 40px;">
-                Este mensaje ha sido generado automáticamente. Por favor, no responda a este correo. Si requiere información adicional, comuníquese a través de los canales oficiales de atención.
+                  Este mensaje ha sido generado automáticamente. Por favor, no responda a este correo. Si requiere información adicional, comuníquese a través de los canales oficiales de atención.
               </p>
 
             </td>

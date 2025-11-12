@@ -55,10 +55,10 @@ class PqrRequestsConstants{
         'respuesta' => 'required|string',
         'causas' => 'required|string',
         'id' => 'required|string',
-        'actions' => 'required|array|min:1',
+        'actions' => 'nullable|array|min:1',
         'actions.*.descripcion' => 'required|string',
-        'actions.*.persona_responsable' => 'required|string',
-        'actions.*.evidence' => 'nullable|file|mimes:jpg,jpeg,png|max:2048',
+        'actions.*.persona_responsable' => 'required|string|max:200',
+        'actions.*.evidence' => 'nullable|file|max:2048',
     ];
     public const  MESSAGES_ERROR_ANSWER_PQRS_FROM_AREA = [
         'usuario_respuesta_area.required' => 'El nombre del usuario que responde es obligatorio.',
@@ -68,7 +68,9 @@ class PqrRequestsConstants{
         'actions.required' => 'Debe agregar al menos una acción correctiva.',
         'actions.*.descripcion.required' => 'La descripción de cada acción es obligatoria.',
         'actions.*.persona_responsable.required' => 'Debe indicar la persona responsable en cada acción.',
+        'actions.*.persona_responsable.max' => 'El nombre de la persona responsable no debe superar los 200 caracteres.',
         'actions.*.evidence.required' => 'Debe adjuntar un archivo como evidencia en cada acción.',
+        'actions.*.evidence.file' => 'La evidencia a adjuntar es obligatoria y debe ser una imagen.',
         'actions.*.evidence.mimes' => 'La evidencia debe ser un archivo imagen',
         'actions.*.evidence.max' => 'La evidencia no debe superar los 2MB.',
     ];

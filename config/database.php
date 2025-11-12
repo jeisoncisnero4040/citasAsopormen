@@ -15,7 +15,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mysql'),
+    'default' => 'sqlsrv',
 
     /*
     |--------------------------------------------------------------------------
@@ -81,11 +81,11 @@ return [
         'sqlsrv' => [
             'driver' => 'sqlsrv',
             'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST', '192.168.39.150'),
-            'port' => env('DB_PORT', '1433'),
-            'database' => env('DB_DATABASE', 'Baseconta'),
-            'username' => env('DB_USERNAME', 'sa'),
-            'password' => env('DB_PASSWORD', 'Avances2012'),
+            'host' =>  '192.168.39.150',
+            'port' => '1433',
+            'database' => 'Baseconta',
+            'username' => 'sa',
+            'password' => 'Avances2012',
             'charset' => 'utf8',
             'prefix' => '',
             'prefix_indexes' => true,
