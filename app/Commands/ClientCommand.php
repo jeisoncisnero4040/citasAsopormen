@@ -172,7 +172,7 @@ class ClientCommand implements Persistable
         $data= [
             'codigo'=>$this->code,
             'audio'=>'0',
-            'tip_discapacidad'=>$this->typeDissabled,
+            'tip_discapacidad' => is_numeric($this->typeDissabled) ? (int)$this->typeDissabled : 0,
             'tipo_persona'=>'0',
             'email_facte'=>$this->email,
             'pn_responsable'=>$this->guardianFirstName??'',

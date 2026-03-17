@@ -6,6 +6,7 @@ use App\Dtos\CreateClientDto;
 use App\Dtos\GetClientDto;
 use App\Dtos\UpdateClientDto;
 use App\Dtos\UpdateUserDto;
+use App\Requests\ClientRequest;
 use Illuminate\Http\Request;
 use App\Services\ClientService;
 use App\utils\ResponseManager;
@@ -703,6 +704,7 @@ class ClientController extends Controller{
     }
     public function index(Request $request){
         
+        ClientRequest::validateDataCreateClient($request->all());
         $dto=CreateClientDto::fromArray($request->all());
         $image = $request->file('image',null);
         $document = $request->file('document',null);
@@ -714,6 +716,7 @@ class ClientController extends Controller{
 
     }
     public function updateClient(Request $request){
+        ClientRequest::validateDataUpdateClient($request->all());
         $codigo=$request->input('codigo',null);
         $dto=CreateClientDto::fromArray(data:$request->all());
         $image = $request->file('image',null);

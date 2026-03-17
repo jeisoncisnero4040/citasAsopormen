@@ -115,14 +115,6 @@ class ClientService{
                 404
             );
         }
-
-        if (count($clientView) > 1) {
-            throw new BadRequestException(
-                "Se encontraron múltiples usuarios con la misma historia",
-                409
-            );
-        }
-
         $clientView = $clientView[0];
 
         $municipio = $this->districtService->get(

@@ -63,6 +63,18 @@ class ClientRequest extends BaseRequest{
         $keysAllowed=RequestClientConstants::KEYS_ALLOWED_UPDATE_CLIENT;
         self::validateRequest(request:$data,rules:$rules,errors:$msms,keysAllowed:$keysAllowed);
     }
+    public static function validateDataCreateClient(array $data){
+        $rules=RequestClientConstants::DATA_CREATE_CLIENT;
+        $msms=RequestClientConstants::ERRORES_CREATE_CLIENT;
+        $keysAllowed=array_keys($rules);
+        self::validateRequest(request:$data,rules:$rules,errors:$msms,keysAllowed:$keysAllowed);
+    }
+    public static function validateDataUpdateClient(array $data){
+        $rules=RequestClientConstants::DATA_UPDATE_CLIENT;
+        $msms=RequestClientConstants::ERRORES_CREATE_CLIENT;
+        $keysAllowed=array_keys($rules);
+        self::validateRequest(request:$data,rules:$rules,errors:$msms,keysAllowed:$keysAllowed);
+    }
 
 
 }
