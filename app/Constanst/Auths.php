@@ -157,6 +157,9 @@ class Auths {
                 a.f_inicial,
                 a.entidad AS codent,
                 a.paquete AS codent2,
+                a.f_registro AS fecha_creacion,
+                a.dias,
+                a.usuario AS creador,
                 RTRIM(a.observa) AS observa,
                 a.historia,
                 RTRIM(cli.nombre) AS entidad,
@@ -189,7 +192,7 @@ class Auths {
         auditoria AS (
             SELECT TOP 1 
                 au.fecha,
-                RTRIM(em.enombre) AS enombre,
+                RTRIM(em.enombre) AS facturador,
                 au.nro
             FROM audi_sis au
             INNER JOIN factura f 
