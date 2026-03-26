@@ -182,7 +182,9 @@ class ClientView
 
             entidad: $data['entidad'] ?? null,
             escolaridad:$data['escolaridad']??null,
-            imageUrl:$data['foto']??null,
+                        imageUrl: isset($data['foto']) && trim($data['foto']) !== '' 
+                        ? trim($data['foto']) 
+                        : null,
             observaciones:$data['observaciones_asp']??null,
             grupoSisben:$data['grupo_sisben']??null,
             pn_responsable:$data['pn_responsable']??null,

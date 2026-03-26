@@ -111,7 +111,6 @@ class ClientCommand implements Persistable
             'tip_usuario'=>$this->userType,
             'contrib'=>$this->regimen,
             'ocupacion'=>$this->ocupation,
-            'foto'=>$this->urlImage,
             'codent'=>$this->eps,
             'codent2'=>$this->covenat,
             'sexo' =>$this->sex,
@@ -182,12 +181,14 @@ class ClientCommand implements Persistable
             'pais_origen'=>$this->country,
             'observaciones_asp'=>$this->observations,
             'grupo_sisben'=>$this->sisben
+            
 
 
         ];
         if ($this->isNew) {
 
             $data['sdt_fec_asig_prog']=$this->dateRegister;
+            $data['clinico_nuevo']='1';
         }
 
         return $data;

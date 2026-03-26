@@ -3,6 +3,8 @@
 .env.backup
 .env
 
+/test/
+
 # Node Modules
 /node_modules
 /npm-debug.log

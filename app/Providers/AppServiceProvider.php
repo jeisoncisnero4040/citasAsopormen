@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\StorageInterface::class,
             \App\Services\StorageService::class
         );
+        $this->app->bind(
+            \App\Interfaces\AuthsInterface::class,
+            \App\Repositories\AuthsRepository::class
+        );
     }
 
     /**

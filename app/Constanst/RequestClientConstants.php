@@ -85,10 +85,10 @@ class RequestClientConstants
         'tipo_usuario' => 'required|string|max:100',
         'grupo' => 'nullable|alpha_num|size:1',
         
-        'primer_nombre' => 'required|alpha|min:2|max:50',
-        'segundo_nombre' => 'nullable|alpha|max:50',
-        'primer_apellido' => 'required|alpha|min:2|max:50',
-        'segundo_apellido' => 'nullable|alpha|min:2|max:50',
+        'primer_nombre' => 'required|string|min:2|max:50',
+        'segundo_nombre' => 'nullable|string|max:50',
+        'primer_apellido' => 'required|string|min:2|max:50',
+        'segundo_apellido' => 'nullable|string|min:2|max:50',
         
         'pais' => 'required|string|max:100',
         'sexo' => 'required|string|max:20',
@@ -97,13 +97,13 @@ class RequestClientConstants
         'rh' => 'nullable|string|max:5|in:A+,A-,B+,B-,AB+,AB-,O+,O-',
         'num_hijos' => 'nullable|integer|min:0|max:20',
         'escolaridad' => 'required|string|max:100',
-        'lugar_nac' => 'nullable|alpha|max:100',
+        'lugar_nac' => 'nullable|string|max:100',
         'fecha_nac' => 'required|date|before:today',
         
         'direccion' => 'required|string|max:150',
         'barrio' => 'required|string|max:100',
         'municipio' => 'required|string|max:100',
-        'contacto' => 'required|numeric|digits_between:10,15',
+        'contacto' => 'required|string|max:22',
         'email' => 'required|email|max:120',
         
         'poblacion' => 'nullable|string|max:100',
@@ -115,10 +115,10 @@ class RequestClientConstants
         
         // RESPONSABLE
         'a_documento' => 'required|numeric|digits_between:5,20',
-        'a_primer_nombre' => 'required|alpha|min:2|max:50',
-        'a_segundo_nombre' => 'nullable|alpha|max:50',
-        'a_primer_apellido' => 'required|alpha|min:2|max:50',
-        'a_segundo_apellido' => 'nullable|alpha|min:2|max:50',
+        'a_primer_nombre' => 'required|string|min:2|max:50',
+        'a_segundo_nombre' => 'nullable|string|max:50',
+        'a_primer_apellido' => 'required|string|min:2|max:50',
+        'a_segundo_apellido' => 'nullable|string|min:2|max:50',
         'a_contacto' => 'required|numeric|digits_between:10,10',
         'a_parentezco' => 'required|string|max:50',
         
@@ -206,8 +206,7 @@ class RequestClientConstants
         'barrio.max' => 'El barrio no puede superar los :max caracteres',
         
         'contacto.required' => 'Debe ingresar el número de contacto',
-        'contacto.numeric' => 'El teléfono solo puede contener números',
-        'contacto.digits_between' => 'El teléfono debe tener entre :min y :max dígitos',
+        'contacto.regex' => 'El campo contacto debe contener dos números de 10 dígitos que inicien en 3, separados por un guion (ej: 3001234567-3019876543).',
         
         'email.required' => 'Debe ingresar el correo electrónico',
         'email.email' => 'Ingrese un correo electrónico válido',

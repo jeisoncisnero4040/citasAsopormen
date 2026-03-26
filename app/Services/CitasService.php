@@ -165,6 +165,8 @@ class CitasService{
         event(new AuditEvent(auditMessage:$msm,cedula:$dto->getCedula()));
         return $this->responseManager->success([]);
     }
+
+    
     public function getCitasById($id){
         $cita=$this->citasRepository->getById(id:$id);
         if(empty($cita)){

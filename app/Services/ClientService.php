@@ -539,16 +539,7 @@ class ClientService{
     }
     
 
-    private function calculateAge($client)
-    {
 
-        $birthDateClient = Carbon::parse($client[0]->f_nacio);
-        $now = Carbon::now();
-        $age = $now->diffInYears($birthDateClient);
-        $client[0]->f_nacio = $age. ' años';
-
-        return $client;
-    }
 
     private function CheckWayToSendPasswordIsSelected($request){
         $emailMean=$request['sendPasswordToEmail'];
@@ -912,6 +903,7 @@ class ClientService{
                                 NULL AS referencia,
                                 NULL AS cod_referencia
                             from grupo_poblacional
+                            where activo = '1'
                             UNION ALL
                                 SELECT CAST(id AS VARCHAR) AS cod,
                                 etnia AS nombre,

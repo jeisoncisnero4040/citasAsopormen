@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Interfaces\AuthsInterface;
+use App\Models\Auth;
+use App\Constanst\Auths;
+use App\Dtos\GetAuthsDto;
+
+class AuthsRepository extends BaseRepository implements AuthsInterface
+{
+    /**
+     * @return array<Auth>
+     */
+    public function get(GetAuthsDto $dto): array
+    {
+        $filters = $this->buildFilters($dto);
+
+        $response = $this->executeQuery(
+            Auths::BASE_GET_AUTHS_QUERY,
+            $filters
+        );
+
+        return collect($response)
+            ->map(fn($item) => Auth::fromArray((array) $item))
+            ->toArray();
+    }
+
+    private function buildFilters(GetAuthsDto $dto): Filter
+    {
+        $builder = new FilterBuilder();
+
+        $builder
+            ->add("a.historia = ?", $dto->getClientCode())
+            ->addRaw("(a.anulada = 0 OR (a.suspendida = 1 AND a.anulada = 1))");
+
+        if ($dto->isOnlySchedulables()) {
+            $builder
+                ->addRaw("a.f_vence >= CAST(GETDATE() AS DATE)")
+                ->addRaw("a.f_inicial <= CAST(GETDATE() AS DATE)")
+                ->addRaw("a.cerrar_ord_asp <> '1'")
+                ->addRaw("
+                    NOT EXISTS (
+                        SELECT 1
+                        FROM ven_det vd
+                        WHERE vd.autoriz = a.n_autoriza
+                        AND vd.codigo = a.historia
+                        AND vd.abierta = '0'
+                        AND vd.detalle = ''
+                    )
+                ");
+        }
+
+        if ($dto->isByOrder()) {
+            $builder
+                ->add("a.n_autoriza = ?", $dto->getAuthCode())
+                ->add("a.procedi = ?", $dto->getCupCode());
+        }
+
+        if ($dto->hasDateRange()) {
+            $builder
+                ->add("a.f_inicial >= CONVERT(smalldatetime, ?, 120)", $dto->getFrom())
+                ->add("a.f_vence <= CONVERT(smalldatetime, ?, 120)", $dto->getTo());
+        }
+
+        return $builder->toFilter();
+    }
+
+    public function getDetailAuth(GetAuthsDto $dto): array
+    {
+        return $this->executeQueryWithBuilder(
+            Auths::TEMPLATE_GET_TRAZABILITY,
+            FilterBuilder::create()
+                ->add('a.historia = ?', $dto->getClientCode())
+                ->add('a.n_autoriza = ?', $dto->getAuthCode())
+        );
+    }
+
+    public function getDetailApposAppos(GetAuthsDto $dto): array
+    {
+        return $this->executeQueryWithBuilder(
+            Auths::TEMPLATE_GET_INFO_APPOS_AUTH,
+            FilterBuilder::create()
+                ->add('ci.nro_hist = ?', $dto->getClientCode())
+                ->add('ci.autoriz = ?', $dto->getAuthCode())
+        );
+    }
+
+    public function getDetailsOrders(GetAuthsDto $dto): array
+    {
+        return $this->executeQueryWithBuilder(
+            Auths::TEMPLATE_GET_TRAZA_ORDERS,
+            FilterBuilder::create()
+                ->add('a.historia = ?', $dto->getClientCode())
+                ->add('a.n_autoriza = ?', $dto->getAuthCode())
+        );
+    }
+
+
+    private function executeQuery(string $template, Filter $filter): array
+    {
+        $query = str_replace('{{}}', $filter->getQuery(), $template);
+
+        return self::sendQuery(
+            query: $query,
+            bindings: $filter->getBindings()
+        );
+    }
+
+
+    private function executeQueryWithBuilder(string $template, FilterBuilder $builder): array
+    {
+        $filter = $builder->toFilter();
+
+        return $this->executeQuery($template, $filter);
+    }
+}

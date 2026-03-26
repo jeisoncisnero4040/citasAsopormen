@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuditContoller;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AuthsController;
 use App\Http\Controllers\CentralOfficeController;
 use App\Http\Controllers\CitasController;
 use App\Http\Controllers\ClientController;
@@ -100,7 +101,8 @@ Route::get('informes/old-users',[InformesController::class,'getOldUser'])->middl
 Route::get('informes/old-users-not-citas',[InformesController::class,'getOldUserNotFountCitad'])->middleware('login.check:informes-citas');
 
 Route::get('metrics',[PrometheusController::class,'metrics']);
-
+Route::get('auths',[AuthsController::class,'index']);
+Route::get('auths/detail',[AuthsController::class,'getDetail']);
 
 
 
