@@ -31,11 +31,12 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         $builder = new FilterBuilder();
 
         $builder
-            ->add("a.historia = ?", $dto->getClientCode())
+            
             ->addRaw("(a.anulada = 0 OR (a.suspendida = 1 AND a.anulada = 1))");
 
         if ($dto->isOnlySchedulables()) {
             $builder
+                ->add("a.historia = ?", $dto->getClientCode())
                 ->addRaw("a.f_vence >= CAST(GETDATE() AS DATE)")
                 ->addRaw("a.f_inicial <= CAST(GETDATE() AS DATE)")
                 ->addRaw("a.cerrar_ord_asp <> '1'")
@@ -49,12 +50,17 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
                         AND vd.detalle = ''
                     )
                 ");
+            return $builder->toFilter();
+        }
+        if($dto->hasUserCode()){
+            $builder->add("a.historia = ?", $dto->getClientCode());
+
         }
 
-        if ($dto->isByOrder()) {
+        if ($dto->hasAuthCode()) {
             $builder
-                ->add("a.n_autoriza = ?", $dto->getAuthCode())
-                ->add("a.procedi = ?", $dto->getCupCode());
+                ->add("a.n_autoriza = ?", $dto->getAuthCode());
+
         }
 
         if ($dto->hasDateRange()) {
@@ -100,7 +106,6 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
     private function executeQuery(string $template, Filter $filter): array
     {
         $query = str_replace('{{}}', $filter->getQuery(), $template);
-
         return self::sendQuery(
             query: $query,
             bindings: $filter->getBindings()

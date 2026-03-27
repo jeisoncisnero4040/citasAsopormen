@@ -89,5 +89,12 @@ class GetAuthsDto {
     {
         return $this->to;
     }
+    public function hasUserCode():bool{
+        return !empty($this->clientCode);
+    }
+    public function hasAuthCode(): bool
+    {
+        return !empty($this->authCode);
+    }
 
 }

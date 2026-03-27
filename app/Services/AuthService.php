@@ -5,8 +5,6 @@ namespace App\Services;
 use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
-use App\Exceptions\CustomExceptions\UnAuthorizateException;
-use App\Models\ClientModel;
 use App\Requests\AuthRequest;
 Use App\Models\User;
 use App\Repositories\RolesAndPermissionsRepository;

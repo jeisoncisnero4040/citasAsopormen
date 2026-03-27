@@ -20,6 +20,7 @@ class Auth {
     private bool $nueva;
     private array $especialidades = [];
     private bool $isInvoiced;
+    private string $codeClient;
 
     public function __construct(
         string $n_autoriza,
@@ -37,7 +38,8 @@ class Auth {
         int $disponibles,
         string $entidad,
         bool $nueva,
-        bool $isInvoiced
+        bool $isInvoiced,
+        string $codeClient,
     ){
         $this->n_autoriza = $n_autoriza;
         $this->tiempo = $tiempo;
@@ -55,6 +57,7 @@ class Auth {
         $this->entidad = $entidad;
         $this->nueva = $nueva;
         $this->isInvoiced= $isInvoiced;
+        $this->codeClient=$codeClient;
     }
 
     public static function fromArray(array $array): self
@@ -75,7 +78,8 @@ class Auth {
             (int)$array['disponibles'],
             $array['entidad'],
             (bool)$array['nueva'],
-            (bool)$array['facturada']
+            (bool)$array['facturada'],
+            $array['historia']
         );
     }
 
@@ -109,6 +113,9 @@ class Auth {
     }
     public function setSpecialties(array $new):void{
         $this->especialidades = $new;
+    }
+    public function getCodeClient():string{
+        return $this->codeClient;
     }
 
     

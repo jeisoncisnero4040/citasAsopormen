@@ -135,7 +135,8 @@ class Auths {
                         )
                     ) THEN 1
                     ELSE 0
-                END AS facturada
+                END AS facturada,
+                a.historia
 
             FROM procedimientos p
             LEFT JOIN contador c
