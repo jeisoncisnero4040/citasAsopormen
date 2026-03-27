@@ -30,9 +30,12 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
     {
         $builder = new FilterBuilder();
 
-        $builder
-            
-            ->addRaw("(a.anulada = 0 OR (a.suspendida = 1 AND a.anulada = 1))");
+        $builder ->addRaw("(a.anulada = 0 OR (a.suspendida = 1 AND a.anulada = 1))");
+        if ($dto->hasAuthCode()) {
+            $builder->add("a.n_autoriza = ?", $dto->getAuthCode());
+            return $builder->toFilter();
+
+        }
 
         if ($dto->isOnlySchedulables()) {
             $builder
@@ -57,11 +60,7 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
 
         }
 
-        if ($dto->hasAuthCode()) {
-            $builder
-                ->add("a.n_autoriza = ?", $dto->getAuthCode());
 
-        }
 
         if ($dto->hasDateRange()) {
             $builder
