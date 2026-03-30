@@ -26,11 +26,8 @@ class AuthsService{
         if(empty($auths)){
             throw new NotFoundException("No se han encontrado Autorizaciones",404);
         }
-
         $isByAutCodeRequest = !$dto->hasUserCode() && $dto->hasAuthCode();
-
         $user = null;
-
         if ($isByAutCodeRequest) {
 
             $usersCode = collect($auths)

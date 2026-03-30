@@ -30,6 +30,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\AuthsInterface::class,
             \App\Repositories\AuthsRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\ExternalProcedurePort::class,
+            \App\Repositories\ExternalProceduresRepository::class
+        );
     }
 
     /**

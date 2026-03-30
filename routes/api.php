@@ -12,6 +12,7 @@ use App\Http\Controllers\ProfesionalController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CaseOrdersController;
+use App\Http\Controllers\ExternalProcedureController;
 use App\Http\Controllers\InformesController;
 use App\Http\Controllers\PrometheusController;
 
@@ -104,5 +105,7 @@ Route::get('metrics',[PrometheusController::class,'metrics']);
 Route::get('auths',[AuthsController::class,'index']);
 Route::get('auths/detail',[AuthsController::class,'getDetail']);
 
+
+Route::get('external-procedures',[ExternalProcedureController::class,'index']);
 
 
