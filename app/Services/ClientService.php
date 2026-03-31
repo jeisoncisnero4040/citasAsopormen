@@ -873,12 +873,12 @@ class ClientService{
                             UNION ALL
 
                             SELECT 
-                            codigociudad AS cod,
-                            LTRIM(ciudad) AS nombre,
+							RTRIM(nombre) AS nombre,
+                            RTRIM(codigo) AS cod,
                             'municipio' AS tipo,
                             NULL AS referencia,
                             NULL AS cod_referencia
-                            FROM CodigosCiudadesdebancos
+                            FROM municipio
                             UNION ALL
                             SELECT 
                             codigo AS cod,
