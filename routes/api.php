@@ -14,8 +14,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CaseOrdersController;
 use App\Http\Controllers\ExternalProcedureController;
 use App\Http\Controllers\InformesController;
+use App\Http\Controllers\ProfesionalSenderController;
 use App\Http\Controllers\PrometheusController;
-
+use App\Models\ProfesionalSender;
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('login_client', [AuthController::class, 'loginClient']);
@@ -107,5 +108,7 @@ Route::get('auths/detail',[AuthsController::class,'getDetail']);
 
 
 Route::get('external-procedures',[ExternalProcedureController::class,'index']);
+
+Route::get('profesional-senders',[ProfesionalSenderController::class,'index']);
 
 

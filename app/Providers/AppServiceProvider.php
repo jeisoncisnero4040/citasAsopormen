@@ -34,6 +34,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\ExternalProcedurePort::class,
             \App\Repositories\ExternalProceduresRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\ProfesionalSenderPort::class,
+            \App\Repositories\ProfesionalSenderRepository::class
+        );
     }
 
     /**
