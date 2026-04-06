@@ -76,7 +76,7 @@ class InformesService extends BaseModel{
         InformesRequest::validateDateRange($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d H:m:s");
         $to=Carbon::parse($request['to'])->format("Y-m-d H:m:s");
-        $data=$this->informesRepository->getOldUsersWithoutFutureAppoiments($from);
+        $data=$this->informesRepository->getOldUsersWithoutFutureAppoiments($from,$to);
         if(empty($data)){
             throw new NotFoundException("No se han encontrado reagistros en este rango de Tiempo",404);
         }

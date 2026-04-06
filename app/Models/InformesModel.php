@@ -314,15 +314,14 @@ class InformesModel extends BaseModel{
 
         return self::senqQuery($query,$bindings);}
     
-        public function getOldUsersWithoutFutureAppoiments(string $from)
+        public function getOldUsersWithoutFutureAppoiments(string $from,string $to){    
         {
-            $query = "
-                WITH pacientes_con_citas AS (
+            $query = "WITH pacientes_con_citas AS (
                     SELECT DISTINCT nro_hist
                     FROM citas
-                )
+                ),
 
-                SELECT 
+                clientes as (SELECT 
                     c.nit_cli,
                     c.codigo,
                     c.nombre,
@@ -330,13 +329,7 @@ class InformesModel extends BaseModel{
                     c.creado,
                     c.usucrea,
                     e.nombre AS entidad,
-                    td.tipodiag AS tipo,
-                    au.procedi,
-                    au.n_autoriza,
-                    au.cantidad,
-                    au.f_inicial AS fecha_inicial,
-                    au.f_vence AS fecha_final,
-                    au.usuario AS ingreso_autorizacion
+                    td.tipodiag AS tipo
                 FROM cliente c
                 INNER JOIN pacientes_con_citas pcc 
                     ON pcc.nro_hist = c.codigo
@@ -344,8 +337,6 @@ class InformesModel extends BaseModel{
                     ON td.codigo = c.contrib
                 LEFT JOIN cliente e 
                     ON e.codigo = c.codent AND e.socie <> ''
-                INNER JOIN autoriza au 
-                    ON au.historia = c.codigo
                 WHERE 
                     -- No tenga citas futuras
                     NOT EXISTS (
@@ -354,15 +345,35 @@ class InformesModel extends BaseModel{
                         WHERE ci.nro_hist = c.codigo
                         AND ci.fecha > CONVERT(smalldatetime, ?, 120)
                     )
-                    -- Solo autorizaciones activas
-                    AND au.anulada = 0
-                    AND au.suspendida = 0
+                ),
+				autorizaciones as (SELECT 
 
-                ORDER BY c.nombre
+                    au.n_autoriza,
+                    au.f_inicial AS fecha_inicial,
+                    au.f_vence AS fecha_final,
+                    au.usuario AS ingreso_autorizacion,
+					au.historia,
+					ROW_NUMBER () OVER(
+						partition by au.historia
+						order by id desc
+					) as rn 
+					from autoriza au 
+					INNER JOIN  clientes cli ON au.historia = cli.codigo
+											AND au.anulada = 0
+											AND au.suspendida = 0
+					WHERE au.f_inicial between CONVERT(smalldatetime,?,120) AND 
+					CONVERT(smalldatetime,?,120)
+				)
+
+
+				select cli.*,au.* from clientes cli
+				INNER JOIN autorizaciones au ON au.historia = cli.codigo
+												AND au.rn = 1
             ";
 
-            $bindings = [$from];
+            $bindings = [$from, $from, $to];
 
             return self::senqQuery($query, $bindings);
+        }
         }
 }
