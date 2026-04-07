@@ -20,7 +20,7 @@ class InformesModel extends BaseModel{
                         ) AS rn
                     FROM citas WITH (INDEX(IX_citas_hist_proc_fecha))
                     WHERE fecha BETWEEN CONVERT(smalldatetime, ?, 120)
-                                AND DATEADD(DAY, 90, CONVERT(smalldatetime, ?, 120))
+                                AND DATEADD(DAY, 180, CONVERT(smalldatetime, ?, 120))
                 ),
 
                 procedimientos AS (
@@ -84,7 +84,7 @@ class InformesModel extends BaseModel{
                     SELECT DISTINCT nro_hist, procedipro
                     FROM citas
                     WHERE fecha BETWEEN CONVERT(smalldatetime,?,120) --from
-                                    AND DATEADD(DAY, 90, CONVERT(smalldatetime,?,120))--from
+                                    AND DATEADD(DAY, 180, CONVERT(smalldatetime,?,120))--from
                 ) c
                 CROSS APPLY (
                     SELECT TOP 1 c2.procedim, c2.fecha, c2.autoriz, c2.tiempo, c2.registro, c2.procedipro
@@ -92,7 +92,7 @@ class InformesModel extends BaseModel{
                     WHERE c2.nro_hist = c.nro_hist
                     AND c2.procedipro = c.procedipro
                     AND c2.fecha BETWEEN CONVERT(smalldatetime,?,120) --from
-                                    AND DATEADD(DAY, 90, CONVERT(smalldatetime,?,120))--from
+                                    AND DATEADD(DAY, 180, CONVERT(smalldatetime,?,120))--from
                     ORDER BY c2.fecha ASC
                 ) ca
             ),
@@ -238,7 +238,7 @@ class InformesModel extends BaseModel{
                 FROM citas WITH (INDEX(IX_citas_hist_proc_fecha))
                 WHERE procedipro = ?
                 AND fecha BETWEEN CONVERT(smalldatetime, ?, 120)
-                                AND DATEADD(DAY, 90, CONVERT(smalldatetime, ?, 120))
+                                AND DATEADD(DAY, 180, CONVERT(smalldatetime, ?, 120))
             ),
 
             Historial AS (
@@ -300,7 +300,7 @@ class InformesModel extends BaseModel{
             $bindings = [
                 $procedure,  // CitasRango procedipro
                 $from,       // rango inicio
-                $to,         // rango fin (+90 días desde aquí)
+                $to,         // rango fin (+180 días desde aquí)
                 
                 $from,       // Historial corte -2 años
                 $from,       // Historial limite superior recientes
@@ -320,6 +320,12 @@ class InformesModel extends BaseModel{
                     SELECT DISTINCT nro_hist
                     FROM citas
                 ),
+                entidades AS (
+
+                    SELECT codigo, nombre
+                    FROM cliente
+                    WHERE socie <> ''
+                ),
 
                 clientes as (SELECT 
                     c.nit_cli,
@@ -335,8 +341,8 @@ class InformesModel extends BaseModel{
                     ON pcc.nro_hist = c.codigo
                 INNER JOIN tipodiag td 
                     ON td.codigo = c.contrib
-                LEFT JOIN cliente e 
-                    ON e.codigo = c.codent AND e.socie <> ''
+                LEFT JOIN entidades e 
+                    ON e.codigo = c.codent
                 WHERE 
                     -- No tenga citas futuras
                     NOT EXISTS (
