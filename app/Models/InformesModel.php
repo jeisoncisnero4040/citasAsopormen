@@ -320,7 +320,7 @@ class InformesModel extends BaseModel{
                     SELECT DISTINCT nro_hist
                     FROM citas
                 ),
-                entidades AS (
+                eps AS (
 
                     SELECT codigo, nombre
                     FROM cliente
@@ -333,6 +333,7 @@ class InformesModel extends BaseModel{
                     c.nombre,
                     c.tip_iden,
                     c.creado,
+					c.codent2,
                     c.usucrea,
                     e.nombre AS entidad,
                     td.tipodiag AS tipo
@@ -341,7 +342,7 @@ class InformesModel extends BaseModel{
                     ON pcc.nro_hist = c.codigo
                 INNER JOIN tipodiag td 
                     ON td.codigo = c.contrib
-                LEFT JOIN entidades e 
+                LEFT JOIN eps e 
                     ON e.codigo = c.codent
                 WHERE 
                     -- No tenga citas futuras
@@ -349,7 +350,7 @@ class InformesModel extends BaseModel{
                         SELECT 1
                         FROM citas ci
                         WHERE ci.nro_hist = c.codigo
-                        AND ci.fecha > CONVERT(smalldatetime, ?, 120)
+                        AND ci.fecha > CONVERT(smalldatetime,?, 120)
                     )
                 ),
 				autorizaciones as (SELECT 
@@ -359,8 +360,9 @@ class InformesModel extends BaseModel{
                     au.f_vence AS fecha_final,
                     au.usuario AS ingreso_autorizacion,
 					au.historia,
+					au.procedi,
 					ROW_NUMBER () OVER(
-						partition by au.historia
+						partition by au.historia,au.procedi
 						order by id desc
 					) as rn 
 					from autoriza au 
@@ -372,9 +374,11 @@ class InformesModel extends BaseModel{
 				)
 
 
-				select cli.*,au.* from clientes cli
+				select cli.*,au.*,pro.descrip AS procedimiento  from clientes cli
 				INNER JOIN autorizaciones au ON au.historia = cli.codigo
 												AND au.rn = 1
+                LEFT JOIN entidades ent ON ent.codigo = cli.codent2
+                LEFT JOIN procdent pro ON pro.cod_enti = ent.tarifa AND pro.codigo = au.procedi
             ";
 
             $bindings = [$from, $from, $to];
