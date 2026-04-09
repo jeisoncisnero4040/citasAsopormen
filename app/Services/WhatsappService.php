@@ -76,7 +76,7 @@ class WhatsappService
 
     private function buildRequestUrl($endpoint)
     {   
-        $baseUrl = "https://chatbot.asopormen.co:8443/api/";
+        $baseUrl = "https://chatbot.asopormen.co:8084/api/";
 
         if (!$baseUrl) {
             throw new ServerErrorException("La URL base del servicio de WhatsApp no está configurada.", 500);
