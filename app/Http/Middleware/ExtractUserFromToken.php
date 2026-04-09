@@ -23,14 +23,15 @@ class ExtractUserFromToken
             return response()->json([], 200);
         }
         $token = $request->bearerToken();
-        if (!$token) {
+        if (empty(str_replace(['null', 'undefined'], '', $token))) {
             $request->attributes->set('userPayload', [
                 'userRequestCedula' => null,
                 'usernameRequest'   => null
             ]);
             return $next($request);
         }
-        //$this->authService->validateTokenRequest($token);
+
+        $this->authService->validateTokenRequest($token);
         $user = $this->authService->me($token);
         $request->attributes->set('userPayload', [
             'userRequestCedula' => $user['cedula'] ?? null,
