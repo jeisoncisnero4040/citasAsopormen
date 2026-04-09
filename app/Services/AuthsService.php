@@ -8,17 +8,48 @@ use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Interfaces\AuthsInterface;
 use App\Models\Auth;
 use App\Models\AuthFull;
-use GuzzleHttp\Client;
+use App\Dtos\CreateAuthDto;
+use App\Models\UserRequesting;
+use App\Builders\AuthBuilder;
+use App\Services\QueueService;
 
-class AuthsService{
+class AuthsService extends BaseService{
     private AuthsInterface $authsRepository;
     private ClientService $clientService;
+    private TarifeService $tarifeService;
+    protected QueueService $queueService;   
 
     public  function __construct(AuthsInterface $authsRepository,
-                                ClientService $clientService
+                                ClientService $clientService,
+                                TarifeService $tarifeService,
+                                QueueService $queueService
+
     ) {
+        parent::__construct($queueService);
         $this->authsRepository = $authsRepository;
-        $this->clientService = $clientService;
+        $this->clientService = $clientService;  
+        $this->tarifeService = $tarifeService;
+        $this->queueService = $queueService;
+    }
+    /**
+     * @return array<array<string, mixed>>
+     */
+    public function Create(CreateAuthDto $dto, UserRequesting $userRequesting): array{
+        $client = $this->clientService->getByClientCode($dto->getClientCode());
+        $tarife= $this->tarifeService->getTarifeByClient($client);
+        $authsBuilder=AuthBuilder::create()
+            ->withCreateAuthDto($dto)
+            ->withClientView($client)
+            ->withUserRequesting($userRequesting)
+            ->withTarife($tarife);
+
+        $authCommands = $authsBuilder->buildMany($dto->getProcedures());
+        $exampleAuthCommand = $authCommands[0];
+        $newIds = $this->authsRepository->saveMany($authCommands);
+        $msm = $exampleAuthCommand->getMsmCreate(ids : $newIds);
+        $this->dispatchToQueue($msm, $userRequesting);
+        $newAuths = $this->authsRepository->getByIds($newIds);
+        return $this->attachSpecialtiesWithoutCollapsing($newAuths);
     }
     public function get(GetAuthsDto $dto): array
     {

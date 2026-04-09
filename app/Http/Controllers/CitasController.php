@@ -6,8 +6,8 @@ use App\Dtos\CreateCitasDto;
 use App\Dtos\DeleteAppoDto;
 use Illuminate\Http\Request;
 use App\Services\CitasService;
-use Illuminate\Support\Facades\DB;
-
+use App\Models\UserRequesting;
+use App\Dtos\CloneCalendarDto;
 
 class CitasController extends Controller
 {
@@ -153,6 +153,7 @@ class CitasController extends Controller
     public function deleteCitaById(Request $request){
         $queryParams = $request->query();
         $dto=DeleteAppoDto::fromRequest($queryParams);
+        $dto->setUserRequest(UserRequesting::fromArray($request->attributes->get('userPayload', [])));
         $response = $this->citasService->deleteCitaById(dto:$dto);
         return response()->json($response,200);
     }
@@ -668,7 +669,10 @@ class CitasController extends Controller
     }
 
     public function cloneCalendarProfesional(Request $request){
-        $response=$this->citasService->cloneScheduleProfesional($request->all());
+        $data= $request->all();
+        $userRequesting=$request->attributes->get('userPayload', []);
+        $dto=CloneCalendarDto::fromArray(data: $data, dataUserRequest: $userRequesting);
+        $response=$this->citasService->cloneScheduleProfesional($dto);
         return response()->json($response,200);
     }
 

@@ -30,6 +30,7 @@ class User extends Authenticatable implements JWTSubject
         'password',
         'estado',
         'permisomc',
+        'usuario',
         'rol_id'
     ];
 
@@ -69,6 +70,6 @@ class User extends Authenticatable implements JWTSubject
      */
     public function getJWTCustomClaims()
     {
-        return ['rol'=>$this->rol_id];
+        return ['rol'=>$this->rol_id,'cedula'=>$this->cedula,'user'=>$this->usuario];
     }
 }

@@ -30,7 +30,7 @@ class ResponseManager{
         ];
         return $response;
     }
-    public function created($data){
+    public function created( array $data){
         $response=[
             'message'=>'created',
             'status'=>201,

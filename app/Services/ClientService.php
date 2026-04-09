@@ -12,14 +12,19 @@ use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Interfaces\ClientRepositoryInterface;
 use App\Interfaces\StorageInterface;
+use App\Kafka\Domain\MessageQueue;
 use App\Mappers\ClientMapper;
 use App\Mappers\HistoryChatBotMapper;
+use App\Models\AuditMessageQueueBuilder;
+use App\Models\ClientView;
+use App\Models\UserRequesting;
 use App\Requests\ClientRequest;
 use App\utils\CelNumberManager;
 use App\utils\DateManager;
 use App\utils\PasswordGenerator;
 use Illuminate\Support\Facades\DB;
 use App\utils\ResponseManager;
+use GuzzleHttp\Client;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
@@ -32,6 +37,7 @@ class ClientService{
     private ClientRepositoryInterface $clientRepo;
     private DistrictService $districtService;
     private StorageInterface $storage;
+    private QueueService $queueService;
 
     public function __construct(ResponseManager $responseManager,
                                 EmailService $emailService, 
@@ -39,6 +45,8 @@ class ClientService{
                                 ClientRepositoryInterface $clientRepo,
                                 DistrictService $districtService,
                                 StorageInterface $storage,
+                                QueueService $queueService
+
                                 ){
         $this->responseManager=$responseManager;
         $this->emailService=$emailService;
@@ -46,9 +54,9 @@ class ClientService{
         $this->clientRepo=$clientRepo;
         $this->districtService=$districtService;
         $this->storage = $storage;
-
+        $this->queueService = $queueService;
     }
-    public function create(CreateClientDto $dto, ?UploadedFile $image, ?UploadedFile $document):array{
+    public function create(CreateClientDto $dto, ?UploadedFile $image, ?UploadedFile $document,UserRequesting $userRequesting):array{
         
         $codeMun= $dto->getMunicipality();
         $municipio=$this->districtService->get(code:$codeMun);
@@ -62,7 +70,7 @@ class ClientService{
             $client->setUrlPhoto(url:$photoUrl);
         }
         if(!empty($document)){
-            $url=$this->storage->store(file:$image,path:"clientes/documentos/$newCode");
+            $url=$this->storage->store(file:$document,path:"clientes/documentos/$newCode");
             $client->setUrlDocument(url:$url);
         }
         
@@ -104,7 +112,8 @@ class ClientService{
     public function update(
         string $history,
         CreateClientDto $dto,
-        ?UploadedFile $image = null
+        ?UploadedFile $image = null,
+        UserRequesting $userRequesting
     ) {
 
         $clientView = $this->clientRepo->get(['codigo' => $history]);
@@ -147,7 +156,7 @@ class ClientService{
             'historyId' => $history
         ]);
     }
-    public function toggleActive(UpdateClientDto $dto)
+    public function toggleActive(UpdateClientDto $dto, UserRequesting $userRequesting)
     {
         $code = $dto->getCode();
         $clients = $this->clientRepo->get(['codigo' => $code]);
@@ -179,19 +188,19 @@ class ClientService{
         }
 
         $now = DateManager::dateToStringFormat(Carbon::now());
-        $user = $dto->getUserRequest();
+        $user = $userRequesting->getUsername();
         $nameClient = $client->getName();
 
         $idsStr = !empty($idsDeleted)
             ? implode(' ', $idsDeleted)
             : 'ninguna';
 
-        event(new AuditEvent("
-            El usuario $user modifico el status del cliente $nameClient
-            eliminando las citas con ids $idsStr
-            el día $now
-        ", cedula: $dto->getCedulaRequest()));
-
+        $this->queueService->publish(
+            $this->buildMsmAudit(
+                action: "El usuario $user modifico el status del cliente $nameClient eliminando las citas con ids $idsStr el día $now",
+                userRequesting: $userRequesting
+            )
+        );
         return [$client->toSerialize()];
     }
 
@@ -872,7 +881,7 @@ class ClientService{
 
                             UNION ALL
 
-                            SELECT 
+                            
 							SELECT 
 								RTRIM(codigo) AS cod,
 								nombre,
@@ -950,8 +959,21 @@ class ClientService{
             })
             ->all();
     }
-
-
+    private function buildMsmAudit(string $action,UserRequesting $userRequesting,string $modulo = 'citas'):MessageQueue{
+        return AuditMessageQueueBuilder::create()->withData([
+            'audit'=>$action,
+            'cedula'=>$userRequesting->getCedula(),
+            'modulo'=>$modulo
+        ])->build();
+    }
+    public  function getByClientCode(string $clientCode):ClientView{
+        $client=$this->clientRepo->get(['codigo'=>$clientCode]);
+        if(empty($client)){
+            throw new NotFoundException("No se ha encontrado un cliente con el codigo proporcionado",404);
+        }
+        return $client[0];
+    }
+    
     
 }
     

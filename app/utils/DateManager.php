@@ -174,6 +174,16 @@ class DateManager {
 
         return $diff->m;
     }
+    public static function getDateInSmallDateTimeFormat(string|Carbon|null $date=null): string
+    {
+        if ($date === null) {
+            return Carbon::now()->format('Y-m-d H:i:s');
+        }
+        if (is_string($date)) {
+            $date = Carbon::parse($date);
+        }
+        return Carbon::parse($date)->format('Y-m-d H:i:s');
+    }
 
 
 

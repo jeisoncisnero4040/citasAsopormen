@@ -11,6 +11,7 @@ class GetAuthsDto {
     public ?string $to;
     public bool $withFullInfo;
     public ?string $cupCode;
+
     
     
     public function __construct(

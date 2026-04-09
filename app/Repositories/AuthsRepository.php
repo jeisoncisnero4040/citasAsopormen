@@ -6,6 +6,11 @@ use App\Interfaces\AuthsInterface;
 use App\Models\Auth;
 use App\Constanst\Auths;
 use App\Dtos\GetAuthsDto;
+use Illuminate\Support\Facades\DB;
+use App\utils\ZerosPadder;
+use App\Serializers\AuthsSerializer;
+use App\Commands\AuthCommand;
+use App\Exceptions\CustomExceptions\ServerErrorException;
 
 class AuthsRepository extends BaseRepository implements AuthsInterface
 {
@@ -24,6 +29,76 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         return collect($response)
             ->map(fn($item) => Auth::fromArray((array) $item))
             ->toArray();
+    }
+    public function getByIds(array $ids): array
+    {
+        if(empty($ids)){
+            return [];
+        }
+        $placeholders = self::makePlaceholdersPlains($ids);
+        $query = str_replace('{{}}', "AND id IN ($placeholders)", Auths::BASE_GET_AUTHS_QUERY);
+        $response = self::sendQuery(
+            query: $query,
+            bindings: $ids
+        );
+        return collect($response)
+            ->map(fn($item) => Auth::fromArray((array) $item))
+            ->toArray();
+    }
+    /**
+     * @param array<AuthCommand> $auths  
+     * @return array<int>
+     */
+    public function saveMany(array $auths): array
+    {
+        DB::beginTransaction();
+        try {
+            $authExample = $auths[0];
+            $exists = DB::select("SELECT 1 FROM autoriza 
+                WHERE n_autoriza = ? AND entidad = ? AND historia = ?",
+                [
+                    $authExample->getAuthCode(),
+                    $authExample->getEpsCode(),
+                    $authExample->getClientCode()
+                ]
+            );
+            if (!empty($exists)) {
+                throw new ServerErrorException("La autorizacion que deseas ingresar ya existe",500);
+            }
+            $consecutives = DB::select("SELECT CONSECU FROM con_inv WITH (UPDLOCK, ROWLOCK) WHERE sigla = 'AU'");
+            $lastId = DB::select("SELECT TOP 1 id FROM autoriza  ORDER BY id DESC")[0]->id ?? 0;
+
+            $currentConsecutive = $consecutives[0]->CONSECU ?? '0000000000';
+            $nextConsecutive = ZerosPadder::increment($currentConsecutive, 10);
+            foreach ($auths as $auth) {
+                $auth->setConsecutive($currentConsecutive);
+            }
+            $query = $this->builCreateQuery(
+                'autoriza',
+                AuthsSerializer::toPersistence($authExample),
+                count($auths)
+            );
+            $bindings = [];
+            foreach ($auths as $auth) {
+                $bindings = [
+                    ...$bindings,
+                    ...array_values(AuthsSerializer::toPersistence($auth))
+                ];
+            }
+
+            DB::insert($query, $bindings);
+            DB::update("UPDATE con_inv SET CONSECU = ? WHERE sigla = 'AU'", [$nextConsecutive]);
+            DB::commit();
+            return range($lastId + 1, $lastId + count($auths));
+
+        } catch (ServerErrorException $e) {
+            DB::rollBack();
+            throw $e;
+        }
+        catch(\Exception){
+            DB::rollBack();
+            throw new ServerErrorException("Ha ocurrido un error al intentar guardar la autorizacion, por favor intenta de nuevo",500);
+        }
     }
 
     private function buildFilters(GetAuthsDto $dto): Filter

@@ -16,4 +16,6 @@ class Controller extends BaseController
         $holidays = Holidays::for(country: 'co', year: 2024)->get();
         return response()->json($holidays);
     }
+
+    
 }

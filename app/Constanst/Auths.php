@@ -16,7 +16,8 @@ class Auths {
                                 RTRIM(a.observa) AS observa,
                                 a.entidad,
                                 a.paquete,
-                                a.historia
+                                a.historia,
+                                a.dias
                             FROM autoriza a
                             WHERE 1=1
                             {{}}
@@ -89,7 +90,7 @@ class Auths {
                 GROUP BY p.n_autoriza, p.tiempo
             ),
 
-            entidades AS (
+            eps AS (
                 SELECT *
                 FROM cliente
                 WHERE socie <> ''
@@ -136,7 +137,9 @@ class Auths {
                     ) THEN 1
                     ELSE 0
                 END AS facturada,
-                a.historia
+                a.historia,
+                RTRIM(en.clase) AS n_convenio,
+                a.dias
 
             FROM procedimientos p
             LEFT JOIN contador c
@@ -144,10 +147,12 @@ class Auths {
                 AND c.tiempo     = p.tiempo
             INNER JOIN autorizaciones a
                     ON a.n_autoriza = p.n_autoriza
-            INNER JOIN entidades e
+            INNER JOIN eps e
                     ON e.codigo = a.entidad
             LEFT JOIN citas_por_autoriz ca
                 ON ca.autoriz = a.n_autoriza
+            INNER JOIN entidades en 
+                ON en.codigo = a.paquete
             ORDER BY a.f_inicial, a.f_vence;";
 
     const TEMPLATE_GET_TRAZABILITY = "WITH autorizaciones AS (

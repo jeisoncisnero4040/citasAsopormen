@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e33ef03d30e7dc8ff97e64b9d7d194ef",
+    "content-hash": "4306d66dc6c5555c438f20bfc120193d",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -7414,6 +7414,44 @@
                 "source": "https://github.com/hamcrest/hamcrest-php/tree/v2.1.1"
             },
             "time": "2025-04-30T06:54:44+00:00"
+        },
+        {
+            "name": "kwn/php-rdkafka-stubs",
+            "version": "v3.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kwn/php-rdkafka-stubs.git",
+                "reference": "c1e743c5d1685c7ade27d588f44bef614d0705bc"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kwn/php-rdkafka-stubs/zipball/c1e743c5d1685c7ade27d588f44bef614d0705bc",
+                "reference": "c1e743c5d1685c7ade27d588f44bef614d0705bc",
+                "shasum": ""
+            },
+            "require": {
+                "ext-rdkafka": ">=6.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.2.4"
+            },
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Karol Wnuk",
+                    "email": "k.wnuk@ascetic.pl"
+                }
+            ],
+            "description": "Rdkafka extension stubs for your IDE",
+            "support": {
+                "issues": "https://github.com/kwn/php-rdkafka-stubs/issues",
+                "source": "https://github.com/kwn/php-rdkafka-stubs/tree/v3.0.0"
+            },
+            "time": "2025-11-26T20:04:16+00:00"
         },
         {
             "name": "laravel/pint",

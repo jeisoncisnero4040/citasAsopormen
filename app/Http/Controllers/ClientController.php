@@ -6,11 +6,12 @@ use App\Dtos\CreateClientDto;
 use App\Dtos\GetClientDto;
 use App\Dtos\UpdateClientDto;
 use App\Dtos\UpdateUserDto;
+use App\Models\UserRequesting;
 use App\Requests\ClientRequest;
 use Illuminate\Http\Request;
 use App\Services\ClientService;
 use App\utils\ResponseManager;
-use Predis\Response\Status;
+
 
 class ClientController extends Controller{
 
@@ -702,13 +703,15 @@ class ClientController extends Controller{
             status:200
                 );
     }
-    public function index(Request $request){
+    public function store(Request $request){
         
         ClientRequest::validateDataCreateClient($request->all());
         $dto=CreateClientDto::fromArray($request->all());
+        $user=$this->user();
         $image = $request->file('image',null);
         $document = $request->file('document',null);
-        $response = $this->clientService->create(dto:$dto,image:$image,document:$document);
+        $response = $this->clientService->create(dto:$dto,image:$image,document:$document,userRequesting:$user);
+
         return response()->json(
                 data:$this->responseManager->created($response),
                 status:201
@@ -719,8 +722,9 @@ class ClientController extends Controller{
         ClientRequest::validateDataUpdateClient($request->all());
         $codigo=$request->input('codigo',null);
         $dto=CreateClientDto::fromArray(data:$request->all());
+        $userRequesting=$this->user();
         $image = $request->file('image',null);
-        $response=$this->clientService->update(history:$codigo,dto:$dto,image:$image);
+        $response=$this->clientService->update(history:$codigo,dto:$dto,image:$image,userRequesting:$userRequesting);
         return response()->json(
                 data:$this->responseManager->success($response),
                 status:200
@@ -729,14 +733,12 @@ class ClientController extends Controller{
 
     }
     public function toggleActive(Request $request){
+        $userRequesting=$this->user();
         $dto=UpdateClientDto::fromArray($request->all());
-        $response = $this->clientService->toggleActive(dto:$dto);
+        $response = $this->clientService->toggleActive(dto:$dto,userRequesting:$userRequesting);
         return response()->json(
                 data:$this->responseManager->created($response),
                 status:201
         );
     }
-
-
-
 }

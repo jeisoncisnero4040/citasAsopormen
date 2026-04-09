@@ -16,11 +16,15 @@ use Illuminate\Support\Facades\DB;
 use App\Mappers\CalendarProfesionalMapper;
 use App\Mappers\AppoimentsMapper;
 use App\Domain\CitasDomain;
+use App\Dtos\CloneCalendarDto;
 use App\Dtos\DeleteAppoDto;
 use App\Events\AuditEvent;
+use App\Kafka\Domain\MessageQueue;
+use App\Models\AuditMessageQueueBuilder;
+use App\Models\UserRequesting;
 use App\Repositories\CitasRepository;
 use Illuminate\Support\Str;
-
+use App\Services\QueueService;
 use stdClass;
 
 class CitasService{
@@ -29,16 +33,20 @@ class CitasService{
     private CitasRepository $citasRepository;
     private ProcedureService $procediproService;
     private ProfesionalService $profesionalService;
+    private QueueService $queueService;
 
     public function __construct(CitasModel $citasModel, ResponseManager $responseManager,ProcedureService $procediproService,
                             CitasRepository $citasRepository,
-                            ProfesionalService $profesionalService)
+                            ProfesionalService $profesionalService,
+                            QueueService $queueService
+                            )
     {
         $this->responseManager=$responseManager;
         $this->citasModel=$citasModel;
         $this->citasRepository=$citasRepository;
         $this->procediproService=$procediproService;
         $this->profesionalService=$profesionalService;
+        $this->queueService=$queueService;
 
     }
     public function create(CreateCitasDto $dto){
@@ -129,7 +137,7 @@ class CitasService{
         $appos=$this->citasRepository->getFamilyAppos($familyId);
         $idsAppos = collect($appos)->pluck('id')->toArray();
         $audit=CitasDomain::buildAuditMsm(
-            user:$dto->getUser(),
+            user:$dto->getUserRequest()->getUsername(),
             client:$dto->getClient(),
             schedule:$schedule,
             profesional:$dto->getProfesional(),
@@ -138,7 +146,12 @@ class CitasService{
             ids:$idsAppos,
             
         );
-        event(new AuditEvent($audit,$dto->getUserCedula()));
+        $this->queueService->publish(
+            $this->buildMsmAudit(
+                action:$audit,
+                userRequesting:$dto->getUserRequest()
+            )
+        );
         return $this->responseManager->created($appos);
 
         
@@ -157,12 +170,17 @@ class CitasService{
            throw new BadRequestException("no es posible eliminar esta sección",400);
         }
         $msm = CitasDomain::buildAuditMsmDlete(
-            user:$dto->getUsuario(),
+            user:$dto->getUserRequest()->getUsername(),
             id:$dto->getId(),
             cliente:$dto->getCliente(),
             profesional:$cita->profesional
         );
-        event(new AuditEvent(auditMessage:$msm,cedula:$dto->getCedula()));
+        $this->queueService->publish(
+            $this->buildMsmAudit(
+                action:$msm,
+                userRequesting:$dto->getUserRequest()
+            )
+        );
         return $this->responseManager->success([]);
     }
 
@@ -249,16 +267,16 @@ class CitasService{
         return $this->responseManager->success($citasFlated);
     }
 
-    public function cloneScheduleProfesional($request)
+    public function cloneScheduleProfesional(CloneCalendarDto $dto): array
     {
-        CitasRequests::validateDataToCloneSchedule($request);
-        $fromString = $request['from'];
-        $toString = $request['to'];
-        $startString = $request['start'];
-        $cedula = $request['cedula'];
-        $usuario = $request['usuario'];
-        $cedulaUsuario=$request['cedula_usuario'];
-        $profesional=$request['profesional'];
+
+        $fromString = $dto->getFrom();
+        $toString = $dto->getTo();
+        $startString = $dto->getStart();
+        $cedula = $dto->getCedula();
+        $usuario = $dto->getUserRequest()->getUsername();
+        $cedulaUsuario = $dto->getUserRequest()->getCedula();
+        $profesional = $dto->getProfesional();
 
         $fromDate = Carbon::parse($fromString);
         $startDate = Carbon::parse($startString);
@@ -305,7 +323,12 @@ class CitasService{
                 start:$startDate,
                 ids:$ids
             );
-        event(new AuditEvent(auditMessage:$audit,cedula:$cedulaUsuario));
+        $this->queueService->publish(
+            $this->buildMsmAudit(
+                action:$audit,
+                userRequesting:$dto->getUserRequest()
+            )
+        );
         return $this->responseManager->success($appoimentsMapped);
     }
     public function deleteScheduleProfesional($request){
@@ -326,6 +349,13 @@ class CitasService{
         //evento para guardar log 
         return $this->responseManager->success("Fueron Eliminadas {$appoimentsDeleted} citas");
 
+    }
+    private function buildMsmAudit(string $action,UserRequesting $userRequesting,string $modulo = 'citas'):MessageQueue{
+        return AuditMessageQueueBuilder::create()->withData([
+            'audit'=>$action,
+            'cedula'=>$userRequesting->getCedula(),
+            'modulo'=>$modulo
+        ])->build();
     }
 
     private function sendQueryToConfirmGroupSessions($request,$date) {

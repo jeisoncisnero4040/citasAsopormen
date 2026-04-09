@@ -3,6 +3,7 @@
 namespace App\Dtos;
 
 use App\Interfaces\Persistable;
+use App\Models\UserRequesting;
 use App\Requests\CitasRequests;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
@@ -10,7 +11,6 @@ use Carbon\Carbon;
 class CreateCitasDto implements Persistable
 {
     private string $userCedula;
-    private string $user;
 
     private string $profesional;
     private string $cedula;
@@ -43,46 +43,37 @@ class CreateCitasDto implements Persistable
     private ?string $sede;
     private ?string $dateCreation;
     private ?string $familyId = null;
+    private UserRequesting $userRequest;
 
-    public function __construct(array $data)
+    public function __construct(array $data,array $userPayload=[])
     {
         $this->validateRequest($data);
-
-        $this->userCedula = $data['ced_usu'];
-        $this->user       = trim($data['registro']);
-
+        $this->userRequest = UserRequesting::fromArray($userPayload);
+        $this->userCedula = $this->userRequest->getCedula();
         $this->profesional = trim($data['profesional']);
         $this->cedula      = $data['cedProf'];
-
         $this->historia  = $data['nro_hist'];
         $this->client    = trim($data['clientName']);
-
         $this->auth      = $data['n_autoriza'];
         $this->cupCode   = $data['tiempo'];
         $this->procedure = $data['procedim'];
         $this->expiratioDate = Carbon::parse($data['fecha_vencimiento']);
         $this->epsCode       = $data['codent'];
         $this->covenantCode  = $data['codent2'];
-
         $this->procedipro       = $data['procedipro'];
         $this->whatsappRemember = (bool) $data['recordatorio_wsp'];
         $this->duration         = (int) $data['duration_session'];
-
         $this->observaId = (int) $data['regobserva']??null;
         $this->copago    = (int) $data['copago']??null;
         $this->startDate = Carbon::parse($data['start_date']);
         $this->daysWeek  = $data['week_days']??[];
-    
-
-
         $this->citasTotal = (int) $data['num_sessions_total']??0;
-
-
     }
 
     public static function fromRequest(Request $request): self
     {
-        return new self($request->all());
+        $userPayload = $request->attributes->get('userPayload', []);
+        return new self($request->all(), $userPayload);
     }
     public function getProcedipro():string{
         return $this->procedipro;
@@ -124,7 +115,10 @@ class CreateCitasDto implements Persistable
         return $this->cedula;
     }
     public function getUser():string{
-        return $this->user;
+        return $this->userRequest->getUsername();
+    }
+    public function getUserRequest(): UserRequesting{
+        return $this->userRequest;
     }
     public function getClient():string{
         return $this->client;
@@ -175,8 +169,8 @@ class CreateCitasDto implements Persistable
         return [
             'nro_hist'              => $this->historia,
             'cedprof'               => $this->cedula,
-            'ced_usu'               => $this->userCedula,
-            'registro'              =>$this->user,
+            'ced_usu'               => $this->userRequest->getCedula(),
+            'registro'              =>$this->userRequest->getUsername(),
             'sede'                  =>$this->sede,
             'observaciones_mc'      =>$this->observaId,
             'codent'                =>$this->epsCode,

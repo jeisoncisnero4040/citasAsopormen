@@ -1,0 +1,139 @@
+<?php
+
+namespace App\Commands;
+
+final class AuthCommand
+{
+    private string $cupCode;
+    private int $amount;
+    private string $date;
+    private string $expiredDate;
+    private string $epsCode;
+    private ?string $consecutive = null;
+    private string $clientCode;
+    private string $authCode;
+    private int $amountDays;
+    private string $userCreating;
+    private bool $anulated;
+    private string $dateCreating;
+    private string $userAnulating;
+    private int $assistedSessionsCounter;
+    private string $motiveAnulation;
+    private string $observations;
+    private string $startDate;
+    private string $covenantCode;
+    private bool $suspended;
+    private string $headQuarters;
+    private bool $closed;
+    private ?string $dateClosed;
+    private ?string $userClosed;
+    private ?string $motiveClosed;
+    private ?string $userClosedDate;
+    private ?string $changuesAsp;
+    private string $tarifeCode;
+    private bool $newSystem;
+    private string $remitente;
+
+    public function __construct(
+        string $cupCode,
+        int $amount,
+        string $date,
+        string $expiredDate,
+        string $epsCode,
+        string $clientCode,
+        string $authCode,
+        int $amountDays,
+        string $userCreating,
+        string $dateCreating,
+        string $observations,
+        string $startDate,
+        string $covenantCode,
+        string $remitente,
+        string $tarifeCode,
+
+        ?string $consecutive = null,
+        bool $anulated = false,
+        string $userAnulating = '',
+        int $assistedSessionsCounter = 0,
+        string $motiveAnulation = '',
+        bool $suspended = false,
+        string $headQuarters = '001',
+        bool $closed = false,
+        ?string $dateClosed = null,
+        ?string $userClosed = null,
+        ?string $motiveClosed = null,
+        ?string $userClosedDate = null,
+        ?string $changuesAsp = null,
+        bool $newSystem = true
+    ){
+        $this->cupCode = $cupCode;
+        $this->amount = $amount;
+        $this->date = $date;
+        $this->expiredDate = $expiredDate;
+        $this->epsCode = $epsCode;
+        $this->consecutive = $consecutive;
+        $this->clientCode = $clientCode;
+        $this->authCode = $authCode;
+        $this->amountDays = $amountDays;
+        $this->userCreating = $userCreating;
+        $this->anulated = $anulated;
+        $this->dateCreating = $dateCreating;
+        $this->userAnulating = $userAnulating;
+        $this->assistedSessionsCounter = $assistedSessionsCounter;
+        $this->motiveAnulation = $motiveAnulation;
+        $this->observations = trim($observations);
+        $this->startDate = $startDate;
+        $this->covenantCode = $covenantCode;
+        $this->suspended = $suspended;
+        $this->headQuarters = $headQuarters;
+        $this->closed = $closed;
+        $this->dateClosed = $dateClosed;
+        $this->userClosed = $userClosed;
+        $this->motiveClosed = $motiveClosed;
+        $this->userClosedDate = $userClosedDate;
+        $this->changuesAsp = $changuesAsp;
+        $this->tarifeCode = $tarifeCode;
+        $this->newSystem = $newSystem;
+        $this->remitente = $remitente;
+    }
+
+
+    public function getCupCode(): string { return $this->cupCode; }
+    public function getAmount(): int { return $this->amount; }
+    public function getDate(): string { return $this->date; }
+    public function getExpiredDate(): string { return $this->expiredDate; }
+    public function getClientCode(): string { return $this->clientCode; }
+    public function getAuthCode(): string { return $this->authCode; }
+    public function getUserCreating(): string { return $this->userCreating; }
+    public function getObservations(): string { return $this->observations; }
+    public function getRemitente(): string { return $this->remitente; }
+    public function getCovenantCode(): string { return $this->covenantCode; }
+    public function getEpsCode(): string { return $this->epsCode; }
+    public function getAmountDays(): int { return $this->amountDays; }
+    public function isAnulated(): bool { return $this->anulated; }
+    public function isSuspended(): bool { return $this->suspended; }
+    public function isClosed(): bool { return $this->closed; }
+    public function getHeadQuarters(): string { return $this->headQuarters; }
+    public function getDateCreating(): string { return $this->dateCreating; }
+    public function getUserAnulating(): string { return $this->userAnulating; }
+    public function getMotiveAnulation(): string { return $this->motiveAnulation; }
+    public function getDateClosed(): ?string { return $this->dateClosed; }
+    public function getUserClosed(): ?string { return $this->userClosed; }
+    public function getMotiveClosed(): ?string { return $this->motiveClosed; }
+    public function getUserClosedDate(): ?string { return $this->userClosedDate; }
+    public function getChanguesAsp(): ?string { return $this->changuesAsp; }
+    public function getTarifeCode(): string { return $this->tarifeCode; }
+    public function isNewSystem(): bool { return $this->newSystem; }  
+    public function getConsecutive(): ?string { return $this->consecutive; }
+    public function getStartDate(): string { return $this->startDate; }
+    public function getAssistedSessionsCounter(): int { return $this->assistedSessionsCounter; }
+
+    public function setConsecutive(?string $consecutive): void { $this->consecutive = $consecutive; } 
+    
+    public function getMsmCreate(array $ids): string
+    {
+        return "El usuario {$this->userCreating} creo la autorización con codigo {$this->authCode} para el cliente {$this->clientCode} el dia {$this->dateCreating}.
+        con los siguientes ids de autorizaciones: " . implode(", ", $ids) .
+        " el dia {$this->dateCreating}";
+    }
+}

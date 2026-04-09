@@ -9,6 +9,8 @@ use App\Services\AuthsService;
 use App\utils\ResponseManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use App\Dtos\CreateAuthDto;
+use App\Models\UserRequesting;
 
 
 class AuthsController extends Controller{
@@ -24,8 +26,14 @@ class AuthsController extends Controller{
         $this->responseManager =$responseManager;
     }
 
-    public function stores():void{
-        return;
+    public function store(Request $request):JsonResponse{
+        $dto = CreateAuthDto::fromArray($request->all());
+        $userRequesting =$this->user();
+        $response = $this->service->Create($dto, $userRequesting);
+        return response()->json(
+            data:$this->responseManager->created($response),
+            status:201
+        );
     }
     public function index(Request $request):JsonResponse{
         $dto=GetAuthsDto::fromArray($request->query());

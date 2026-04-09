@@ -55,7 +55,8 @@ class JwtService implements JwtInterface
             $decodedPayload = json_decode(base64_decode($payload), true);
             $cedula=$decodedPayload['sub'];
             $rol=$decodedPayload['rol'];
-            return ["cedula"=>$cedula,"rol"=>$rol];
+            $user=$decodedPayload['user'] ?? null;
+            return ["cedula"=>$cedula,"rol"=>$rol,"user"=>$user];
         } catch (JWTException $e) {
             return null;
         }

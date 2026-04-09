@@ -4,7 +4,7 @@ namespace App\Services;
 
 use App\Constants\AuditTemplates;
 use App\Interfaces\AuditInterface;
-use App\Utils\ResponseManager;
+use App\utils\ResponseManager;
 
 class AuditService {
     private AuditInterface $auditRepository;
@@ -15,10 +15,10 @@ class AuditService {
         $this->auditRepository=$auditRepository;
         $this->responseManager=$responseManager;
     }
-    public function saveAudit(string $audit,string $cedula):array{
+    public function saveAudit(string $audit,string $cedula,$modulo='pruebas'):array{
         $auditLower=strtolower($audit);
-        $response=$this->auditRepository->saveAudit(audit:$auditLower,modulo:'pruebas',cedula:$cedula);
-        return $this->responseManager->created($response);
+        $this->auditRepository->saveAudit(audit:$auditLower,modulo:$modulo,cedula:$cedula);
+        return $this->responseManager->created([]);
     }
 
 }

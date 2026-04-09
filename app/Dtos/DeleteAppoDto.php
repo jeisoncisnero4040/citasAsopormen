@@ -1,44 +1,42 @@
 <?php
 
 namespace App\Dtos;
-
+use App\Models\UserRequesting;
 class DeleteAppoDto
 {
     private int $id;
-    private string $usuario;
     private string $cliente;
-    private string $cedula;
+    private ?UserRequesting $userRequest;
 
     public function __construct(
         int $id,
-        string $usuario,
         string $cliente,
-        string $cedula
+        ?UserRequesting $userRequest = null
+
     ) {
         $this->id = $id;
-        $this->usuario = $usuario;
         $this->cliente = $cliente;
-        $this->cedula = $cedula;
+        $this->userRequest = $userRequest;
     }
-
     public static function fromRequest(array $query): self
     {
         return new self(
-            id: (int) $query['id'],
-            usuario: $query['usuario'],
+
             cliente: $query['cliente'],
-            cedula: $query['cedula']
+            id: (int)$query['id']
         );
     }
-
+    public function setUserRequest(UserRequesting $userRequest): void
+    {
+        $this->userRequest = $userRequest;
+    }
+    public function getUserRequest(): ?UserRequesting
+    {
+        return $this->userRequest;
+    }
     public function getId(): int
     {
         return $this->id;
-    }
-
-    public function getUsuario(): string
-    {
-        return $this->usuario;
     }
 
     public function getCliente(): string
@@ -46,8 +44,5 @@ class DeleteAppoDto
         return $this->cliente;
     }
 
-    public function getCedula(): string
-    {
-        return $this->cedula;
-    }
+
 }

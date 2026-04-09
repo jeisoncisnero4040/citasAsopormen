@@ -196,7 +196,18 @@ class ClientView
     }
 
 
-
+    public function getCode(): string
+    {
+        return $this->codigo;
+    }
+    public function getEpsCode(): ?string
+    {
+        return $this->cod_entidad;
+    }
+    public function getCovenantCode(): ?string
+    {
+        return $this->cod_convenio;
+    }   
     public function getEdad(): ?string
     {
         if (!$this->f_nacio) {

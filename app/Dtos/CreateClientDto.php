@@ -2,6 +2,9 @@
 
 namespace App\Dtos;
 
+use App\Models\User;
+use App\Models\UserRequesting;
+
 class CreateClientDto
 {
     private string $documentType;
@@ -49,8 +52,6 @@ class CreateClientDto
     private string $guardianPhone;
     private string $guardianRelationship;
 
-    private string $requestUserDocument;
-    private string $requestUser;
     private bool $active;
 
     private ?string $SisbenGroup=null;
@@ -95,11 +96,12 @@ class CreateClientDto
         ?string $guardianSecondLastName,
         string $guardianPhone,
         string $guardianRelationship,
-        string $requestUserDocument,
-        string $requestUser,
+
         bool $active,
         ?string $observations,
-        ?string $SisbenGroup
+        ?string $SisbenGroup,
+
+
 
     ) {
 
@@ -148,11 +150,11 @@ class CreateClientDto
         $this->guardianPhone = $guardianPhone;
         $this->guardianRelationship = $guardianRelationship;
 
-        $this->requestUserDocument = $requestUserDocument;
-        $this->requestUser = $requestUser;
+
         $this->active =$active;
         $this->SisbenGroup=$SisbenGroup;
         $this->observations=$observations;
+
         
     }
 
@@ -206,12 +208,10 @@ class CreateClientDto
             guardianPhone: $data['a_contacto'],
             guardianRelationship: $data['a_parentezco'],
 
-            requestUserDocument: $data['cedula_user'],
-            requestUser: $data['user'],
+
             active:(bool) $data['activo']??false,
             SisbenGroup:$data['grupo']??'',
-            observations:$data['observaciones']??''
-
+            observations:$data['observaciones']??'',
 
         );
     }
@@ -400,15 +400,7 @@ class CreateClientDto
         return $this->guardianRelationship;
     }
 
-    public function getRequestUserDocument(): string
-    {
-        return $this->requestUserDocument;
-    }
 
-    public function getRequestUser(): string
-    {
-        return $this->requestUser;
-    }
     public function getStatus():bool{
         return $this->active;
     }

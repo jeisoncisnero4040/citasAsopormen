@@ -16,7 +16,7 @@ class BaseRequest
     protected static function validateKeysRequest(array $request, array $keysAllowed): void
     {
         $keysRequest = array_keys($request);
-        $invalidKeys = array_diff($keysRequest, $keysAllowed);
+        $invalidKeys = array_diff($keysRequest, [...$keysAllowed,'userRequestCedula','usernameRequest']);
 
         if (!empty($invalidKeys)) {
             $keysNotAllowedInString = implode(', ', $invalidKeys);

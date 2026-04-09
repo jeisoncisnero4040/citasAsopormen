@@ -5,9 +5,6 @@ namespace App\Constanst;
 class RequestsCitasConstans{
     public const RULES_CREATE_CITAS = [
 
-        'ced_usu'   => 'required|string|regex:/^[0-9]+$/',
-        'registro'  => 'required|string|max:150',
-
         'profesional' => 'required|string|max:150',
         'cedProf'     => 'required|string|regex:/^[0-9]+$/',
 
@@ -40,9 +37,6 @@ class RequestsCitasConstans{
 
     ];
     public const MESSAGES_CREATE_CITAS = [
-
-        'ced_usu.required' => 'La cédula del usuario es obligatoria.',
-        'ced_usu.regex'    => 'La cédula del usuario solo debe contener números.',
 
         'registro.required' => 'El usuario que registra la cita es obligatorio.',
 
@@ -91,8 +85,6 @@ class RequestsCitasConstans{
 
     ];
     public const KEYS_ALLOWED_CREATE_CITAS = [
-        'ced_usu',
-        'registro',
         'profesional',
         'cedProf',
         'nro_hist',
@@ -120,8 +112,6 @@ class RequestsCitasConstans{
     'to' => 'required|date|after_or_equal:from',
     'start' => 'required|date|after:to',
     'cedula' => 'required|string',
-    'usuario' => 'required|string',
-    'cedula_usuario' => 'required|string',
     'profesional'=>'required|string'
     ];
     public const MESSAGES_ERROR_DATES_RANGE = [
@@ -140,21 +130,15 @@ class RequestsCitasConstans{
     'cedula.required' => 'La cédula del profesional es obligatoria.',
     'cedula.string' => 'La cédula del profesional debe ser un texto.',
 
-    'usuario.required' => 'El nombre de usuario es obligatorio.',
-    'usuario.string' => 'El nombre de usuario debe ser un texto.',
     'profesional.required' => 'El nombre de profesional es obligatorio.',
     'profesional.string' => 'El nombre de profesional debe ser un texto.',
 
-    'cedula_usuario.required' => 'La cédula del usuario es obligatoria.',
-    'cedula_usuario.string' => 'La cédula del usuario debe ser un texto.',
     ];
     public const KEYS_ALLOWED_DATES_RANGE = [
     'from',
     'to',
     'start',
     'cedula',
-    'usuario',
-    'cedula_usuario',
     'profesional'
     ];
 

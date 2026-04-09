@@ -21,6 +21,8 @@ class Auth {
     private array $especialidades = [];
     private bool $isInvoiced;
     private string $codeClient;
+    private string $n_convenio;
+    private int $days;
 
     public function __construct(
         string $n_autoriza,
@@ -40,6 +42,8 @@ class Auth {
         bool $nueva,
         bool $isInvoiced,
         string $codeClient,
+        string $n_convenio,
+        int $days
     ){
         $this->n_autoriza = $n_autoriza;
         $this->tiempo = $tiempo;
@@ -58,6 +62,8 @@ class Auth {
         $this->nueva = $nueva;
         $this->isInvoiced= $isInvoiced;
         $this->codeClient=$codeClient;
+        $this->n_convenio = $n_convenio;
+        $this->days = $days;
     }
 
     public static function fromArray(array $array): self
@@ -79,7 +85,9 @@ class Auth {
             $array['entidad'],
             (bool)$array['nueva'],
             (bool)$array['facturada'],
-            $array['historia']
+            $array['historia'],
+            $array['n_convenio'],
+            (int)$array['dias']
         );
     }
 
@@ -102,7 +110,10 @@ class Auth {
             'entidad' => $this->entidad,
             'nueva' => $this->nueva,
             'especialidades'=>$this->especialidades,
-            'facturada'=>$this->isInvoiced
+            'facturada'=>$this->isInvoiced,
+            'nombre_convenio'=>$this->n_convenio,
+            'dias'=>$this->days
+
         ];
     }
     public function getAutoriza():string{

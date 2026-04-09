@@ -8,7 +8,7 @@ use App\Exceptions\CustomExceptions\ForbidenException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Exceptions\CustomExceptions\UnAuthorizateException;
-use App\Utils\ResponseManager;
+use App\utils\ResponseManager;
 
 class Handler extends ExceptionHandler
 {

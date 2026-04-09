@@ -16,7 +16,9 @@ use App\Http\Controllers\ExternalProcedureController;
 use App\Http\Controllers\InformesController;
 use App\Http\Controllers\ProfesionalSenderController;
 use App\Http\Controllers\PrometheusController;
-use App\Models\ProfesionalSender;
+use App\Http\Controllers\KafkaController;
+
+Route::get('kafka/publish', [KafkaController::class, 'publish']);
 
 Route::post('login', [AuthController::class, 'login']);
 Route::post('login_client', [AuthController::class, 'loginClient']);
@@ -39,7 +41,7 @@ Route::get('profesionals/get-calendar',[ProfesionalController::class,'getCalenda
 Route::get('profesionals/get-procedims',[ProfesionalController::class,'getProfesionalsProcedims']);
 Route::get('profesionals/get-schedule',[ProfesionalController::class,'getSchedule']);
 
-Route::post('clients',[ClientController::class,'index']);
+Route::post('clients',[ClientController::class,'store']);
 Route::post('clients/update',[ClientController::class,'updateClient']);
 Route::get('get_clients',[ClientController::class,'getAllClientByStringSearch']);
 Route::patch('clients',[ClientController::class,'toggleActive']);
@@ -102,6 +104,7 @@ Route::get('informes/new-clients-by-procedure',[InformesController::class,'count
 Route::get('informes/old-users',[InformesController::class,'getOldUser'])->middleware('login.check:informes-citas');
 Route::get('informes/old-users-not-citas',[InformesController::class,'getOldUserNotFountCitad'])->middleware('login.check:informes-citas');
 
+Route::post('auths',[AuthsController::class,'store']);
 Route::get('metrics',[PrometheusController::class,'metrics']);
 Route::get('auths',[AuthsController::class,'index']);
 Route::get('auths/detail',[AuthsController::class,'getDetail']);

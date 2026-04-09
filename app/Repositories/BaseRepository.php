@@ -55,7 +55,15 @@ class BaseRepository
             $columns
         ));
     }
-    
+    protected function builCreateQuery(string $table,  array $Exampledata ,$numRegistry = 1): string
+    {
+        $columns = self::makeColumns($Exampledata);
+        $placeholders = self::makePlaceholders($Exampledata );
+        $arrayPlaceholders = array_fill(0, $numRegistry, "($placeholders)");
+        $placeholdersString = implode(', ', $arrayPlaceholders);
+
+        return "INSERT INTO $table ($columns) VALUES $placeholdersString";
+    }
     protected static function sendQuery(string $query, ?array $bindings = [], string $typeConsult = 'select'):int|array
     {
         try {

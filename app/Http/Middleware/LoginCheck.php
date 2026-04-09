@@ -9,7 +9,7 @@ use App\Services\RolesAndPermissionsService;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use App\Utils\ResponseManager;
+use App\utils\ResponseManager;
 
 class LoginCheck 
 {
@@ -29,11 +29,7 @@ class LoginCheck
         if ($request->isMethod('OPTIONS')) {
             return response()->json($this->responseManager->success(null));
         }
-        if (env('APP_ENV') === 'local') {
-            return $next($request);
-        }
         $token = $request->bearerToken();
-        print($token);
         if (!$token) {
             throw new UnAuthorizateException('El token de acceso no fue proporcionado', 401);
         }
@@ -41,16 +37,12 @@ class LoginCheck
         $this->authService->validateTokenRequest($token);
         $profesional = $this->authService->me($token);
         $rol = $profesional['rol'];
-
         $hasPermission = $this->rolesAndPermissions->checkPermissionsRole((int) $rol, ...$permissionsName);
-
         if (!$hasPermission) {
             throw new ForbidenException("El usuario no tiene permisos para realizar esta acción", 403);
         }
-
         $newToken = $this->authService->refresh($token);
         $response = $next($request);
-
         if ($newToken !== $token) {
             $response->headers->set('Authorization', 'Bearer ' . $newToken);
         }

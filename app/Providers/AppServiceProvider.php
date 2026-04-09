@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             \App\Interfaces\AuditInterface::class,
-            \App\Repositories\AuditRepository::class
+            \App\Repositories\FakeAuditRepository::class
         );
         $this->app->bind(
             \App\Interfaces\StorageInterface::class,
@@ -37,6 +37,14 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
             \App\Interfaces\ProfesionalSenderPort::class,
             \App\Repositories\ProfesionalSenderRepository::class
+        );
+        $this->app->bind(
+            \App\Kafka\Ports\QueuePort::class,
+            \App\Services\QueueService::class
+        );
+        $this->app->bind(
+            \App\Interfaces\TarifePort::class,
+            \App\Repositories\TarifeRepository::class
         );
     }
 
