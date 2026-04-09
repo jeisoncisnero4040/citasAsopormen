@@ -7,6 +7,7 @@ use Spatie\Holidays\Holidays;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as BaseController;
+use App\Models\UserRequesting;
 
 class Controller extends BaseController
 {
@@ -15,6 +16,12 @@ class Controller extends BaseController
     public function getAllHolidays(){
         $holidays = Holidays::for(country: 'co', year: 2024)->get();
         return response()->json($holidays);
+    }
+    protected function user(): UserRequesting
+    {
+        return UserRequesting::fromArray(
+            request()->attributes->get('userPayload', [])
+        );
     }
 
     

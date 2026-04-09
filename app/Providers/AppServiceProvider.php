@@ -20,7 +20,7 @@ class AppServiceProvider extends ServiceProvider
         );
         $this->app->bind(
             \App\Interfaces\AuditInterface::class,
-            \App\Repositories\FakeAuditRepository::class
+            \App\Repositories\AuditRepository::class,
         );
         $this->app->bind(
             \App\Interfaces\StorageInterface::class,
