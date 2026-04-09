@@ -4,13 +4,12 @@
 namespace App\Http\Controllers;
 
 use App\Dtos\GetAuthsDto;
-use App\Services\AuthService;
 use App\Services\AuthsService;
 use App\utils\ResponseManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Dtos\CreateAuthDto;
-use App\Models\UserRequesting;
+
 
 
 class AuthsController extends Controller{
