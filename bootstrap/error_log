@@ -1,0 +1,68 @@
+[19-Dec-2024 02:20:42 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[21-Dec-2024 02:13:19 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[21-Dec-2024 12:13:15 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[22-Dec-2024 22:55:12 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[23-Dec-2024 02:20:06 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[23-Dec-2024 05:34:33 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[23-Dec-2024 16:10:46 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[25-Dec-2024 15:30:46 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[05-Jan-2025 01:19:46 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[20-Jan-2025 19:47:12 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[01-Feb-2025 10:08:32 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[06-Feb-2025 10:18:06 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[08-Feb-2025 19:55:27 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[08-Feb-2025 19:55:35 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[08-Feb-2025 19:55:43 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[08-Feb-2025 19:55:53 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14
+[08-Feb-2025 19:56:04 UTC] PHP Fatal error:  Uncaught Error: Class "Illuminate\Foundation\Application" not found in /home/basoporb4/public_html/chatbot/bootstrap/app.php:14
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/bootstrap/app.php on line 14

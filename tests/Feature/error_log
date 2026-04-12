@@ -1,0 +1,56 @@
+[06-Dec-2024 06:54:26 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[20-Dec-2024 04:38:37 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[20-Dec-2024 05:30:16 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[21-Dec-2024 07:07:40 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[21-Dec-2024 08:00:14 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[22-Dec-2024 05:12:37 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[23-Dec-2024 00:36:39 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[23-Dec-2024 09:01:07 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[24-Dec-2024 05:47:30 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[09-Jan-2025 18:46:02 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[15-Jan-2025 01:51:02 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[22-Jan-2025 02:43:07 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[01-Feb-2025 10:15:10 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
+[09-Feb-2025 05:53:52 UTC] PHP Fatal error:  Uncaught Error: Class "Tests\TestCase" not found in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php:8
+Stack trace:
+#0 {main}
+  thrown in /home/basoporb4/public_html/chatbot/tests/Feature/ExampleTest.php on line 8
