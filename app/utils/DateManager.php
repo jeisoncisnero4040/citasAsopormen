@@ -72,7 +72,10 @@ class DateManager {
         $date = $date->setTime(hour: 0, minute: 0);
         return $date->format('Y-m-d H:i:s');
     }
-    public static function dateToStringFormat(Carbon $date) {
+    public static function dateToStringFormat(?Carbon $date=null) {
+        if ($date === null) {
+            $date = Carbon::now();
+        }
         $month = self::getMonthToDate($date);
         $dayOfWeek = self::getDayWeekToDate($date);
         $day = $date->day;

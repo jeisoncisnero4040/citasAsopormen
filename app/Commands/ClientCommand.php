@@ -492,4 +492,13 @@ class ClientCommand implements Persistable
         return $this;
 
     }
+    public function getAuditCreateMessage(string $username): string
+    {
+        return "El usuario {$username} creo el cliente {$this->firstName} {$this->lastName} con codigo de historia {$this->code} el día ".DateManager::dateToStringFormat();
+    }
+    public function getAuditUpdateMessage(string $username): string
+    {
+        return "El usuario {$username} actualizo el cliente {$this->firstName} {$this->lastName} con codigo de historia {$this->code} el día ".DateManager::dateToStringFormat();
+    }
+    
 }

@@ -30,14 +30,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
 
 
-class ClientService{
+class ClientService extends BaseService{
     private $responseManager;
     private $emailService;
     private $whatsappService;
     private ClientRepositoryInterface $clientRepo;
     private DistrictService $districtService;
     private StorageInterface $storage;
-    private QueueService $queueService;
+    protected QueueService $queueService;
 
     public function __construct(ResponseManager $responseManager,
                                 EmailService $emailService, 
@@ -48,6 +48,7 @@ class ClientService{
                                 QueueService $queueService
 
                                 ){
+        parent::__construct($queueService);
         $this->responseManager=$responseManager;
         $this->emailService=$emailService;
         $this->whatsappService=$whatsappService;
@@ -60,7 +61,7 @@ class ClientService{
         
         $codeMun= $dto->getMunicipality();
         $municipio=$this->districtService->get(code:$codeMun);
-        $client = ClientMapper::clientDtoToClient(dto:$dto,municipality:$municipio);
+        $client = ClientMapper::clientDtoToClient(dto:$dto,municipality:$municipio,user:$userRequesting);
         $lastClient=$this->clientRepo->getLastHistory();
         $lastCode = $lastClient[0]->codigo ?? '0000000000';
         $newCode = str_pad(((int)$lastCode) + 1, 10, '0', STR_PAD_LEFT);
@@ -75,6 +76,10 @@ class ClientService{
         }
         
         $this->clientRepo->create(client:$client);
+        $this->dispatchToQueue(
+            msm: $client->getAuditCreateMessage($userRequesting->getUsername()),
+            userRequesting: $userRequesting
+        );
         return $this->getDataClientByHistoryId(['historyId'=>$newCode]);
 
     }
@@ -133,6 +138,7 @@ class ClientService{
         $client = ClientMapper::clientDtoToClient(
             dto: $dto,
             municipality: $municipio,
+            user: $userRequesting,
             isNew: false
         );
 
@@ -151,6 +157,10 @@ class ClientService{
         }
 
         $this->clientRepo->update($client);
+        $this->dispatchToQueue(
+            msm: $client->getAuditUpdateMessage($userRequesting->getUsername()),
+            userRequesting: $userRequesting
+        );
 
         return $this->getDataClientByHistoryId([
             'historyId' => $history
@@ -195,12 +205,12 @@ class ClientService{
             ? implode(' ', $idsDeleted)
             : 'ninguna';
 
-        $this->queueService->publish(
-            $this->buildMsmAudit(
-                action: "El usuario $user modifico el status del cliente $nameClient eliminando las citas con ids $idsStr el día $now",
-                userRequesting: $userRequesting
-            )
+
+        $this->dispatchToQueue(
+            msm: "El usuario $user modifico el status del cliente $nameClient eliminando las citas con ids $idsStr el día $now",
+            userRequesting: $userRequesting
         );
+        
         return [$client->toSerialize()];
     }
 

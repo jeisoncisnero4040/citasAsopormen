@@ -2,8 +2,7 @@
 
 namespace App\Dtos;
 
-use App\Models\User;
-use App\Models\UserRequesting;
+
 
 class CreateClientDto
 {
