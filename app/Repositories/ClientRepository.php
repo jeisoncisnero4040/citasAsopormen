@@ -43,8 +43,14 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
             $columns2 = self::makeColumns(data:$dataSave2);
             $values2 = self::makeValues(data:$dataSave2);
 
+            $dataSave3 = $client->toNitsArray();
+            $placeholders3 = self::makePlaceholders(data:$dataSave3);
+            $columns3 = self::makeColumns(data:$dataSave3);
+            $values3 = self::makeValues(data:$dataSave3);
+
             $query = "INSERT INTO cliente ($columns) VALUES ($placeholders)";
             $query2 = "INSERT INTO cliente2 ($columns2) VALUES ($placeholders2)";
+            $query3 = "INSERT INTO nits ($columns3) VALUES ($placeholders3)";
 
             $id = self::sendQuery(
                 query: $query,
@@ -56,6 +62,12 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
                 bindings: $values2,
                 typeConsult: 'insert'
             );
+            self::sendQuery(
+                query: $query3,
+                bindings: $values3,
+                typeConsult: 'insert'
+            );
+
             DB::commit();
             return $id;
 
@@ -247,9 +259,9 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
     public function update(ClientCommand $client): int
     {
         $codigo = $client->getCode();
+        $nit=$client->getNumDoc();
 
         $dataSave = $client->toPersistenceArray();
-
         $clause = self::makeSetClause($dataSave);
         $values = self::makeValues($dataSave);
 
@@ -257,9 +269,14 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
         $clause2 = self::makeSetClause(data:$dataSave2);
         $values2 = self::makeValues(data:$dataSave2);
 
+        $dataSave3 = $client->toNitsArray();
+        $clause3 = self::makeSetClause(data:$dataSave3);
+        $values3 = self::makeValues(data:$dataSave3);
+
 
         $query1 = "UPDATE cliente SET $clause WHERE codigo = ?";
         $query2 = "UPDATE cliente2 SET $clause2 WHERE codigo = ?";
+        $query3 = "UPDATE nits SET $clause3 WHERE nit = ?";
 
         try{
 
@@ -272,6 +289,11 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
             self::sendQuery(
                 query: $query2,
                 bindings: [...$values2,$codigo],
+                typeConsult: 'update'
+            );
+            self::sendQuery(
+                query: $query3,
+                bindings: [...$values3,$nit],
                 typeConsult: 'update'
             );
             DB::commit();

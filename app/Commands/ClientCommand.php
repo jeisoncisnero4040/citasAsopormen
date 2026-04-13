@@ -193,6 +193,31 @@ class ClientCommand implements Persistable
 
         return $data;
     }
+    public function toNitsArray():array{
+        $data= [
+            't_doc'=>$this->typeDoc,
+            'nit'=>$this->numDoc,
+            'dv'=>$this->getVerificationDigit(),
+            'nom1'=>$this->firstName,
+            'nom2'=>$this->middleName,
+            'ape1'=>$this->lastName,
+            'ape2'=>$this->secondLastName,
+            'nom_dir'=>$this->firstName.' '.($this->middleName ?? '').' '.$this->lastName.' '.($this->secondLastName ?? ''),
+            'direcc'=>$this->direction,
+            'barrio'=>$this->neighborhood,
+            'ciudad'=>$this->distric,
+            'telefono'=>$this->phone,
+            'regimen'=>'SIMPLIFICADO',
+            'pais'=>$this->country,
+            'email'=>$this->email,
+            'celular'=>$this->phone,
+            'act_econ'=>$this->ocupation,
+        ];
+        if ($this->isNew) {
+            $data['sdt_f_ingre']=$this->dateRegister;
+        }
+        return $data;
+    }
     public function setCode(string $code): self
     {
         $this->code = $code;
