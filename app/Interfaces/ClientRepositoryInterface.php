@@ -21,4 +21,6 @@ interface ClientRepositoryInterface{
      */
     public function get(array $filters = []): array;
     public function toggleActive(string $code,bool $active):array;
+
+    public function getUtility():array;
 }

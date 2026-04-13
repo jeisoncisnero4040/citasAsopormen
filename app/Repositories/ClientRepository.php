@@ -361,6 +361,162 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
             );
         }
     }
+    public function getUtility(): array
+    {
+        $query="SELECT tipo as cod,
+                            documento AS nombre,
+                            'documento' as tipo,
+                            CAST(cod AS VARCHAR) AS referencia,
+                            NULL AS cod_referencia
+                            FROM tipo_doc
+
+                            UNION ALL 
+
+                            select codigo AS cod,
+                            tipodiag AS nombre,
+                            'regimen' AS tipo,
+                            NULL AS referencia,
+                            NULL AS cod_referencia
+                            from tipodiag  
+                            where codigo_SISPRO <> ''
+
+                            UNION ALL
+                            
+                            SELECT codigo AS cod,
+                                RTRIM(nombre) as nombre,
+                                'entidad' AS tipo,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                                from cliente where
+                                ok_ent <> 0
+                                and particu = '0'
+                                and activo ='1'
+                                and cod_con = '1'
+
+                            UNION ALL 
+
+                            select ent.codigo as cod,
+                            RTRIM(ent.clase) AS nombre, 
+                            'convenio' AS tipo,
+                            RTRIM(cli.nombre) as referencia,
+                            cli.codigo as cod_referencia
+                            FROM entidades ent
+                            INNER JOIN cliente cli ON cli.codigo =  ent.admini
+                                                    AND cli.ok_ent <> 0
+                                                    and cli.particu = '0'
+                                                    and cli.activo ='1'
+                                                    and cli.cod_con = '1'
+
+                            union all 
+                            SELECT sigla as cod,
+                            nombre,
+                            'sexo' as tipo,
+                            NULL AS referencia,
+                            NULL AS cod_referencia
+                            FROM sexoAsp
+                            --
+
+                            union all 
+                            SELECT CAST(id AS varchar) as cod,
+                            nombre,
+                            'tipo_usuario' as tipo,
+                            NULL AS referencia,
+                            NULL AS cod_referencia
+                            FROM tipo_usuario_asp
+
+                            union all 
+                            SELECT CAST(id AS VARCHAR) as cod,
+                            escolaridad AS nombre,
+                            'escolaridad' as tipo,
+                            NULL AS referencia,
+                            NULL AS cod_referencia
+                            FROM escolaridad
+
+                            union all 
+                            SELECT CAST(codigo as varchar) as cod,
+                                zona AS nombre,
+                                'zona' as tipo,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                            FROM zonas
+                            UNION ALL
+                            SELECT 
+                            cod,
+                            REPLACE(REPLACE(descrip, CHAR(13), ''), CHAR(10), '') AS nombre,
+                            'ocupacion' AS tipo,
+                            NULL AS referencia,
+                            NULL AS cod_referencia
+                            FROM CIUO
+                            WHERE LEN(cod) =4
+
+                            UNION ALL
+
+                            
+							SELECT 
+								RTRIM(codigo) AS cod,
+								nombre,
+								'municipio' AS tipo,
+								NULL AS referencia,
+								NULL AS cod_referencia
+							FROM municipio
+                            UNION ALL
+                            SELECT 
+                            codigo AS cod,
+                            parentezco AS nombre, 
+                            'parentezco' AS tipo ,
+                            NULL AS referencia,
+                            NULL AS cod_referencia
+                            FROM parentezco
+
+                            UNION ALL
+                            SELECT 
+                                CAST(id AS VARCHAR) AS cod,
+                                est_civil AS nombre, 
+                                'estado_civil' AS tipo ,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                            FROM est_civil
+                            UNION ALL
+                                SELECT CAST(id AS VARCHAR) AS cod,
+                                grupo AS nombre,
+                                'poblacion' as tipo,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                            from grupo_poblacional
+                            where activo = '1'
+                            UNION ALL
+                                SELECT CAST(id AS VARCHAR) AS cod,
+                                etnia AS nombre,
+                                'etnia' as tipo,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                            from etnias_asp
+                            UNION ALL
+                                SELECT CAST(codigo AS VARCHAR) AS cod,
+                                    discapacidad AS nombre,
+                                    'discapacidad' as tipo,
+                                    NULL AS referencia,
+                                    NULL AS cod_referencia
+                                FROM tipo_discapacidad
+                            UNION ALL
+                                SELECT CAST(CODIGO AS VARCHAR) AS cod,
+                                NOMBRE AS nombre,
+                                'pais' as tipo,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                            from paises
+                            UNION ALL 
+                                SELECT CAST(id AS VARCHAR) AS cod,
+                                grupo AS nombre,
+                                'grupo' AS tipo,
+                                NULL AS referencia,
+                                NULL AS cod_referencia
+                            FROM grupo_sisben_asp
+                            ORDER BY tipo,nombre";
+        return self::sendQuery(query: $query);
+    
+    }
+
         
     
 }

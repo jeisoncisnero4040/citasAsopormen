@@ -64,6 +64,9 @@ class ClientCommand implements Persistable
     private ?string $sisben=null;
     private ?string $observations=null;
 
+    private ?string $nameMunicipality=null;
+    private ?string $codTypeDocument=null;
+
     public function __construct(bool $isNew=false)
     {
         $this->isNew = $isNew;
@@ -195,7 +198,7 @@ class ClientCommand implements Persistable
     }
     public function toNitsArray():array{
         $data= [
-            't_doc'=>$this->typeDoc,
+            't_doc'=>$this->codTypeDocument,
             'nit'=>$this->numDoc,
             'dv'=>$this->getVerificationDigit(),
             'nom1'=>$this->firstName,
@@ -205,7 +208,7 @@ class ClientCommand implements Persistable
             'nom_dir'=>$this->firstName.' '.($this->middleName ?? '').' '.$this->lastName.' '.($this->secondLastName ?? ''),
             'direcc'=>$this->direction,
             'barrio'=>$this->neighborhood,
-            'ciudad'=>$this->distric,
+            'ciudad'=>$this->nameMunicipality,
             'telefono'=>$this->phone,
             'regimen'=>'SIMPLIFICADO',
             'pais'=>$this->country,
@@ -482,6 +485,11 @@ class ClientCommand implements Persistable
         return $this;
 
     }
+    public function setNameMunicipality(string $nameMunicipality):self{
+        $this->nameMunicipality=$nameMunicipality;
+        return $this;
+
+    }
     public function setSisben(?string $sisben):self{
         $this->sisben=$sisben;
         return $this;
@@ -489,6 +497,11 @@ class ClientCommand implements Persistable
     }
         public function setObserva(?string $observa):self{
         $this->observations=$observa;
+        return $this;
+
+    }
+    public function setCodeTypeDocument(string $codeTypeDocument):self{
+        $this->codTypeDocument=$codeTypeDocument;
         return $this;
 
     }

@@ -5,7 +5,6 @@ namespace App\Mappers;
 use App\Commands\ClientCommand;
 use App\Dtos\CreateClientDto;
 use App\Models\District;
-use App\Models\User;
 use Illuminate\Support\Carbon;
 use App\Models\UserRequesting;
 
@@ -62,6 +61,7 @@ class ClientMapper
 
             ->setUser($user->getUsername())
             ->setDpto($municipality->getDpto())
+            ->setNameMunicipality($municipality->getName())
             ->setDateRegister(Carbon::now()->format('Y-m-d H:i:s'))
             ->setIsActive($dto->getStatus())
             ->setSisben($dto->getGroupSisben())

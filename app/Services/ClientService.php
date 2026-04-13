@@ -6,16 +6,13 @@ use App\Dtos\CreateClientDto;
 use App\Dtos\GetClientDto;
 use App\Dtos\UpdateClientDto;
 use App\Dtos\UpdateUserDto;
-use App\Events\AuditEvent;
 use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Interfaces\ClientRepositoryInterface;
 use App\Interfaces\StorageInterface;
-use App\Kafka\Domain\MessageQueue;
 use App\Mappers\ClientMapper;
 use App\Mappers\HistoryChatBotMapper;
-use App\Models\AuditMessageQueueBuilder;
 use App\Models\ClientView;
 use App\Models\UserRequesting;
 use App\Requests\ClientRequest;
@@ -24,7 +21,6 @@ use App\utils\DateManager;
 use App\utils\PasswordGenerator;
 use Illuminate\Support\Facades\DB;
 use App\utils\ResponseManager;
-use GuzzleHttp\Client;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Carbon;
@@ -61,7 +57,18 @@ class ClientService extends BaseService{
         
         $codeMun= $dto->getMunicipality();
         $municipio=$this->districtService->get(code:$codeMun);
+        //por ahora hay una deuda tecnica ya que no hay un typeDocument feature, se extraira el codigo de dcumento de la utileria;
+        $utility = $this->clientRepo->getUtility();
         $client = ClientMapper::clientDtoToClient(dto:$dto,municipality:$municipio,user:$userRequesting);
+        $client->setCodeTypeDocument(
+            collect($utility)
+                ->where('tipo', 'documento')
+                ->where('cod', $dto->getDocumentType())
+                ->first()
+                ->referencia ?? null
+        );
+
+
         $lastClient=$this->clientRepo->getLastHistory();
         $lastCode = $lastClient[0]->codigo ?? '0000000000';
         $newCode = str_pad(((int)$lastCode) + 1, 10, '0', STR_PAD_LEFT);
@@ -141,7 +148,14 @@ class ClientService extends BaseService{
             user: $userRequesting,
             isNew: false
         );
-
+        $utility = $this->clientRepo->getUtility();
+        $client->setCodeTypeDocument(
+            collect($utility)
+                ->where('tipo', 'documento')
+                ->where('cod', $dto->getDocumentType())
+                ->first()
+                ->referencia ?? null
+        );
         $client->setCode($history);
         $client->setUrlPhoto($clientView->getImageUrl());
 
@@ -359,7 +373,7 @@ class ClientService extends BaseService{
     }
     public function getUtilitiesUser(){
         return $this->responseManager->success(
-            $this->sendQueryToGetUtilityUser()
+            $this->clientRepo->getUtility()
         );
     }
     public function updateClient(UpdateUserDto $dto,string $codigo):array{
@@ -802,158 +816,7 @@ class ClientService extends BaseService{
                 throw new ServerErrorException($e->getMessage(),500);
             }
     }
-    public function sendQueryToGetUtilityUser(){
-        return DB::select(query:"SELECT tipo as cod,
-                            documento AS nombre,
-                            'documento' as tipo,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            FROM tipo_doc
 
-                            UNION ALL 
-
-                            select codigo AS cod,
-                            tipodiag AS nombre,
-                            'regimen' AS tipo,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            from tipodiag  
-                            where codigo_SISPRO <> ''
-
-                            UNION ALL
-                            
-                            SELECT codigo AS cod,
-                                RTRIM(nombre) as nombre,
-                                'entidad' AS tipo,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                                from cliente where
-                                ok_ent <> 0
-                                and particu = '0'
-                                and activo ='1'
-                                and cod_con = '1'
-
-                            UNION ALL 
-
-                            select ent.codigo as cod,
-                            RTRIM(ent.clase) AS nombre, 
-                            'convenio' AS tipo,
-                            RTRIM(cli.nombre) as referencia,
-                            cli.codigo as cod_referencia
-                            FROM entidades ent
-                            INNER JOIN cliente cli ON cli.codigo =  ent.admini
-                                                    AND cli.ok_ent <> 0
-                                                    and cli.particu = '0'
-                                                    and cli.activo ='1'
-                                                    and cli.cod_con = '1'
-
-                            union all 
-                            SELECT sigla as cod,
-                            nombre,
-                            'sexo' as tipo,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            FROM sexoAsp
-                            --
-
-                            union all 
-                            SELECT CAST(id AS varchar) as cod,
-                            nombre,
-                            'tipo_usuario' as tipo,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            FROM tipo_usuario_asp
-
-                            union all 
-                            SELECT CAST(id AS VARCHAR) as cod,
-                            escolaridad AS nombre,
-                            'escolaridad' as tipo,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            FROM escolaridad
-
-                            union all 
-                            SELECT CAST(codigo as varchar) as cod,
-                                zona AS nombre,
-                                'zona' as tipo,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                            FROM zonas
-                            UNION ALL
-                            SELECT 
-                            cod,
-                            REPLACE(REPLACE(descrip, CHAR(13), ''), CHAR(10), '') AS nombre,
-                            'ocupacion' AS tipo,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            FROM CIUO
-                            WHERE LEN(cod) =4
-
-                            UNION ALL
-
-                            
-							SELECT 
-								RTRIM(codigo) AS cod,
-								nombre,
-								'municipio' AS tipo,
-								NULL AS referencia,
-								NULL AS cod_referencia
-							FROM municipio
-                            UNION ALL
-                            SELECT 
-                            codigo AS cod,
-                            parentezco AS nombre, 
-                            'parentezco' AS tipo ,
-                            NULL AS referencia,
-                            NULL AS cod_referencia
-                            FROM parentezco
-
-                            UNION ALL
-                            SELECT 
-                                CAST(id AS VARCHAR) AS cod,
-                                est_civil AS nombre, 
-                                'estado_civil' AS tipo ,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                            FROM est_civil
-                            UNION ALL
-                                SELECT CAST(id AS VARCHAR) AS cod,
-                                grupo AS nombre,
-                                'poblacion' as tipo,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                            from grupo_poblacional
-                            where activo = '1'
-                            UNION ALL
-                                SELECT CAST(id AS VARCHAR) AS cod,
-                                etnia AS nombre,
-                                'etnia' as tipo,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                            from etnias_asp
-                            UNION ALL
-                                SELECT CAST(codigo AS VARCHAR) AS cod,
-                                    discapacidad AS nombre,
-                                    'discapacidad' as tipo,
-                                    NULL AS referencia,
-                                    NULL AS cod_referencia
-                                FROM tipo_discapacidad
-                            UNION ALL
-                                SELECT CAST(CODIGO AS VARCHAR) AS cod,
-                                NOMBRE AS nombre,
-                                'pais' as tipo,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                            from paises
-                            UNION ALL 
-                                SELECT CAST(id AS VARCHAR) AS cod,
-                                grupo AS nombre,
-                                'grupo' AS tipo,
-                                NULL AS referencia,
-                                NULL AS cod_referencia
-                            FROM grupo_sisben_asp
-                            ORDER BY tipo,nombre");
-    }
     private function attachSpecialtiesWithoutCollapsing(array $authorizations): array
     {
         $specialtiesByAuth = collect($authorizations)
@@ -968,13 +831,6 @@ class ClientService extends BaseService{
                 return $item;
             })
             ->all();
-    }
-    private function buildMsmAudit(string $action,UserRequesting $userRequesting,string $modulo = 'citas'):MessageQueue{
-        return AuditMessageQueueBuilder::create()->withData([
-            'audit'=>$action,
-            'cedula'=>$userRequesting->getCedula(),
-            'modulo'=>$modulo
-        ])->build();
     }
     public  function getByClientCode(string $clientCode):ClientView{
         $client=$this->clientRepo->get(['codigo'=>$clientCode]);
