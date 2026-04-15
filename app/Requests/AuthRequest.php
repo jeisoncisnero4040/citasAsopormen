@@ -11,7 +11,7 @@ class AuthRequest{
     public static function loginRequestValidate($request){
         $validator = Validator::make($request, [
             'cedula' => 'required|string',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:5',
         ]);
     
         if ($validator->fails()) {
