@@ -47,8 +47,9 @@ class AuthsService extends BaseService{
         $exampleAuthCommand = $authCommands[0];
         $newIds = $this->authsRepository->saveMany($authCommands);
         $msm = $exampleAuthCommand->getMsmCreate(ids : $newIds);
-        $this->dispatchToQueue($msm, $userRequesting);
+        
         $newAuths = $this->authsRepository->getByIds($newIds);
+        $this->dispatchToQueue($msm, $userRequesting);
         return $this->attachSpecialtiesWithoutCollapsing($newAuths);
     }
     public function get(GetAuthsDto $dto): array

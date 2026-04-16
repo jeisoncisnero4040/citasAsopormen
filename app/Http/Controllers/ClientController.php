@@ -723,8 +723,8 @@ class ClientController extends Controller{
         $codigo=$request->input('codigo',null);
         $dto=CreateClientDto::fromArray(data:$request->all());
         $userRequesting=$this->user();
-        $image = $request->file('image',null);
-        $response=$this->clientService->update(history:$codigo,dto:$dto,image:$image,userRequesting:$userRequesting);
+        $document = $request->file('document',null);
+        $response=$this->clientService->update(history:$codigo,dto:$dto,document:$document,userRequesting:$userRequesting);
         return response()->json(
                 data:$this->responseManager->success($response),
                 status:200

@@ -73,7 +73,7 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
             foreach ($auths as $auth) {
                 $auth->setConsecutive($currentConsecutive);
             }
-            $query = $this->builCreateQuery(
+            $query = $this->buildCreateQuery(
                 'autoriza',
                 AuthsSerializer::toPersistence($authExample),
                 count($auths)

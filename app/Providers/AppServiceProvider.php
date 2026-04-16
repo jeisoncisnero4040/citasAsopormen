@@ -46,6 +46,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\TarifePort::class,
             \App\Repositories\TarifeRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\AuthsDocumentsPort::class,
+            \App\Repositories\AuthsDocumentsRepository::class
+        );
     }
 
     /**

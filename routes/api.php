@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuditContoller;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthsController;
+use App\Http\Controllers\AuthsDocumentsController;
 use App\Http\Controllers\CentralOfficeController;
 use App\Http\Controllers\CitasController;
 use App\Http\Controllers\ClientController;
@@ -17,6 +18,8 @@ use App\Http\Controllers\InformesController;
 use App\Http\Controllers\ProfesionalSenderController;
 use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\KafkaController;
+use App\Http\Controllers\AuditController;
+
 
 Route::get('kafka/publish', [KafkaController::class, 'publish']);
 
@@ -93,8 +96,8 @@ Route::post('case/reject', [CaseOrdersController::class, 'rejectCase']);
 Route::post('case/close', [CaseOrdersController::class, 'closeCase']);
 Route::post('case/search', [CaseOrdersController::class, 'searchCitasClient']);
 
-Route::get('audit/search/{param}',[AuditContoller::class, 'searchAudit']);
-Route::post('audit/new',[AuditContoller::class, 'new']);
+
+Route::get('audit',[AuditController::class, 'index']);
 
 
 Route::get('informes/new-clients',[InformesController::class,'getNewClientsInforme'])->middleware('login.check:informes-citas');
@@ -110,8 +113,18 @@ Route::get('auths',[AuthsController::class,'index']);
 Route::get('auths/detail',[AuthsController::class,'getDetail']);
 
 
+Route::get('auths/documents',[AuthsDocumentsController::class,'index']);
+Route::post('auths/documents',[AuthsDocumentsController::class,'store']);
+Route::delete('auths/documents/{id}',[AuthsDocumentsController::class,'destroy']);
+Route::get('auths/documents/utility',[AuthsDocumentsController::class,'getUtility']);
+
+
 Route::get('external-procedures',[ExternalProcedureController::class,'index']);
 
 Route::get('profesional-senders',[ProfesionalSenderController::class,'index']);
+
+
+
+
 
 

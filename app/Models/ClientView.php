@@ -95,6 +95,8 @@ class ClientView
         public ?string  $pa_responsable,
         public ?string  $sa_responsable,
 
+        public ?string $urlDocument = null
+
     ) {}
 
 
@@ -191,6 +193,7 @@ class ClientView
             sn_responsable:$data['sn_responsable']??null,
             pa_responsable:$data['pa_responsable']??null,
             sa_responsable:$data['sa_responsable']??null,
+            urlDocument:$data['url_document']??null
 
         );
     }
@@ -246,5 +249,10 @@ class ClientView
     public function getImageUrl():?string{
         return $this->imageUrl;
     }
-
+    public function setUrlDocument(string $publicUrl){
+        $this->urlDocument=$publicUrl;
+    }
+    public function getUrlDocument():?string{
+        return $this->urlDocument;
+    }
 }

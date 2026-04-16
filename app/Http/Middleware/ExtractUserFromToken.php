@@ -31,7 +31,6 @@ class ExtractUserFromToken
             return $next($request);
         }
 
-        //$this->authService->validateTokenRequest($token);
         $user = $this->authService->me($token);
         $request->attributes->set('userPayload', [
             'userRequestCedula' => $user['cedula'] ?? null,

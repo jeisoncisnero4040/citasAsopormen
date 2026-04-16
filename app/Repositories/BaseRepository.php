@@ -31,6 +31,7 @@ class BaseRepository
          return implode(', ', array_fill(0, count($items), '?'));
     }
 
+
     protected static function makeColumns(array $data)
     {
         return implode(', ', array_map(fn($col) => str_replace(['sdt_','stt_'],'',$col),array_keys($data)));
@@ -55,7 +56,7 @@ class BaseRepository
             $columns
         ));
     }
-    protected function builCreateQuery(string $table,  array $Exampledata ,$numRegistry = 1): string
+    protected function buildCreateQuery(string $table,  array $Exampledata ,$numRegistry = 1): string
     {
         $columns = self::makeColumns($Exampledata);
         $placeholders = self::makePlaceholders($Exampledata );
@@ -63,6 +64,11 @@ class BaseRepository
         $placeholdersString = implode(', ', $arrayPlaceholders);
 
         return "INSERT INTO $table ($columns) VALUES $placeholdersString";
+    }
+    protected function buildSelectBaseQueryCommand(array $fillable,string $table): string
+    {
+        $columns = implode(', ', $fillable);
+        return "SELECT $columns FROM $table WHERE 1=1 {{}}";
     }
     protected static function sendQuery(string $query, ?array $bindings = [], string $typeConsult = 'select'):int|array
     {
@@ -86,4 +92,25 @@ class BaseRepository
             throw new ServerErrorException($e->getMessage(), 500);
         }
     }
+    protected function transactionalQuery(callable $transaction):int|array
+    {
+        try {
+            DB::beginTransaction();
+
+            $result = $transaction();
+            DB::commit();
+
+            return $result;
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+
+            throw new ServerErrorException(
+                "Error en transacción: " . $e->getMessage(),
+                500,
+                $e
+            );
+        }
+    }
+
 }

@@ -18,12 +18,25 @@ class FilterBuilder {
 
     public function add(string $sentence, mixed $value = null): self
     {
+        $sentence = $this->addPlaceholderSentence($sentence);
         $this->sentences[] = $sentence;
 
         if (!is_null($value)) {
             $this->bindings[] = $value;
         }
 
+        return $this;
+    }
+    public function addComplexFilter(string $sentence, array $values): self
+    {
+        if(!str_starts_with($sentence,'(')){
+            $sentence = '(' . $sentence;
+        }
+        if(!str_ends_with($sentence,')')){
+            $sentence = $sentence . ')';   
+        }
+        $this->sentences[] = $sentence;
+        $this->bindings = array_merge($this->bindings, $values);
         return $this;
     }
 
@@ -43,5 +56,12 @@ class FilterBuilder {
             query: $sql,
             bindings: $this->bindings
         );
+    }
+    private function addPlaceholderSentence(string $sentence): string {
+        $hasPlaceholder = str_contains($sentence, '?');
+        if (!$hasPlaceholder) {
+            $sentence .= ' = ?';
+        }
+        return $sentence;
     }
 }

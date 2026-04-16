@@ -183,7 +183,8 @@ class ClientCommand implements Persistable
             'sa_responsable'=>$this->guardianSecondLastName??'',
             'pais_origen'=>$this->country,
             'observaciones_asp'=>$this->observations,
-            'grupo_sisben'=>$this->sisben
+            'grupo_sisben'=>$this->sisben,
+            'patch_documento_asp'=>$this->urlDocument,
             
 
 
@@ -505,6 +506,10 @@ class ClientCommand implements Persistable
         return $this;
 
     }
+    public function buildKeyDocument():string{
+        return $this->code.'/'.'documentos';
+    }
+
     public function getAuditCreateMessage(string $username): string
     {
         return "El usuario {$username} creo el cliente {$this->firstName} {$this->lastName} con codigo de historia {$this->code} el día ".DateManager::dateToStringFormat();
@@ -513,5 +518,6 @@ class ClientCommand implements Persistable
     {
         return "El usuario {$username} actualizo el cliente {$this->firstName} {$this->lastName} con codigo de historia {$this->code} el día ".DateManager::dateToStringFormat();
     }
+
     
 }

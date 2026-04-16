@@ -124,7 +124,7 @@ class ClientService extends BaseService{
     public function update(
         string $history,
         CreateClientDto $dto,
-        ?UploadedFile $image = null,
+        ?UploadedFile $document = null,
         UserRequesting $userRequesting
     ) {
 
@@ -159,16 +159,15 @@ class ClientService extends BaseService{
         $client->setCode($history);
         $client->setUrlPhoto($clientView->getImageUrl());
 
-        if ($image !== null) {
-
-            $photoUrl = $this->storage->replace(
-                file: $image,
-                path: "clientes/documentos/$history",
-                oldPath: $clientView->getImageUrl()
+        if (!empty($document)) {
+            $url = $this->storage->replace(
+                file: $document,
+                path:$client->buildKeyDocument(),
+                oldPath: $clientView->getUrlDocument()
             );
-
-            $client->setUrlPhoto($photoUrl);
+            $client->setUrlDocument(url: $url);
         }
+
 
         $this->clientRepo->update($client);
         $this->dispatchToQueue(
@@ -246,6 +245,12 @@ class ClientService extends BaseService{
                 if ($privateUrl) {
                     $c->setImageUrl(
                         $this->storage->signedUrl($privateUrl)
+                    );
+                }
+                $privateUrlDocument = $c->getUrlDocument();
+                if ($privateUrlDocument) {
+                    $c->setUrlDocument(
+                        $this->storage->signedUrl($privateUrlDocument)
                     );
                 }
                 return $c->toSerialize();

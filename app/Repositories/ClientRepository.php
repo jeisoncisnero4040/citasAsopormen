@@ -143,6 +143,7 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
             c2.sn_responsable,
             c2.pa_responsable,
             c2.sa_responsable,
+            c2.patch_documento_asp AS url_document,
 
 
             RTRIM(ccb.ciudad) AS municipio,

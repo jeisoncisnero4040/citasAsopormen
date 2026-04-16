@@ -4,6 +4,7 @@
 .env
 
 /test/
+/stubs/
 
 # Node Modules
 /node_modules
