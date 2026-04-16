@@ -28,7 +28,7 @@ class StorageService implements StorageInterface, Retryable
     {
         return Storage::disk('s3')->temporaryUrl(
             $key,
-            now()->addMinutes(10)
+            now()->addMinutes(60)
         );
     }
 
