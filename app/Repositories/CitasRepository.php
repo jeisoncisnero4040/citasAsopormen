@@ -27,21 +27,11 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
             foreach (array_chunk($ApposDto, 20) as $chunk) {
 
                 $firstAppo = $chunk[0];
-                $columns = self::makeColumns($firstAppo->toPersistenceArray());
-
+                $query = $this->buildCreateQuery(table:'citas', Exampledata:$firstAppo->toPersistenceArray(), numRegistry: count($chunk));
                 $bindings = [];
-                $valuesSql = [];
-
                 foreach ($chunk as $appo) {
-                    $data = $appo->toPersistenceArray();
-
-                    $valuesAppo = self::makeValues(data: $data);
-                    $bindings = [...$bindings, ...$valuesAppo];
-                    $valuesSql[] = '(' . self::makePlaceholders($data) . ')';
+                    $bindings = [...$bindings, ...$this->makeValues($appo->toPersistenceArray())];
                 }
-
-                $query = "INSERT INTO citas ($columns) VALUES " . implode(', ', $valuesSql);
-
                 DB::insert(query: $query, bindings: $bindings);
             }
 
@@ -158,5 +148,21 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
         );
 
         return !empty($result);
+    }
+    public function getLigtCalendar(string $clientCode, string $from, string $to):array{
+        $query="SELECT 
+                    CAST(ci.fecha AS datetime) + CAST(ci.hora AS time) AS fecha_inicio,
+                    DATEADD(MINUTE, pro.duraccion, CAST(ci.fecha AS datetime) + CAST(ci.hora AS time)) AS hora_fin
+
+                FROM 
+                    citas ci 
+                INNER JOIN procedipro pro ON pro.nombre = ci.procedipro
+                WHERE 
+                    ci.nro_hist = ? 
+                    AND ci.fecha  BETWEEN ?  AND ? 
+                    AND ci.cancelada <> '1'
+                    AND ci.na <> '1'";
+
+        return self::sendQuery(query:$query,bindings:[$clientCode,$from,$to]);
     }
 }

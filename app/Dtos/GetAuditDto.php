@@ -36,7 +36,7 @@ class GetAuditDto
             $data['user'] ?? null,
             $data['client'] ?? null,
             $data['professional'] ?? null,
-            isset($data['idAppoinment']) ? (int)$data['idAppoinment'] : null,
+            isset($data['idAppointment']) ? (int)$data['idAppointment'] : null,
             $data['authCode'] ?? null,
             $data['from'] ?? date('Y-m-d 00:00:00'),
             $data['to'] ?? date('Y-m-d 23:59:59')

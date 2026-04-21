@@ -114,6 +114,9 @@ class ClientService extends BaseService{
             $words = array_filter(explode(' ', $searchName));
             $filters['nombre'] = $words;
         }
+        if($dto->isOnlyActives()){
+            $filters['activo'] = 1;
+        }
         $clients = $this->clientRepo->search(filters: $filters);
         if (empty($clients)) {
             throw new NotFoundException("No se encontraron clientes con los filtros aplicados",404);
@@ -224,7 +227,9 @@ class ClientService extends BaseService{
             userRequesting: $userRequesting
         );
         
-        return [$client->toSerialize()];
+        return $this->getDataClientByHistoryId([
+            'historyId' => $code
+        ]);
     }
 
 
@@ -256,7 +261,7 @@ class ClientService extends BaseService{
         $codHistory=$request['codigo']??null;
         if(!$codHistory){throw new  BadRequestException("No se ha proporcionado un cliente valido",400);}
         $clientInfo = $this->sendQueryToGetFullInfoClient(codigo:$codHistory);
-        if (empty($clientInfo)){new NotFoundException("No se ha proporcionado un cliente valido",404);}
+        if (empty($clientInfo)){throw new NotFoundException("No se ha proporcionado un cliente valido",404);}
         return $this->responseManager->success($clientInfo);
 
     }

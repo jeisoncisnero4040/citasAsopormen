@@ -16,7 +16,8 @@ class AuditRepository extends BaseRepository implements AuditInterface{
                 FROM auditoria_mc a
                 LEFT JOIN usuarios u ON a.cedula_usuario = u.cedula
                 WHERE 1=1 
-                {{}}";
+                {{}}
+                ORDER BY a.fecha_creacion DESC";
     public function saveAudit(string $audit, string $modulo,string $cedula): void
     {
         $query="INSERT INTO auditoria_mc (modulo,descripcion,cedula_usuario,fecha_creacion)
@@ -41,14 +42,12 @@ class AuditRepository extends BaseRepository implements AuditInterface{
         $filter = FilterBuilder::create();
 
         if ($dto->hasIdAppoinment()) {
-            $filter->add('a.descripcion LIKE ?', '%' . $dto->getIdAppoinment() . '%')
-            ->add('a.cedula_usuario = ?', $dto->getUser());
+            $filter->add('a.descripcion LIKE ?', '%' . $dto->getIdAppoinment() . '%');
             return $filter->toFilter();
         }
 
         if ($dto->hasAuthCode()) {
-            $filter->add('a.descripcion LIKE ?', '%' . $dto->getAuthCode() . '%')
-            ->add('a.cedula_usuario = ?', $dto->getUser());
+            $filter->add('a.descripcion LIKE ?', '%' . $dto->getAuthCode() . '%');
             return $filter->toFilter();
         }
         if ($dto->hasUser()) {
@@ -77,6 +76,8 @@ class AuditRepository extends BaseRepository implements AuditInterface{
         $filter->add('a.fecha_creacion >= ?', $dto->getFrom());
         $filter->add('a.fecha_creacion <= ?', $dto->getTo());
         $filter->addRaw("a.modulo = 'citas'");
+            
+
         return $filter->toFilter();
     }
 

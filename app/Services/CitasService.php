@@ -18,7 +18,6 @@ use App\Mappers\AppoimentsMapper;
 use App\Domain\CitasDomain;
 use App\Dtos\CloneCalendarDto;
 use App\Dtos\DeleteAppoDto;
-use App\Events\AuditEvent;
 use App\Kafka\Domain\MessageQueue;
 use App\Models\AuditMessageQueueBuilder;
 use App\Models\UserRequesting;
@@ -119,6 +118,17 @@ class CitasService{
         );
 
         $validated=CitasDomain::validateSchedule(scheduleNewAppos:$schedule,scheduleProfesional:$scheduleProfesional);
+
+        /**COMENTADO HASTA RECIBIR POLITICAS DE EXCEPCIONES */
+        //$startDateFirstAppo=$schedule[0];
+        //$finishDate=$schedule[count($schedule) - 1];
+
+        //$calendarClient=$this->citasRepository->getLigtCalendar(
+           // clientCode:$dto->getHistCode(),
+            //from:$startDateFirstAppo->format('Y-d-m'),
+            //to:$finishDate->format('Y-d-m')
+        //);
+        //CitasDomain::validateDisponibilityClient(scheduleNewAppos:$schedule,scheduleClient:$calendarClient,sessionDuration:$dto->getDuractionAppo());
         $familyId = (string) Str::uuid();
         $dto->setFamilyId($familyId);
         $apposInDto = [];
@@ -184,11 +194,10 @@ class CitasService{
         return $this->responseManager->success([]);
     }
 
-    
     public function getCitasById($id){
         $cita=$this->citasRepository->getById(id:$id);
         if(empty($cita)){
-            throw new NotFoundException("la cita actaul no fue encontrada",404);
+            throw new NotFoundException("la cita actual no fue encontrada",404);
         }
 
         return $this->responseManager->success($cita);
@@ -336,8 +345,6 @@ class CitasService{
         $fromString = $request['from'];
         $toString = $request['to'];
         $cedula = $request['cedula'];
-        $usuario = $request['usuario'];
-        $cedulaUser=$request['cedulaUser'];
 
         $fromDate = Carbon::parse($fromString)->format('Y-m-d');
         $toDate=Carbon::parse($toString)->addDay()->format('Y-m-d');
@@ -346,7 +353,6 @@ class CitasService{
         if($appoimentsDeleted==0){
             throw new NotFoundException("El profesional no registra Citas en este Rango de Tiempo",404);
         }
-        //evento para guardar log 
         return $this->responseManager->success("Fueron Eliminadas {$appoimentsDeleted} citas");
 
     }

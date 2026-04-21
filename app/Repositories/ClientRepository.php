@@ -252,7 +252,7 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
             $query .= ' AND ' . implode(' AND ', $conditions);
         }
 
-        $query .= " AND activo = 1 ORDER BY nombre";
+        $query .= " ORDER BY nombre";
         
 
         return self::sendQuery(query: $query, bindings: $bindings);

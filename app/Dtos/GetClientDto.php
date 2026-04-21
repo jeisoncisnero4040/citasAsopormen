@@ -7,9 +7,11 @@ use App\Exceptions\CustomExceptions\BadRequestException;
 class GetClientDto
 {
     private string $text;
-    public function __construct(string $text)
+    private bool $onlyActives;
+    public function __construct(string $text, bool $onlyActives = false)
     {
         $this->text = trim($text);
+        $this->onlyActives = $onlyActives;
 
 
 
@@ -24,7 +26,8 @@ class GetClientDto
     public static function fromArray(array $data): self
     {
         return new self(
-            text: $data['param'] ?? ''
+            text: $data['param'] ?? '',
+            onlyActives: isset($data['onlyActives']) ? filter_var($data['onlyActives'], FILTER_VALIDATE_BOOLEAN) : false
         );
     }
     public function isOnlyNumericText(): bool
@@ -42,4 +45,8 @@ class GetClientDto
         return $this->text;
     }
 
+    public function isOnlyActives(): bool
+    {
+        return $this->onlyActives;
+    }
 }

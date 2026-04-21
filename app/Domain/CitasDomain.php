@@ -4,6 +4,7 @@
 namespace App\Domain;
 
 use App\Exceptions\CustomExceptions\BadRequestException;
+use App\Models\ScheduleModel;
 use Carbon\Carbon;
 use App\utils\DateManager;
 
@@ -83,6 +84,9 @@ class CitasDomain{
         }
         return $diferenceDays;
     }
+    /**
+     * @return Carbon[]
+     */
     public static  function CreateSchedule(int $sessionsAvaibles, 
                                             int $sessionDuration,
                                             Carbon $startDate, 
@@ -164,6 +168,46 @@ class CitasDomain{
         }
         return $appoMapIntoSchedule;
     }
+    /**
+     * @param Carbon[]   $scheduleNewAppos
+     * @param stdClass[] $scheduleClient
+     */
+    public static function validateDisponibilityClient(
+        array $scheduleNewAppos,
+        array $scheduleClient,
+        int $sessionDuration
+    ): void {
+
+        // 🔹 Preprocesar citas existentes
+        $clientIntervals = [];
+
+        foreach ($scheduleClient as $sessionClient) {
+            $start = Carbon::parse($sessionClient->fecha_inicio);
+            $end = Carbon::parse($sessionClient->hora_fin);
+
+            $clientIntervals[] = [$start, $end];
+        }
+
+        usort($clientIntervals, fn($a, $b) => $a[0] <=> $b[0]);
+        foreach ($scheduleNewAppos as $newStart) {
+
+            $newEnd = $newStart->copy()->addMinutes($sessionDuration);
+            foreach ($clientIntervals as [$clientStart, $clientEnd]) {
+
+                if ($clientStart >= $newEnd) {
+                    break;
+                }
+                if ($newStart < $clientEnd && $newEnd > $clientStart) {
+                    throw new BadRequestException(
+                        "Esta accion no se puede realizar por que el cliente ya tiene una cita para el dia " .
+                        DateManager::dateToStringFormat($newStart)." que hace conflicto con la nueva cita programada para el dia " .
+                        DateManager::dateToStringFormat($clientStart),
+                        400
+                    );
+                }
+            }
+        }
+    }
 
     public static function buildAuditMsm(
         string $user,
@@ -225,5 +269,6 @@ class CitasDomain{
         "asignada al profesional $profesional ";
 
     }
+
 
 }
