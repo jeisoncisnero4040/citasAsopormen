@@ -119,11 +119,11 @@ class RequestClientConstants
         'a_segundo_nombre' => 'nullable|string|max:50',
         'a_primer_apellido' => 'required|string|min:2|max:50',
         'a_segundo_apellido' => 'nullable|string|min:2|max:50',
-        'a_contacto' => 'required|numeric|digits_between:10,10',
+        'a_contacto' => 'required|string|max:22',
         'a_parentezco' => 'required|string|max:50',
         
         // OTROS
-        'observaciones' => 'nullable|string|min:50|max:1000',
+        'observaciones' => 'nullable|string|max:1000',
         //files
         'image' => 'nullable|file|image|mimes:jpeg,png,jpg,gif|max:5120',
         'document' => 'nullable|file|mimes:pdf,doc,docx|max:5120',
@@ -252,7 +252,6 @@ class RequestClientConstants
         'a_parentezco.required' => 'Debe seleccionar el parentesco del responsable',
         
         // OBSERVACIONES
-        'observaciones.min' => 'Las observaciones deben tener al menos :min caracteres',
         'observaciones.max' => 'Las observaciones no pueden superar los :max caracteres',
         'image.file' => 'El archivo de imagen no es válido',
         'image.image' => 'El archivo debe ser una imagen',

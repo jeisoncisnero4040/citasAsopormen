@@ -136,6 +136,7 @@ class ProfesionalService{
                         ci.direccion_cita AS direccion,
                         ci.registro,
                         ci.fec_hora,
+                        ci.procedim,
                         CASE
                             WHEN ci.fecha_evo_ampliada = '0'
                                 AND CAST(cif.fecha_completa AS date) < CAST(GETDATE() AS date)

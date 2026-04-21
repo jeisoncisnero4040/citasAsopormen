@@ -35,7 +35,7 @@ class GetAuditDto
         return new self(
             $data['user'] ?? null,
             $data['client'] ?? null,
-            $data['profesional'] ?? null,
+            $data['professional'] ?? null,
             isset($data['idAppoinment']) ? (int)$data['idAppoinment'] : null,
             $data['authCode'] ?? null,
             $data['from'] ?? date('Y-m-d 00:00:00'),
@@ -65,14 +65,17 @@ class GetAuditDto
     }
     public function getFrom(): string
     {
-        return $this->from;
+        $date = new \DateTimeImmutable($this->from);
+        return $date
+            ->setTime(0, 0, 0)
+            ->format('Y-d-m H:i:s');
     }
     public function getTo(): string
     {
         $date = new \DateTimeImmutable($this->to);
         return $date
             ->setTime(23, 59, 59)
-            ->format('Y-m-d H:i:s');
+            ->format('Y-d-m H:i:s');
     }
     public function hasUser(): bool
     {
@@ -97,5 +100,11 @@ class GetAuditDto
     public function hasRangeTime(): bool
     {
         return !empty($this->from) && !empty($this->to);
+    }
+    public function withCedulaUser(string $cedula): self
+    {
+        $new = clone $this;
+        $new->client = $cedula;
+        return $new;
     }
 }

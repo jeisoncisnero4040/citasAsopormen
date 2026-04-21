@@ -157,7 +157,7 @@ class ClientService extends BaseService{
                 ->referencia ?? null
         );
         $client->setCode($history);
-        $client->setUrlPhoto($clientView->getImageUrl());
+        $client->setUrlDocument($clientView->getUrlDocument());
 
         if (!empty($document)) {
             $url = $this->storage->replace(
@@ -202,7 +202,7 @@ class ClientService extends BaseService{
 
         $client->setActive($newStatus);
 
-        $privateUrl = $client->getImageUrl();
+        $privateUrl = $client->getUrlDocument();
 
         if ($privateUrl) {
             $client->setImageUrl(
@@ -241,12 +241,6 @@ class ClientService extends BaseService{
 
         return collect($client)
             ->map(function ($c) {
-                $privateUrl = $c->getImageUrl();
-                if ($privateUrl) {
-                    $c->setImageUrl(
-                        $this->storage->signedUrl($privateUrl)
-                    );
-                }
                 $privateUrlDocument = $c->getUrlDocument();
                 if ($privateUrlDocument) {
                     $c->setUrlDocument(
@@ -257,6 +251,7 @@ class ClientService extends BaseService{
             })
             ->toArray();
     }
+
     public function getFullInfoClient(array $request){
         $codHistory=$request['codigo']??null;
         if(!$codHistory){throw new  BadRequestException("No se ha proporcionado un cliente valido",400);}

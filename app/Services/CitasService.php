@@ -172,7 +172,7 @@ class CitasService{
         $msm = CitasDomain::buildAuditMsmDlete(
             user:$dto->getUserRequest()->getUsername(),
             id:$dto->getId(),
-            cliente:$dto->getCliente(),
+            cliente:$cita->usuario,
             profesional:$cita->profesional
         );
         $this->queueService->publish(

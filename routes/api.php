@@ -33,6 +33,7 @@ Route::get('update', [AuthController::class, 'update']);
 Route::post('recover_password', [UserController::class, 'recoverPassword']);
 Route::post('update_password',[UserController::class,'updatePasswordByUserCedula']);
 Route::get('encriptar_passwords',[UserController::class,'encryptPAsswords']);
+Route::get('users',[UserController::class,'index']);
 
 
 Route::get('get_profesionals',[ProfesionalController::class,'getAllProfesionalByStringSearch']);

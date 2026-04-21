@@ -8,11 +8,11 @@ class Audit
     private int $id;
     private string $module;
     private string $description;
-    private string $userId;
+    private ?string $userId = null;
     private string $createdAt;
-    private string $userName;
+    private ?string $userName = null;
 
-    public function __construct(int $id, string $module, string $description, string $userId, string $createdAt, string $userName)
+    public function __construct(int $id, string $module, string $description, ?string $userId = null, string $createdAt, ?string $userName = null)
     {
         $this->id = $id;
         $this->module = $module;
@@ -27,9 +27,9 @@ class Audit
             id: $data['id'],
             module: $data['modulo'],
             description: $data['descripcion'],
-            userId: $data['cedula_usuario'],
+            userId: $data['cedula_usuario']??null,
             createdAt: $data['fecha_creacion'],
-            userName: $data['nombre']
+            userName: $data['nombre']??null
         );
     }
     public function toArray(): array

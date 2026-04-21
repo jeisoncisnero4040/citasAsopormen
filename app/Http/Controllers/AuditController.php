@@ -21,7 +21,8 @@ class AuditController extends Controller
 
     public function index(Request $request):JsonResponse{
         $dto = GetAuditDto::fromArray($request->query());
-        $audits=$this->auditService->getAudits($dto);
+        $user = $this->user();
+        $audits=$this->auditService->getAudits($dto,$user);
         $audits = array_map(fn($audit) => $audit->toArray(), $audits);
         return response()->json(
             $this->responseManager->success($audits)

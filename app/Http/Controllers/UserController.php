@@ -4,13 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Services\UserService;
+use App\Dtos\GetUsersDto;
+use App\utils\ResponseManager;
+
+
 class UserController extends Controller
 {
-    protected $userService;
+    protected UserService $userService;
+    private ResponseManager $responseManager;
+    
 
-    public function __construct(userService $userService)
+    public function __construct(UserService $userService, ResponseManager $responseManager)
     {
-        $this->userService=$userService;
+        $this->userService = $userService;
+        $this->responseManager = $responseManager;
     }
    
     /**
@@ -141,6 +148,12 @@ class UserController extends Controller
     public function encryptPAsswords(){
         $paswordsUpdates=$this->userService->encryptAllpasswords();
         return response()->json($paswordsUpdates,200);
+    }
+    public function index(Request $request){
+        $dto =GetUsersDto::fromArray($request->query());
+        $response = $this->userService->getUsers($dto);
+
+        return response()->json($this->responseManager->success($response),200);
     }
 
 

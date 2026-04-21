@@ -219,7 +219,7 @@ class CitasDomain{
         string $profesional
     ){
         return 
-        "El usuerio $user elimino ".
+        "El usuario $user elimino ".
         "la cita con id $id ".
         "perteneciente al cliente $cliente ".
         "asignada al profesional $profesional ";

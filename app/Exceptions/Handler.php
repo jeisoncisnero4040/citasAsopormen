@@ -8,6 +8,7 @@ use App\Exceptions\CustomExceptions\ForbidenException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Exceptions\CustomExceptions\UnAuthorizateException;
+use App\Exceptions\CustomExceptions\RateLimitException;
 use App\utils\ResponseManager;
 
 class Handler extends ExceptionHandler
@@ -17,6 +18,12 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+    protected $dontReport = [BadRequestException::class, 
+                                UnAuthorizateException::class, 
+                                NotFoundException::class, 
+                                ForbidenException::class, 
+                                ServerErrorException::class, 
+                                RateLimitException::class];
 
     /**
      * Register the exception handling callbacks for the application.
@@ -47,6 +54,11 @@ class Handler extends ExceptionHandler
             $responseManager = app(ResponseManager::class);
             $response = $responseManager->forbidden(($e->getMessage()));
             return response()->json($response,403);
+        });
+        $this->renderable(function (RateLimitException $e, $request) {
+            $responseManager = app(ResponseManager::class);
+            $response = $responseManager->error(($e->getMessage()),429);
+            return response()->json($response,429);
         });
     }
 }

@@ -35,6 +35,7 @@ class ExtractUserFromToken
         $request->attributes->set('userPayload', [
             'userRequestCedula' => $user['cedula'] ?? null,
             'usernameRequest'   => $user['user'] ?? null,
+            'rol_id'           => $user['rol'] ?? null
         ]);
 
         return $next($request);

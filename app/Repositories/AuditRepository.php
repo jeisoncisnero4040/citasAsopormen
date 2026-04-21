@@ -14,7 +14,7 @@ class AuditRepository extends BaseRepository implements AuditInterface{
     static string $tableName = 'auditoria_mc';
     static STRING  $BASE_QUERY = "SELECT a.id,u.responsable AS nombre, a.modulo, a.descripcion, a.cedula_usuario, a.fecha_creacion
                 FROM auditoria_mc a
-                INNER JOIN usuarios u ON a.cedula_usuario = u.cedula
+                LEFT JOIN usuarios u ON a.cedula_usuario = u.cedula
                 WHERE 1=1 
                 {{}}";
     public function saveAudit(string $audit, string $modulo,string $cedula): void
@@ -31,7 +31,8 @@ class AuditRepository extends BaseRepository implements AuditInterface{
             ->withFilters($filter->getQuery())
             ->withBindings($filter->getBindings())
             ->toQuery();
-        logger()->info("Consulta de auditoría: " . $query . " con bindings: " . json_encode($filter->getBindings()));
+        logger()->info("Consulta de auditoria: " . $query);
+        logger()->info("Bindings de auditoria: " . json_encode($filter->getBindings()));
         $results = self::sendQuery(query:$query, bindings:$filter->getBindings(), typeConsult:'select');
         return array_map(fn($item) => Audit::fromArray((array) $item), $results);
     }
@@ -40,12 +41,14 @@ class AuditRepository extends BaseRepository implements AuditInterface{
         $filter = FilterBuilder::create();
 
         if ($dto->hasIdAppoinment()) {
-            $filter->add('a.descripcion LIKE ?', '%' . $dto->getIdAppoinment() . '%');
+            $filter->add('a.descripcion LIKE ?', '%' . $dto->getIdAppoinment() . '%')
+            ->add('a.cedula_usuario = ?', $dto->getUser());
             return $filter->toFilter();
         }
 
         if ($dto->hasAuthCode()) {
-            $filter->add('a.descripcion LIKE ?', '%' . $dto->getAuthCode() . '%');
+            $filter->add('a.descripcion LIKE ?', '%' . $dto->getAuthCode() . '%')
+            ->add('a.cedula_usuario = ?', $dto->getUser());
             return $filter->toFilter();
         }
         if ($dto->hasUser()) {
@@ -66,13 +69,13 @@ class AuditRepository extends BaseRepository implements AuditInterface{
 
         if (!empty($subFilter)) {
             $filter->addComplexFilter(
-                implode(' OR ', $subFilter),
+                implode(' AND ', $subFilter),
                 $bindings
             );
         }
 
-        $filter->add('a.fecha_creacion >= CONVERT(SMALLDATETIME, ?, 120)', $dto->getFrom());
-        $filter->add('a.fecha_creacion <= CONVERT(SMALLDATETIME, ?, 120)', $dto->getTo());
+        $filter->add('a.fecha_creacion >= ?', $dto->getFrom());
+        $filter->add('a.fecha_creacion <= ?', $dto->getTo());
         $filter->addRaw("a.modulo = 'citas'");
         return $filter->toFilter();
     }

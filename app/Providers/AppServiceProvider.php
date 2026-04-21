@@ -50,6 +50,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\AuthsDocumentsPort::class,
             \App\Repositories\AuthsDocumentsRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\UserPort::class,
+            \App\Repositories\UserRepository::class
+        );
     }
 
     /**

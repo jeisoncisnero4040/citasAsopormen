@@ -12,6 +12,8 @@ use App\utils\ResponseManager;
 use App\utils\PasswordGenerator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Interfaces\UserPort;
+use App\Dtos\GetUsersDto;
 
 
 class UserService {
@@ -19,18 +21,29 @@ class UserService {
     private $userModel;
     private $employeeModel;
     private $responseManager;
-
+    private UserPort $userPort;
     public function __construct(
         EmailService $emailService, 
         User $userModel, 
         EmployeeModel $employeeModel, 
-        ResponseManager $responseManager
+        ResponseManager $responseManager,
+        UserPort $userPort
     ) {
         $this->emailService = $emailService;
         $this->userModel = $userModel;
         $this->employeeModel = $employeeModel;
         $this->responseManager = $responseManager;
+        $this->userPort = $userPort;
     }
+
+    public function getUsers(GetUsersDto $dto): array {
+        $response = $this->userPort->get($dto);
+        if(empty($response)){
+            throw new NotFoundException("No se encontraron usuarios", 404);
+        }
+        return $response;
+
+    }   
 
     public function recoverPassword($request) {
         $this->validateRequest($request);

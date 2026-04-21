@@ -481,7 +481,7 @@ class ClientCommand implements Persistable
         return $this;
 
     }
-    public function setUrlDocument(string $url):self{
+    public function setUrlDocument(?string $url):self{
         $this->urlDocument=$url;
         return $this;
 
