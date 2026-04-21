@@ -104,7 +104,7 @@ class GetAuditDto
     public function withCedulaUser(string $cedula): self
     {
         $new = clone $this;
-        $new->client = $cedula;
+        $new->user = $cedula;
         return $new;
     }
 }
