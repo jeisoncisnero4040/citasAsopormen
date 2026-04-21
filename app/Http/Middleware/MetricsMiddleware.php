@@ -69,6 +69,24 @@ class MetricsMiddleware
             (string)$method,
             (string)$endpoint
         ]);
+        // 📦 Tamaño de respuesta en bytes
+        $sizeInBytes = strlen($response->getContent() ?? '');
+        // Convertimos a MB
+        $sizeInMB = $sizeInBytes / (1024 * 1024);
+        // 📊 Histograma de tamaño de respuesta
+        $sizeHistogram = $this->registry->getOrRegisterHistogram(
+            'http_response', // namespace
+            'size_megabytes',
+            'Response size in MB',
+            ['service', 'method', 'endpoint', 'status'],
+            [0.001, 0.01, 0.1, 0.5, 1, 2, 5, 10] 
+        );
+        $sizeHistogram->observe($sizeInMB, [
+            (string)$service,
+            (string)$method,
+            (string)$endpoint,
+            (string)$status
+        ]);
 
         return $response;
     }
