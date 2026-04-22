@@ -103,7 +103,7 @@ class RequestClientConstants
         'direccion' => 'required|string|max:150',
         'barrio' => 'required|string|max:100',
         'municipio' => 'required|string|max:100',
-        'contacto' => 'required|string|max:22',
+        'contacto' => 'required|max:22',
         'email' => 'required|email|max:120',
         
         'poblacion' => 'nullable|string|max:100',
@@ -119,7 +119,7 @@ class RequestClientConstants
         'a_segundo_nombre' => 'nullable|string|max:50',
         'a_primer_apellido' => 'required|string|min:2|max:50',
         'a_segundo_apellido' => 'nullable|string|min:2|max:50',
-        'a_contacto' => 'required|string|max:22',
+        'a_contacto' => 'required|max:22',
         'a_parentezco' => 'required|string|max:50',
         
         // OTROS
