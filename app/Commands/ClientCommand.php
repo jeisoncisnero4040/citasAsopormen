@@ -23,6 +23,7 @@ class ClientCommand implements Persistable
     private ?string $birthDate = null;
 
     private bool $isActive = false;
+    private ?string $municipality=null;
 
     private ?string $regimen = null;
     private ?string $maritalStatus = null;
@@ -101,7 +102,7 @@ class ClientCommand implements Persistable
             'nit_cli'=>$this->numDoc,
             'direcc' =>$this->direction,
             'barrio'=>$this->neighborhood,
-            'municipio'=>$this->distric,
+            'municipio'=>$this->municipality,
             'depto'=>$this->dpto,
             'pais'=>$this->country,
             'sdt_f_nacio'=>$this->birthDate,
@@ -251,6 +252,11 @@ class ClientCommand implements Persistable
         $this->lastName = $lastName;
         return $this;
     }
+    public function setMunicipality(?string $municipality): self
+    {
+        $this->municipality = $municipality;
+        return $this;
+    }
 
     public function setSecondLastName(?string $secondLastName): self
     {
@@ -279,6 +285,7 @@ class ClientCommand implements Persistable
     public function setDistric(string $distric): self
     {
         $this->distric = $distric;
+        $this->municipality=substr($distric,3,5);
         return $this;
     }
 

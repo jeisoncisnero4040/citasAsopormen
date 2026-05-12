@@ -12,6 +12,7 @@ use App\Serializers\AuthsSerializer;
 use App\Commands\AuthCommand;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 
+
 class AuthsRepository extends BaseRepository implements AuthsInterface
 {
     /**
@@ -28,6 +29,19 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
 
         return collect($response)
             ->map(fn($item) => Auth::fromArray((array) $item))
+            ->toArray();
+    }
+    public function getCommand(GetAuthsDto $dto): array
+    {
+        $columns = AuthsSerializer::getColumnsWithAlias('a');
+        $filters = $this->buildFilters($dto);
+        $response = $this->executeQuery(
+            "SELECT " . implode(', ', $columns) . " FROM autoriza a WHERE 1 = 1 {{}}",
+            $filters
+        );
+
+        return collect($response)
+            ->map(fn($item) => AuthsSerializer::fromArray((array) $item))
             ->toArray();
     }
     public function getByIds(array $ids): array
@@ -111,6 +125,14 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
             return $builder->toFilter();
 
         }
+        if($dto->hasNro()){
+            $builder->add("a.nro = ?", $dto->getNro());
+            return $builder->toFilter();
+        }
+        if($dto->hasId()){
+            $builder->add("a.id = ?", $dto->getId());
+            return $builder->toFilter();
+        }
 
         if ($dto->isOnlySchedulables()) {
             $builder
@@ -175,6 +197,102 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
                 ->add('a.n_autoriza = ?', $dto->getAuthCode())
         );
     }
+    /**
+     * @param array<Auth> $auths
+     * @return array<int>
+     */
+    public function delete(array $auths): array
+    {
+        $autoriz = $auths[0]->getAuthCode();
+        $clientCode = $auths[0]->getClientCode();
+        $epsCode = $auths[0]->getEntityCode();
+        $bindingsDelete = [$autoriz, $epsCode, $clientCode];
+
+        $idsApposDeleted = DB::select("SELECT id FROM citas WHERE autoriz = ? 
+                                                AND codent = ? AND nro_hist = ? 
+                                                AND na != '1'  AND asistio <> '1'
+                                                AND cancelada <> '1'
+                                                AND fecha >= CAST(GETDATE() AS DATE) ", $bindingsDelete);
+        $idsApposDeleted = array_map(fn($item) => $item->id, $idsApposDeleted);
+        $ids = array_map(fn($auth) => $auth->getId(), $auths);
+        $this->transactionalQuery(function () use (
+            $ids,
+            $idsApposDeleted
+        ) {
+            DB::delete("DELETE FROM autoriza WHERE id IN (" . self::makePlaceholdersPlains($ids) . ")",$ids);
+            if (empty($idsApposDeleted)) {
+                return [];
+            }
+            DB::delete("DELETE FROM citas WHERE id IN (" . self::makePlaceholdersPlains($idsApposDeleted) . ")",$idsApposDeleted);
+            return [];
+        });
+        return $idsApposDeleted;
+    }
+
+    public function updateMany(array $auths, string $oldCodeAuth): void
+    {
+        $newCodeAuth = $auths[0]->getAuthCode();
+        $clientCode = $auths[0]->getClientCode();
+
+        $codeWasChanged = $newCodeAuth !== $oldCodeAuth;
+
+        $this->transactionalQuery(function () use (
+            $auths,
+            $oldCodeAuth,
+            $newCodeAuth,
+            $clientCode,
+            $codeWasChanged
+        ) {
+
+            foreach ($auths as $auth) {
+
+                $data = AuthsSerializer::toPersistence($auth);
+
+
+                $query = $this->buildUpdateQuery(
+                    'autoriza',
+                    $data,
+                    "id = ?"
+                );
+
+                DB::update($query, [
+                    ...array_values($data),
+                    $auth->getId()
+                ]);
+            }
+
+            if (!$codeWasChanged) {
+                return 0;
+            }
+
+
+            $rowsCitasUpdate =DB::update(
+                "UPDATE citas SET autoriz = ? WHERE autoriz = ? AND nro_hist = ?",
+                [$newCodeAuth, $oldCodeAuth, $clientCode]
+            );
+
+            $rowsEvolucionesUpdate = DB::update(
+                "UPDATE evoluciones SET nautoriz_asp = ? WHERE nautoriz_asp = ? and codigo = ?",
+                [$newCodeAuth, $oldCodeAuth, $clientCode]
+            );
+
+
+            $rowsFonoaudiologiaUpdate = DB::update(
+                "UPDATE fonoaudiologia_2 SET nautoriz_asp = ? WHERE nautoriz_asp = ? and historia = ?",
+                [$newCodeAuth, $oldCodeAuth, $clientCode]
+            );
+            $rowsPagodetUpdate = DB::update(
+                "UPDATE pagodet SET nivel = ? WHERE nivel = ? AND codigo = ?",
+                [$newCodeAuth, $oldCodeAuth, $clientCode]
+            );
+            return [
+                'citas' => $rowsCitasUpdate,
+                'evoluciones' => $rowsEvolucionesUpdate,
+                'fonoaudiologia' => $rowsFonoaudiologiaUpdate,
+                'pagodet' => $rowsPagodetUpdate
+             ];
+        });
+    }
 
 
     private function executeQuery(string $template, Filter $filter): array
@@ -193,4 +311,6 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
 
         return $this->executeQuery($template, $filter);
     }
+
+
 }

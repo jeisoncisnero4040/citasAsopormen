@@ -6,6 +6,7 @@ use App\utils\ResponseManager;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\ProfesionalSenderService ;
+use App\Dtos\CreateProfesionalSender;
 
 class ProfesionalSenderController extends Controller
 {
@@ -23,5 +24,17 @@ class ProfesionalSenderController extends Controller
         $dto = GetProfesionalSerderDto::fromArray($request->query());
         $result = $this->profesionalSenderService->getProfesionalSenders($dto);
         return $this->responseManager-> success($result,200);
+    }
+    public function store(Request $request)
+    {
+        $dto = CreateProfesionalSender::fromArray($request->all());
+        $user = $this->user();
+        $result = $this->profesionalSenderService->create($dto,$user);
+        return $this->responseManager-> success([]);
+    }
+    public function utility()
+    {
+        $result = $this->profesionalSenderService->utility();
+        return $this->responseManager-> success($result);
     }
 }

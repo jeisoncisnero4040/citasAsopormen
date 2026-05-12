@@ -11,7 +11,10 @@ use App\Models\AuthFull;
 use App\Dtos\CreateAuthDto;
 use App\Models\UserRequesting;
 use App\Builders\AuthBuilder;
+use App\Dtos\DeleteAuthsDto;
+use App\Dtos\UpdateAuthsDto;
 use App\Services\QueueService;
+use App\Commands\AuthCommand;
 
 class AuthsService extends BaseService{
     private AuthsInterface $authsRepository;
@@ -58,7 +61,7 @@ class AuthsService extends BaseService{
         if(empty($auths)){
             throw new NotFoundException("No se han encontrado Autorizaciones",404);
         }
-        $isByAutCodeRequest = !$dto->hasUserCode() && $dto->hasAuthCode();
+        $isByAutCodeRequest = $dto->hasAuthCode();
         $user = null;
         if ($isByAutCodeRequest) {
 
@@ -114,12 +117,57 @@ class AuthsService extends BaseService{
             ->withApposTrace($apposTrace)
             ->toArray();
     }
+    public function updateAuths(UpdateAuthsDto $dto, UserRequesting $userRequesting): array
+    {   
+        if(empty($dto->getNro())) {
+            throw new BadRequestException("El número de autorización es obligatorio para actualizar",400);
+        }
+        $dtoGet = GetAuthsDto::fromArray(['nro' => $dto->getNro()]);
+        $authsToUpdate = $this->authsRepository->getCommand($dtoGet);
+        if(empty($authsToUpdate)){
+            throw new NotFoundException("No se han encontrado Autorizaciones para actualizar",404);
+        }
+        $curentAuthCode = $authsToUpdate[0]->getAuthCode();
+
+        logger()->info("Data to update auths", ['data' => $dto->getAuthCode(), 'from' => $dto->getFrom(), 'to' => $dto->getTo(), 'numberDays' => $dto->getNumberDays(), 'clientCode' => $dto->getClientCode(), 'senderCode' => $dto->getSenderCode()]);
+        $authsUpdated = collect($authsToUpdate)
+            ->map(function (AuthCommand $auth) use ($dto) {
+                $auth->update($dto);
+                return $auth;
+            })
+            ->toArray();
+        logger()->info("Auths updated", ['auths' => array_map(fn($auth) =>  $auth->getAuthCode(), $authsUpdated)]);
+        $this->authsRepository->updateMany($authsUpdated, $curentAuthCode);
+        $msm = "El usuario {$userRequesting->getUsername()} ha actualizado la autorización con numero de autorizacion {$curentAuthCode} el dia ". date("Y-m-d H:i:s");
+        $this->dispatchToQueue($msm, $userRequesting);
+        return $this->get($dtoGet);
+              
+       
+    }
+    public function deleteAuths(DeleteAuthsDto $dto, UserRequesting $userRequesting): void
+    {
+        $getDto = GetAuthsDto::fromArray([
+            'authCode' => $dto->getAuthCode(),
+            'clientCode' => $dto->getClientCode(),
+            'nro' => $dto->getNro(),
+            'id' => $dto->getId()
+        ]);
+        $auths = $this->authsRepository->get(dto: $getDto);
+        if(empty($auths)){
+            throw new NotFoundException("No se han encontrado Autorizaciones para eliminar",404);
+        }
+        $idsApposDeleted =$this->authsRepository->delete($auths);
+        $msm = $auths[0]->deleteLog($idsApposDeleted, $userRequesting);
+        $this->dispatchToQueue($msm, $userRequesting);
+
+    }
 
     /**
-     * @param autorizations array<Auth>
+     * @param array<Auth> $authorizations
      */
     private function attachSpecialtiesWithoutCollapsing(array $authorizations): array
     {
+
         $specialtiesByAuth = collect($authorizations)
             ->groupBy(fn(Auth $item) => $item->getAutoriza())
             ->map(function ($items) {

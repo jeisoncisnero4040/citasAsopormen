@@ -2,6 +2,10 @@
 
 namespace App\Commands;
 
+use App\Dtos\UpdateAuthsDto;
+use App\Models\UserRequesting;
+use App\Dtos\ExternalProcedureDto;
+
 final class AuthCommand
 {
     private string $cupCode;
@@ -32,7 +36,8 @@ final class AuthCommand
     private ?string $changuesAsp;
     private string $tarifeCode;
     private bool $newSystem;
-    private string $remitente;
+    private ?string $remitente;
+    private ?int $id;
 
     public function __construct(
         string $cupCode,
@@ -48,7 +53,7 @@ final class AuthCommand
         string $observations,
         string $startDate,
         string $covenantCode,
-        string $remitente,
+        ?string $remitente,
         string $tarifeCode,
 
         ?string $consecutive = null,
@@ -64,7 +69,8 @@ final class AuthCommand
         ?string $motiveClosed = null,
         ?string $userClosedDate = null,
         ?string $changuesAsp = null,
-        bool $newSystem = true
+        bool $newSystem = true,
+        ?int $id = null
     ){
         $this->cupCode = $cupCode;
         $this->amount = $amount;
@@ -95,6 +101,7 @@ final class AuthCommand
         $this->tarifeCode = $tarifeCode;
         $this->newSystem = $newSystem;
         $this->remitente = $remitente;
+        $this->id = $id;
     }
 
 
@@ -106,7 +113,7 @@ final class AuthCommand
     public function getAuthCode(): string { return $this->authCode; }
     public function getUserCreating(): string { return $this->userCreating; }
     public function getObservations(): string { return $this->observations; }
-    public function getRemitente(): string { return $this->remitente; }
+    public function getRemitente(): ?string { return $this->remitente; }
     public function getCovenantCode(): string { return $this->covenantCode; }
     public function getEpsCode(): string { return $this->epsCode; }
     public function getAmountDays(): int { return $this->amountDays; }
@@ -129,11 +136,51 @@ final class AuthCommand
     public function getAssistedSessionsCounter(): int { return $this->assistedSessionsCounter; }
 
     public function setConsecutive(?string $consecutive): void { $this->consecutive = $consecutive; } 
+    public function getId(): ?int { return $this->id; }
     
     public function getMsmCreate(array $ids): string
     {
-        return "El usuario {$this->userCreating} creo la autorización con codigo {$this->authCode} para el cliente {$this->clientCode} el dia {$this->dateCreating}.
+        return "El usuario {$this->userCreating} creo la autorización con codigo {$this->authCode}  el dia {$this->dateCreating}.
         con los siguientes ids de autorizaciones: " . implode(", ", $ids) .
         " el dia {$this->dateCreating}";
     }
+    public function isUpdatableAmmount(): bool
+    {
+        return $this->amount > 0 && !$this->closed  && !$this->isExpired();
+    }
+    public function isExpired(): bool
+    {
+        $currentDate = new \DateTime();
+        $currentDate->setTime(0, 0, 0);
+        $expirationDate = new \DateTime($this->expiredDate);
+        $expirationDate->setTime(0, 0, 0);
+        return $currentDate > $expirationDate;
+    }
+    public function update(UpdateAuthsDto $dto): void
+    {
+        $this->authCode = $dto->getAuthCode();
+        $this->startDate = $dto->getFrom();
+        $this->expiredDate = $dto->getTo();
+        $this->amountDays = $dto->getNumberDays();
+        $this->remitente = $dto->getSenderCode() ;
+        $this->amount = $this->resolveAmmountToUpdate($dto->getCups());
+    }
+
+    /**
+     * @param ExternalProcedureDto[] $cupsDto
+     */
+    private function resolveAmmountToUpdate(array $cupsDto): int
+    {
+        if(!$this->isUpdatableAmmount()) {
+            return $this->amount;
+        }
+        $found = array_values(array_filter($cupsDto, fn($cup) => $cup->getCode() === $this->cupCode))[0] ?? null;
+        return $found ? $found->getQuantity() : $this->amount;
+    }
+    public function deleteLog(array $idsApposAsossiate, UserRequesting $user): string
+    {
+       return "el usuario {$user->getUsername()} ha eliminado la autorización con numero de autorizacion {$this->authCode}
+         y los siguientes las citas asociadas con ids : ". implode(", ", $idsApposAsossiate) . " el dia ". date("Y-m-d H:i:s");
+    }
+
 }

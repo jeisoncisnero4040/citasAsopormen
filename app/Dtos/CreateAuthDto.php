@@ -44,6 +44,7 @@ final class CreateAuthDto
         if ($numberDays <= 0) {
             throw new BadRequestException('El número de sesiones debe ser mayor a 0',400);
         }
+        
 
         $this->authCode = $authCode;
         $this->from = $from;

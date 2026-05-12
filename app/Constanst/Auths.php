@@ -17,7 +17,10 @@ class Auths {
                                 a.entidad,
                                 a.paquete,
                                 a.historia,
-                                a.dias
+                                a.dias,
+                                a.nro,
+                                a.remitente,
+                                a.id
                             FROM autoriza a
                             WHERE 1=1
                             {{}}
@@ -139,7 +142,11 @@ class Auths {
                 END AS facturada,
                 a.historia,
                 RTRIM(en.clase) AS n_convenio,
-                a.dias
+                a.dias,
+                a.nro,
+                a.remitente AS cod_remitente,
+                pr.nombre AS nombre_remitente,
+                a.id
 
             FROM procedimientos p
             LEFT JOIN contador c
@@ -153,6 +160,8 @@ class Auths {
                 ON ca.autoriz = a.n_autoriza
             INNER JOIN entidades en 
                 ON en.codigo = a.paquete
+            LEFT JOIN prof_Remitentes pr 
+                ON pr.codigo = a.remitente
             ORDER BY a.f_inicial, a.f_vence;";
 
     const TEMPLATE_GET_TRAZABILITY = "WITH autorizaciones AS (

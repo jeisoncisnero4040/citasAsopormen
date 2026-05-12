@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
+use App\Dtos\UpdateAuthsDto;
+use App\Dtos\ExternalProcedureDto;
+
 class Auth {
     private string $n_autoriza;
+
+    /**Tiempo es el codigo de procedimiento */
     private string $tiempo;
     private string $procedim;
     private int $cantidad;
@@ -23,6 +28,10 @@ class Auth {
     private string $codeClient;
     private string $n_convenio;
     private int $days;
+    private string $consecutive;
+    private ?string $remitente;
+    private ?string $nameRemitente;
+    private ?int $id;
 
     public function __construct(
         string $n_autoriza,
@@ -43,7 +52,11 @@ class Auth {
         bool $isInvoiced,
         string $codeClient,
         string $n_convenio,
-        int $days
+        int $days,
+        string $consecutive,
+        ?string $remitente ,
+        ?string $nameRemitente ,
+        ?int $id = null
     ){
         $this->n_autoriza = $n_autoriza;
         $this->tiempo = $tiempo;
@@ -64,6 +77,10 @@ class Auth {
         $this->codeClient=$codeClient;
         $this->n_convenio = $n_convenio;
         $this->days = $days;
+        $this->consecutive = $consecutive;
+        $this->remitente = $remitente;
+        $this->nameRemitente = $nameRemitente;
+        $this->id = $id;
     }
 
     public static function fromArray(array $array): self
@@ -87,7 +104,11 @@ class Auth {
             (bool)$array['facturada'],
             $array['historia'],
             $array['n_convenio'],
-            (int)$array['dias']
+            (int)$array['dias'],
+            $array['nro'],
+            $array['cod_remitente'],
+            $array['nombre_remitente'],
+            isset($array['id']) ? (int)$array['id'] : null
         );
     }
 
@@ -112,8 +133,11 @@ class Auth {
             'especialidades'=>$this->especialidades,
             'facturada'=>$this->isInvoiced,
             'nombre_convenio'=>$this->n_convenio,
-            'dias'=>$this->days
-
+            'dias'=>$this->days,
+            'nro'=>$this->consecutive,
+            'cod_remitente'=>$this->remitente,
+            'nombre_remitente'=>$this->nameRemitente,
+            'id'=>$this->id
         ];
     }
     public function getAutoriza():string{
@@ -128,6 +152,61 @@ class Auth {
     public function getCodeClient():string{
         return $this->codeClient;
     }
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+    public function getAuthCode(): string
+    {
+        return $this->n_autoriza;
+    }   
+    public function getClientCode(): string
+    {
+        return $this->codeClient;
+    }
+    public function getEntityCode(): string
+    {
+        return $this->cod_entidad;
+    }
+    public function isUpdatableAmmount(): bool
+    {
+        return $this->cantidad > 0 && !$this->cerrado && !$this->isInvoiced && !$this->isExpired();
+    }
+    public function isExpired(): bool
+    {
+        $currentDate = new \DateTime();
+        $currentDate->setTime(0, 0, 0);
+        $expirationDate = new \DateTime($this->f_vence);
+        $expirationDate->setTime(0, 0, 0);
+        return $currentDate > $expirationDate;
+    }
+    public function update(UpdateAuthsDto $dto): void
+    {
+        $this->f_inicial = $dto->getFrom();
+        $this->f_vence = $dto->getTo();
+        $this->days = $dto->getNumberDays();
+        $this->codeClient = $dto->getClientCode();
+        $this->cantidad = $this->resolveAmmountToUpdate($dto->getCups());
+    }
+
+    /**
+     * @param ExternalProcedureDto[] $cupsDto
+     */
+    private function resolveAmmountToUpdate(array $cupsDto): int
+    {
+        if(!$this->isUpdatableAmmount()) {
+            return $this->cantidad;
+        }
+        $found = array_values(array_filter($cupsDto, fn($cup) => $cup->getCode() === $this->tiempo))[0] ?? null;
+        return $found ? $found->getQuantity() : $this->cantidad;
+    }
+    public function deleteLog(array $idsApposAsossiate, UserRequesting $user): string
+    {
+       return "el usuario {$user->getUsername()} ha eliminado la autorización con numero de autorizacion {$this->n_autoriza}
+         y los siguientes las citas asociadas con ids : ". implode(", ", $idsApposAsossiate) . " el dia ". date("Y-m-d H:i:s");
+    }
+
+    
 
     
 }

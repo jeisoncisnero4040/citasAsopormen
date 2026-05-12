@@ -109,8 +109,9 @@ Route::get('informes/old-users',[InformesController::class,'getOldUser'])->middl
 Route::get('informes/old-users-not-citas',[InformesController::class,'getOldUserNotFountCitad'])->middleware('login.check:informes-citas');
 
 Route::post('auths',[AuthsController::class,'store']);
-Route::get('metrics',[PrometheusController::class,'metrics']);
+Route::delete('auths',[AuthsController::class,'destroy']);
 Route::get('auths',[AuthsController::class,'index']);
+Route::patch('auths',[AuthsController::class,'update']);
 Route::get('auths/detail',[AuthsController::class,'getDetail']);
 
 
@@ -123,8 +124,10 @@ Route::get('auths/documents/utility',[AuthsDocumentsController::class,'getUtilit
 Route::get('external-procedures',[ExternalProcedureController::class,'index']);
 
 Route::get('profesional-senders',[ProfesionalSenderController::class,'index']);
+Route::post('profesional-senders',[ProfesionalSenderController::class,'store']);
+Route::get('profesional-senders/utility',[ProfesionalSenderController::class,'utility']);   
 
-
+Route::get('metrics',[PrometheusController::class,'metrics']);
 
 
 

@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Dtos\GetProfesionalSerderDto;
 use App\Interfaces\ProfesionalSenderPort;
 use App\Models\ProfesionalSender;   
+use App\Commands\ProfesionalSenderCommand;
+use App\Serializers\ProfesionalSenderSerializer;
 
 class ProfesionalSenderRepository extends BaseRepository implements ProfesionalSenderPort
 {
@@ -21,7 +23,7 @@ class ProfesionalSenderRepository extends BaseRepository implements ProfesionalS
 
         $builder = FilterBuilder::create();
         if ($dto->getCode() !== null) {
-            $builder->add("codigo like ", "%" . $dto->getCode() . "%");
+            $builder->add("codigo = ? ", $dto->getCode());
         }
         if ($dto->getName() !== null) {
             $params=explode(" ", $dto->getName());
@@ -42,5 +44,31 @@ class ProfesionalSenderRepository extends BaseRepository implements ProfesionalS
         return collect($result)
             ->map(fn($item) => ProfesionalSender::fromArray((array)$item))
             ->toArray();
+    }
+    public function create(ProfesionalSenderCommand $command): int
+    {
+        $data = ProfesionalSenderSerializer::serialize($command);
+        $query = $this->buildCreateQuery('prof_Remitentes', $data);
+        return $this->sendQuery($query,array_values($data),'insert');
+    }
+    public function utility(): array
+    {
+        return $this->sendQuery("SELECT 
+								RTRIM(codigo) AS cod,
+								nombre,
+								'municipio' AS tipo,
+								NULL AS referencia,
+								NULL AS cod_referencia
+							FROM municipio
+                            UNION ALL
+
+                                SELECT cod,
+                                documento AS nombre,
+                                'documento' as tipo,
+                                NULL referencia,
+                                NULL AS cod_referencia
+                                FROM tipo_doc
+                            ORDER BY tipo,nombre
+                            ");
     }
 }

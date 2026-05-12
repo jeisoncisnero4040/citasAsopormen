@@ -11,7 +11,8 @@ class GetAuthsDto {
     public ?string $to;
     public bool $withFullInfo;
     public ?string $cupCode;
-
+    public ?string $nro;
+    public ? int $id;
     
     
     public function __construct(
@@ -22,6 +23,8 @@ class GetAuthsDto {
         ?string $from = null,
         ?string $to = null,
         ?string $cupCode=null,
+        ?string $nro=null,
+        ?int $id = null
     ){
         $this->clientCode = $clientCode;
         $this->authCode = $authCode;
@@ -30,6 +33,8 @@ class GetAuthsDto {
         $this->to = $to;
         $this->withFullInfo = $withFullInfo;
         $this->cupCode=$cupCode;
+        $this->nro=$nro;
+        $this->id=$id;
     }
 
     public static function fromArray(array $data): self
@@ -46,8 +51,13 @@ class GetAuthsDto {
             withFullInfo:isset($data['fullInfo']) 
                 ? filter_var($data['fullInfo'], FILTER_VALIDATE_BOOLEAN)
                 : false,
-            cupCode:$data['cupCode']??null
+            cupCode:$data['cupCode']??null,
+            nro:$data['nro']??null,
+            id:isset($data['id']) ? (int)$data['id'] : null
         );
+    }
+    public static function fromNro(string $nro): self{
+        return self::fromArray(['nro' => $nro]);
     }
 
     public function isOnlySchedulables(): bool
@@ -96,6 +106,22 @@ class GetAuthsDto {
     public function hasAuthCode(): bool
     {
         return !empty($this->authCode);
+    }
+    public function hasNro(): bool
+    {
+        return !empty($this->nro);
+    }
+    public function getNro(): ?string
+    {   
+        return $this->nro;
+    }
+    public function hasId(): bool
+    {
+        return !empty($this->id);
+    }
+    public function getId(): ?int
+    {
+        return $this->id;
     }
 
 }

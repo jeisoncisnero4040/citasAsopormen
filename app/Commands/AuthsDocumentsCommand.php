@@ -82,11 +82,11 @@ class AuthsDocumentsCommand {
         $this->nameDocument = $name;
     }
     public function messaggeAudit(UserRequesting $user):string{
-        return "El usuario ". $user->getUsername().  "añadio el documento ". $this->nameDocument. 
+        return "El usuario ". $user->getUsername().  " añadio el documento ". $this->nameDocument. 
         " a la autorizacion  ". $this->n_autoriza ." el dia ". $this->created_At;
     }
     public function messaggeAuditDelete(UserRequesting $user):string{
-        return "El usuario ". $user->getUsername().  "elimino el documento ". $this->nameDocument. 
+        return "El usuario ". $user->getUsername().  " elimino el documento ". $this->nameDocument. 
         " de la autorizacion  ". $this->n_autoriza ." el dia ". now()->toDateTimeString();
     }
     public function setKeyDocument(string $key): void

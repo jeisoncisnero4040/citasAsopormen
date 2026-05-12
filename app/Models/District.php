@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Faker\Guesser\Name;
 
 class District{
     private string $code;

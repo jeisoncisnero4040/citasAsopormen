@@ -22,7 +22,6 @@ class Handler extends ExceptionHandler
                                 UnAuthorizateException::class, 
                                 NotFoundException::class, 
                                 ForbidenException::class, 
-                                ServerErrorException::class, 
                                 RateLimitException::class];
 
     /**

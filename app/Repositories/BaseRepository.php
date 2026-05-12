@@ -65,6 +65,11 @@ class BaseRepository
 
         return "INSERT INTO $table ($columns) VALUES $placeholdersString";
     }
+    protected function buildUpdateQuery(string $table, array $data, string $whereClause): string
+    {
+        $setClause = self::makeSetClause($data);
+        return "UPDATE $table SET $setClause WHERE $whereClause";
+    }
     protected function buildSelectBaseQueryCommand(array $fillable,string $table): string
     {
         $columns = implode(', ', $fillable);
@@ -105,11 +110,7 @@ class BaseRepository
         } catch (\Throwable $e) {
             DB::rollBack();
 
-            throw new ServerErrorException(
-                "Error en transacción: " . $e->getMessage(),
-                500,
-                $e
-            );
+            throw new ServerErrorException("Error en transacción: " . $e->getMessage(), 500);
         }
     }
 
