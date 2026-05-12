@@ -258,13 +258,14 @@ class CitasDomain{
     }
     public static function buildAuditMsmDlete(
         string $user,
-        int $id,
+        array $ids,
         string $cliente,
         string $profesional
     ){
+        $idsStr = implode(', ', $ids);
         return 
         "El usuario $user elimino ".
-        "la cita con id $id ".
+        "la(s) cita(s) con id(s) $idsStr ".
         "perteneciente al cliente $cliente ".
         "asignada al profesional $profesional ";
 

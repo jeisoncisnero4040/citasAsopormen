@@ -153,7 +153,7 @@ class CitasController extends Controller
     public function deleteCitaById(Request $request){
         $queryParams = $request->query();
         $dto=DeleteAppoDto::fromRequest($queryParams);
-        $dto->setUserRequest(UserRequesting::fromArray($request->attributes->get('userPayload', [])));
+        $dto->setUserRequest($this->user());
         $response = $this->citasService->deleteCitaById(dto:$dto);
         return response()->json($response,200);
     }

@@ -4,26 +4,21 @@ namespace App\Dtos;
 use App\Models\UserRequesting;
 class DeleteAppoDto
 {
-    private int $id;
-    private string $cliente;
+    private array $ids;
     private ?UserRequesting $userRequest;
 
     public function __construct(
-        int $id,
-        string $cliente,
+        array $ids,
         ?UserRequesting $userRequest = null
 
     ) {
-        $this->id = $id;
-        $this->cliente = $cliente;
+        $this->ids = $ids;
         $this->userRequest = $userRequest;
     }
     public static function fromRequest(array $query): self
     {
         return new self(
-
-            cliente: $query['cliente'],
-            id: (int)$query['id']
+            ids: array_map('intval', explode(',', $query['ids']))
         );
     }
     public function setUserRequest(UserRequesting $userRequest): void
@@ -34,15 +29,12 @@ class DeleteAppoDto
     {
         return $this->userRequest;
     }
-    public function getId(): int
+    public function getIds(): array
     {
-        return $this->id;
+        return $this->ids;
     }
 
-    public function getCliente(): string
-    {
-        return $this->cliente;
-    }
+
 
 
 }

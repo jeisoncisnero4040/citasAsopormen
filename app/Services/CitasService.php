@@ -170,18 +170,18 @@ class CitasService{
         return $this->citasRepository->getApposAvaiables(autoriz:$auth,cupCode:$codeCup,history:$history);
     }
     public function deleteCitaById(DeleteAppoDto $dto){
-        $citas= $this->citasRepository->getApposByIds(ids:[$dto->getId()]);
+        $citas= $this->citasRepository->getApposByIds(ids:$dto->getIds());
         if(empty($citas)){
             throw new BadRequestException("la cita que desea eliminar no existe o no esta disponible para eliminar",400);
         }
         $cita=$citas[0];
-        $citasDeleted=$this->citasRepository->deleteById(id:$dto->getId());
+        $citasDeleted=$this->citasRepository->deleteByIds(ids:$dto->getIds());
         if ($citasDeleted==0){
            throw new BadRequestException("no es posible eliminar esta sección",400);
         }
         $msm = CitasDomain::buildAuditMsmDlete(
             user:$dto->getUserRequest()->getUsername(),
-            id:$dto->getId(),
+            ids:$dto->getIds(),
             cliente:$cita->usuario,
             profesional:$cita->profesional
         );

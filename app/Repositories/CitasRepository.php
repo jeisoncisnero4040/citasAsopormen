@@ -81,9 +81,10 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
         $query = str_replace('{{WHERE}}',$where,Citas::BASE_GET_APPOS_QUEY);
         return self::sendQuery(query:$query,bindings:[$idFamiliy]);
     }
-    public function deleteById(int $id):int{
-        $query="DELETE FROM citas WHERE id = ? AND cancelada = '0' AND asistio = '0' AND na = '0'";
-        return self::sendQuery(query:$query,bindings:[$id],typeConsult:'delete');
+    public function deleteByIds(array $ids):int{
+        $placeholders = self::makePlaceholdersPlains($ids);
+        $query="DELETE FROM citas WHERE id IN ($placeholders) AND cancelada = '0' AND asistio = '0' AND na = '0'";
+        return self::sendQuery(query:$query,bindings:$ids,typeConsult:'delete');
                     
     }
     public function getApposByIds(array $ids){
