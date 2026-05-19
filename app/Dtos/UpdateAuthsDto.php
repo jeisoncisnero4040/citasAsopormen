@@ -14,6 +14,7 @@ class UpdateAuthsDto
     /** @var ExternalProcedureDto[] */
     private array $cups;
     private ?string $senderCode;
+    private ?string $observations;
 
     public function __construct(
         string $nro,
@@ -23,7 +24,8 @@ class UpdateAuthsDto
         int $numberDays,
         string $clientCode,
         array $cups = [],
-        ?string $senderCode = null
+        ?string $senderCode = null,
+        ?string $observations = ''
     ) {
         $this->nro = $nro;
         $this->authCode = $authCode;
@@ -33,6 +35,7 @@ class UpdateAuthsDto
         $this->clientCode = $clientCode;
         $this->cups = $cups;
         $this->senderCode = $senderCode;
+        $this->observations = $observations;
     }
 
     public static function fromArray(array $data): self
@@ -45,7 +48,8 @@ class UpdateAuthsDto
             numberDays: (int) ($data['days'] ?? 0),
             clientCode: $data['clientCod'] ?? '',
             cups: isset($data['cups']) ? array_map(fn($cup) => ExternalProcedureDto::fromArray($cup), $data['cups']) : [],
-            senderCode: $data['cod_remitente'] ?? null
+            senderCode: $data['cod_remitente'] ?? null,
+            observations: $data['observations'] ?? null
         );
     }
 
@@ -88,5 +92,9 @@ class UpdateAuthsDto
     public function getSenderCode(): ?string
     {
         return $this->senderCode;
+    }
+    public function getObservations(): ?string
+    {
+        return $this->observations;
     }
 }

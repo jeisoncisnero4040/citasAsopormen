@@ -34,7 +34,7 @@ final class AuthCommand
     private ?string $motiveClosed;
     private ?string $userClosedDate;
     private ?string $changuesAsp;
-    private string $tarifeCode;
+    private ?string $tarifeCode;
     private bool $newSystem;
     private ?string $remitente;
     private ?int $id;
@@ -54,7 +54,7 @@ final class AuthCommand
         string $startDate,
         string $covenantCode,
         ?string $remitente,
-        string $tarifeCode,
+        ?string $tarifeCode,
 
         ?string $consecutive = null,
         bool $anulated = false,
@@ -129,7 +129,7 @@ final class AuthCommand
     public function getMotiveClosed(): ?string { return $this->motiveClosed; }
     public function getUserClosedDate(): ?string { return $this->userClosedDate; }
     public function getChanguesAsp(): ?string { return $this->changuesAsp; }
-    public function getTarifeCode(): string { return $this->tarifeCode; }
+    public function getTarifeCode(): ?string { return $this->tarifeCode; }
     public function isNewSystem(): bool { return $this->newSystem; }  
     public function getConsecutive(): ?string { return $this->consecutive; }
     public function getStartDate(): string { return $this->startDate; }
@@ -164,6 +164,7 @@ final class AuthCommand
         $this->amountDays = $dto->getNumberDays();
         $this->remitente = $dto->getSenderCode() ;
         $this->amount = $this->resolveAmmountToUpdate($dto->getCups());
+        $this->observations = trim($dto->getObservations() ?? '');
     }
 
     /**

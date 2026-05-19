@@ -128,15 +128,12 @@ class AuthsService extends BaseService{
             throw new NotFoundException("No se han encontrado Autorizaciones para actualizar",404);
         }
         $curentAuthCode = $authsToUpdate[0]->getAuthCode();
-
-        logger()->info("Data to update auths", ['data' => $dto->getAuthCode(), 'from' => $dto->getFrom(), 'to' => $dto->getTo(), 'numberDays' => $dto->getNumberDays(), 'clientCode' => $dto->getClientCode(), 'senderCode' => $dto->getSenderCode()]);
         $authsUpdated = collect($authsToUpdate)
             ->map(function (AuthCommand $auth) use ($dto) {
                 $auth->update($dto);
                 return $auth;
             })
             ->toArray();
-        logger()->info("Auths updated", ['auths' => array_map(fn($auth) =>  $auth->getAuthCode(), $authsUpdated)]);
         $this->authsRepository->updateMany($authsUpdated, $curentAuthCode);
         $msm = "El usuario {$userRequesting->getUsername()} ha actualizado la autorización con numero de autorizacion {$curentAuthCode} el dia ". date("Y-m-d H:i:s");
         $this->dispatchToQueue($msm, $userRequesting);

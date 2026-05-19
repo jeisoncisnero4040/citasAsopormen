@@ -184,6 +184,7 @@ class InformesModel extends BaseModel{
 					au.cantidad,
 					au.f_inicial AS fecha_inicial,
 					au.f_vence AS fecha_final,
+                    au.f_registro AS fecha_ingreso,
                     (
                         SELECT descrip 
                         FROM convetari 
@@ -356,8 +357,10 @@ class InformesModel extends BaseModel{
 				autorizaciones as (SELECT 
 
                     au.n_autoriza,
+                    au.f_registro AS fecha_ingreso,
                     au.f_inicial AS fecha_inicial,
                     au.f_vence AS fecha_final,
+                    au.cantidad,
                     au.usuario AS ingreso_autorizacion,
 					au.historia,
 					au.procedi,

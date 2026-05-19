@@ -99,10 +99,10 @@ class AuthService{
         
     }
 
-    public function refresh($token){ 
+    public function refresh(string $token){ 
         return  $this->jwt->refreshToken($token);
     }
-    public function me($token) {
+    public function me(string $token) {
         try {
             return $this->jwt->getUserByToken($token);
         } catch (\Exception $e) {
