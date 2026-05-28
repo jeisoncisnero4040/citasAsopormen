@@ -153,7 +153,8 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
     public function getLigtCalendar(string $clientCode, string $from, string $to):array{
         $query="SELECT 
                     CAST(ci.fecha AS datetime) + CAST(ci.hora AS time) AS fecha_inicio,
-                    DATEADD(MINUTE, pro.duraccion, CAST(ci.fecha AS datetime) + CAST(ci.hora AS time)) AS hora_fin
+                    DATEADD(MINUTE, pro.duraccion, CAST(ci.fecha AS datetime) + CAST(ci.hora AS time)) AS hora_fin,
+                    ci.procedipro
 
                 FROM 
                     citas ci 
@@ -162,7 +163,10 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
                     ci.nro_hist = ? 
                     AND ci.fecha  BETWEEN ?  AND ? 
                     AND ci.cancelada <> '1'
-                    AND ci.na <> '1'";
+                    AND ci.na <> '1'
+                    
+                ORDER BY ci.fecha, ci.hora";
+                    
 
         return self::sendQuery(query:$query,bindings:[$clientCode,$from,$to]);
     }

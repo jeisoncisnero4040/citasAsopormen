@@ -411,7 +411,7 @@ class CitasController extends Controller
      */
 
     public function CancelCitaBySessionsIds(Request $request){
-        $dataCitasCanceled=$this->citasService->CancelGroupSsessions($request->all());
+        $dataCitasCanceled=$this->citasService->CancelGroupSsessions($request->all(),$this->user());
         return response()->json($dataCitasCanceled,200);
     }
 

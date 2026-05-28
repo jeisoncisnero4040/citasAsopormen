@@ -120,15 +120,18 @@ class CitasService{
         $validated=CitasDomain::validateSchedule(scheduleNewAppos:$schedule,scheduleProfesional:$scheduleProfesional);
 
         /**COMENTADO HASTA RECIBIR POLITICAS DE EXCEPCIONES */
-        //$startDateFirstAppo=$schedule[0];
-        //$finishDate=$schedule[count($schedule) - 1];
+        $startDateFirstAppo=$schedule[0];
+        $finishDate=$schedule[count($schedule) - 1];
 
-        //$calendarClient=$this->citasRepository->getLigtCalendar(
-           // clientCode:$dto->getHistCode(),
-            //from:$startDateFirstAppo->format('Y-d-m'),
-            //to:$finishDate->format('Y-d-m')
-        //);
-        //CitasDomain::validateDisponibilityClient(scheduleNewAppos:$schedule,scheduleClient:$calendarClient,sessionDuration:$dto->getDuractionAppo());
+        $calendarClient=$this->citasRepository->getLigtCalendar(
+           clientCode:$dto->getHistCode(),
+            from:$startDateFirstAppo->format('Y-d-m'),
+            to:$finishDate->format('Y-d-m')
+        );
+        CitasDomain::validateDisponibilityClient(scheduleNewAppos:$schedule,
+                                                scheduleClient:$calendarClient,
+                                                sessionDuration:$dto->getDuractionAppo(),
+                                                procedipro:$dto->getProcedipro());
         $familyId = (string) Str::uuid();
         $dto->setFamilyId($familyId);
         $apposInDto = [];
@@ -221,11 +224,26 @@ class CitasService{
         }
         return $this->responseManager->success($citasCanceled);
     }
-    public function CancelGroupSsessions($request){
+    public function CancelGroupSsessions(array $request,UserRequesting $userRequesting){
         CitasRequests::ValidateCitaSessionsIds($request,"cancelar");
         $citasCanceled=$this->sendQueryToCancelGroupSessions($request);
         
-        //event(new citaCanceledEvent($request));
+        $meanCancel=$request['meanCancel'];
+        $dateCita = $request['fecha_cita'];
+        $dateCancelation = Carbon::now()->format('Y-m-d H:i:s');
+        $idsToCancel = str_replace('|||', ',', $request['ids']);
+
+
+        if ($meanCancel=="mc") {
+            $msm = "El usuario {$userRequesting->getUsername()} ha cancelado una las citas con ids  {$idsToCancel} asignada para la fecha {$dateCita} el dia {$dateCancelation}";
+            $this->queueService->publish(
+                $this->buildMsmAudit(
+                    action:$msm,
+                    userRequesting:$userRequesting
+                )
+            );
+        }
+
         return $this->responseManager->success($citasCanceled);
     }
 

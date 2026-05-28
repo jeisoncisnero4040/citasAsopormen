@@ -171,11 +171,14 @@ class CitasDomain{
     /**
      * @param Carbon[]   $scheduleNewAppos
      * @param stdClass[] $scheduleClient
+     * @param int       $sessionDuration
+     * @param string $procedipro
      */
     public static function validateDisponibilityClient(
         array $scheduleNewAppos,
         array $scheduleClient,
-        int $sessionDuration
+        int $sessionDuration,
+        string $procedipro
     ): void {
 
         // 🔹 Preprocesar citas existentes
@@ -185,19 +188,19 @@ class CitasDomain{
             $start = Carbon::parse($sessionClient->fecha_inicio);
             $end = Carbon::parse($sessionClient->hora_fin);
 
-            $clientIntervals[] = [$start, $end];
+            $clientIntervals[] = [$start, $end,$sessionClient->procedipro];
         }
 
         usort($clientIntervals, fn($a, $b) => $a[0] <=> $b[0]);
         foreach ($scheduleNewAppos as $newStart) {
 
             $newEnd = $newStart->copy()->addMinutes($sessionDuration);
-            foreach ($clientIntervals as [$clientStart, $clientEnd]) {
+            foreach ($clientIntervals as [$clientStart, $clientEnd, $clientProcedipro]) {
 
                 if ($clientStart >= $newEnd) {
                     break;
                 }
-                if ($newStart < $clientEnd && $newEnd > $clientStart) {
+                if ($newStart < $clientEnd && $newEnd > $clientStart && $procedipro === $clientProcedipro) {
                     throw new BadRequestException(
                         "Esta accion no se puede realizar por que el cliente ya tiene una cita para el dia " .
                         DateManager::dateToStringFormat($newStart)." que hace conflicto con la nueva cita programada para el dia " .

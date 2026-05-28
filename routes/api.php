@@ -19,7 +19,7 @@ use App\Http\Controllers\ProfesionalSenderController;
 use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\KafkaController;
 use App\Http\Controllers\AuditController;
-
+use App\Http\Controllers\CapacitacionMediaController;
 
 Route::get('kafka/publish', [KafkaController::class, 'publish']);
 
@@ -126,6 +126,9 @@ Route::get('external-procedures',[ExternalProcedureController::class,'index']);
 Route::get('profesional-senders',[ProfesionalSenderController::class,'index']);
 Route::post('profesional-senders',[ProfesionalSenderController::class,'store']);
 Route::get('profesional-senders/utility',[ProfesionalSenderController::class,'utility']);   
+
+
+ROute::get('capacitacion-media',[CapacitacionMediaController::class,'index'])->middleware('login.check:agenda');
 
 Route::get('metrics',[PrometheusController::class,'metrics']);
 

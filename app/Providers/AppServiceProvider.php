@@ -54,6 +54,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\UserPort::class,
             \App\Repositories\UserRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\CapacitacionMediaPort::class,
+            \App\Repositories\CapacitacionMediaRepository::class
+        );
     }
 
     /**
