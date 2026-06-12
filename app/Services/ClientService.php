@@ -74,11 +74,11 @@ class ClientService extends BaseService{
         $newCode = str_pad(((int)$lastCode) + 1, 10, '0', STR_PAD_LEFT);
         $client->setCode(code: $newCode);
         if(!empty($image)){
-            $photoUrl=$this->storage->store(file:$image,path:"clientes/documentos/$newCode");
+            $photoUrl=$this->storage->store(file:$image,path:"Documentos/$newCode");
             $client->setUrlPhoto(url:$photoUrl);
         }
         if(!empty($document)){
-            $url=$this->storage->store(file:$document,path:"clientes/documentos/$newCode");
+            $url=$this->storage->store(file:$document,path:"Documentos/$newCode");
             $client->setUrlDocument(url:$url);
         }
         
@@ -751,14 +751,7 @@ class ClientService extends BaseService{
                         RTRIM(em.enombre) AS profesional,
                         ci.registro,
                         ci.fec_hora,
-                        CASE
-                            WHEN ci.fecha_evo_ampliada = '0'
-                                AND CAST(cif.fecha_completa AS date) < CAST(GETDATE() AS date)
-                                AND ci.asistio != '1'
-                                AND ci.cancelada != '1'
-                            THEN '1'
-                            ELSE '0'
-                        END AS no_asistida,
+                        ci.na AS no_asistida,
                         pro.tipo_evolucion,
                         ci.realizar AS razon_cancelamiento,
                         CONVERT(VARCHAR(5), DATEADD(MINUTE, pro.duraccion, cif.fecha_completa), 108)

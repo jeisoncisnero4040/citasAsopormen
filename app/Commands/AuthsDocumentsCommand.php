@@ -38,7 +38,7 @@ class AuthsDocumentsCommand {
     }
     public function buildkeyDocument(): string
     {
-        return $this->clientCode . '/'. self::ROOT_DIRECTORY_STORAGE . '/' . $this->n_autoriza;
+        return "Documentos/" . $this->clientCode . '/'. self::ROOT_DIRECTORY_STORAGE . '/' . $this->n_autoriza;
     }
     public function getId(): ?int
     {
