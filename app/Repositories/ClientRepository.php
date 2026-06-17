@@ -92,7 +92,7 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
             RTRIM(c.direcc) AS direcc,
             RTRIM(c.barrio) AS barrio,
 
-            c.municipio AS municipio_codigo,
+            c.depto  + c.municipio AS municipio_codigo,
             c.pais,
 
             c.fechareg,
@@ -153,13 +153,13 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
 
             REPLACE(REPLACE(ocupa.descrip, CHAR(13), ''), CHAR(10), '') AS ocupacion_text,
 
-            eps.nombre AS entidad,
+            RTRIM(eps.nombre) AS entidad,
 
-            ent.clase AS convenio,
+            RTRIM(tent.clase) AS convenio,
 
-            s.nombre AS sexo_text,
+            RTRIM(rs.nombre) AS sexo_text,
 
-            doc.documento,
+            RTRIM(Rdoc.documento) AS documento,
 
             et.etnia,
 
