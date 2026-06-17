@@ -155,7 +155,7 @@ class ClientRepository extends BaseRepository implements ClientRepositoryInterfa
 
             RTRIM(eps.nombre) AS entidad,
 
-            RTRIM(tent.clase) AS convenio,
+            RTRIM(ent.clase) AS convenio,
 
             RTRIM(rs.nombre) AS sexo_text,
 
