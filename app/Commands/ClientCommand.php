@@ -514,7 +514,7 @@ class ClientCommand implements Persistable
 
     }
     public function buildKeyDocument():string{
-        return $this->code.'/'.'documentos';
+        return 'Documentos/'.  $this->code.'/'.'documentos';
     }
 
     public function getAuditCreateMessage(string $username): string
