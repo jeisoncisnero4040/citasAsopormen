@@ -431,10 +431,12 @@ class ClientService extends BaseService{
                 AND NOT EXISTS (
                         SELECT 1
                         FROM ven_det vd
+                        LEFT JOIN nota_det nd ON nd.factura = vd.nro_fact
                         WHERE vd.autoriz = a.n_autoriza
                         AND vd.codigo = a.historia
                         AND vd.abierta = '0'
                         AND vd.detalle = ''
+                        AND nd.factura IS  NULL
                 )
             ),
 
