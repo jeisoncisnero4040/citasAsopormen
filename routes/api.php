@@ -128,7 +128,7 @@ Route::post('profesional-senders',[ProfesionalSenderController::class,'store']);
 Route::get('profesional-senders/utility',[ProfesionalSenderController::class,'utility']);   
 
 
-ROute::get('capacitacion-media',[CapacitacionMediaController::class,'index'])->middleware('login.check:agenda');
+Route::get('capacitacion-media',[CapacitacionMediaController::class,'index']);
 
 Route::get('metrics',[PrometheusController::class,'metrics']);
 
