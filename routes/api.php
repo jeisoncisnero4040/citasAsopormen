@@ -82,7 +82,8 @@ Route::post('citas/change_profesional',[CitasController::class,'ChangeProfesiona
 Route::get('citas/get_citas_client/{clientCode}',[CitasController::class, 'GetCitasClient']);
 Route::get('citas/get_citas_client_history/{clientCode}',[CitasController::class, 'GetHistoryCitasClientByCode']);
 Route::post('citas/clone-calendar',[CitasController::class,'cloneCalendarProfesional'])->middleware('login.check:replicar-citas');
-Route::delete('citas/delete-calendar',[CitasController::class,'deleteCalendarProfesional'])->middleware('login.check:retirar-citas');;
+Route::delete('citas/delete-calendar',[CitasController::class,'deleteCalendarProfesional'])->middleware('login.check:retirar-citas');
+Route::patch('citas/restart/{id}',[CitasController::class,'restart'])->middleware('login.check:agenda');
 
 
 Route::get('observa_citas',[ObservaCitasController::class,'getAllObservaCitas'])->middleware('login.check:agenda');

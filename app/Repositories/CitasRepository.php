@@ -106,6 +106,7 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
                         ci.autoriz,
                         ci.tiempo AS orden,
                         ci.copago,
+                        RTRIM(ci.mean_cancel) AS mean_cancel,
                         pro.duraccion AS duracion,
                         ci.direccion_cita AS direcion,
                         cli.nombre AS usuario,
@@ -125,6 +126,10 @@ class CitasRepository extends BaseRepository implements CitasRepositoryInterface
                     WHERE 
                         ci.id = ?";
         return self::sendQuery(query:$query,bindings:[$id]);
+    }
+    public function restartAppoiment(int $id):int{
+        $query="UPDATE citas SET cancelada = '0', asistio = '0', na = '0',realizar = '' WHERE id = ? AND cancelada = '1'";
+        return self::sendQuery(query:$query,bindings:[$id],typeConsult:'update');
     }
     public function validateHistAuth(
         string $history,

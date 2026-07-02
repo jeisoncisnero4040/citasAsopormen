@@ -680,6 +680,11 @@ class CitasController extends Controller
         $response=$this->citasService->deleteScheduleProfesional($request->query());
         return response()->json($response,200);
     }
+    public function restart(int $id){
+        $user = $this->user();
+        $response=$this->citasService->restartAppoiment(idAppoiment:$id,userRequesting:$user);
+        return response()->json($response,200);
+    }
     
     
 

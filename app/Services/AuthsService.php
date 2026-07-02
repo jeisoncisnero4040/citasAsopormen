@@ -91,7 +91,10 @@ class AuthsService extends BaseService{
         }
 
         $group = $this->attachSpecialtiesWithoutCollapsing(authorizations: $auths);
-
+        $group = collect($group)
+            ->unique('id')
+            ->values()
+            ->toArray();
         return [
             'client' => $user,
             'auths' => $group
@@ -183,6 +186,7 @@ class AuthsService extends BaseService{
                 );
                 return $item->toArray();
             })
+
             ->all();
     }
 

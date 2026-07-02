@@ -374,6 +374,33 @@ class CitasService{
         return $this->responseManager->success("Fueron Eliminadas {$appoimentsDeleted} citas");
 
     }
+    public function restartAppoiment(int $idAppoiment,UserRequesting $userRequesting){
+        $appoiments=$this->citasRepository->getById(id:$idAppoiment);
+        if(empty($appoiments)){
+            throw new NotFoundException("la cita actual no fue encontrada",404);
+        }
+        $appoiment=$appoiments[0];
+        if(!$userRequesting->isAdmin() && !$userRequesting->isDeveloper()){
+            throw new BadRequestException("No tienes permisos para reiniciar la cita",400);
+        }
+        if((int)$appoiment->cancelada === 0){
+            throw new BadRequestException("No es posible reiniciar la cita, ya que no esta cancelada",400);
+        }
+        if($appoiment->mean_cancel !== 'mc'){
+            throw new BadRequestException("No es posible reiniciar la cita, ya que fue cancelada por el cliente desde portal de usuarios o Whatsapp",400);
+        }
+        $this->citasRepository->restartAppoiment(id:$idAppoiment);
+        $msm = "El usuario {$userRequesting->getUsername()} ha reiniciado la cita con id  {$idAppoiment} asignada para la fecha {$appoiment->fecha} a las {$appoiment->hora} el dia ". Carbon::now()->format('Y-m-d H:i:s');
+        $this->queueService->publish(
+            $this->buildMsmAudit(
+                action:$msm,
+                userRequesting:$userRequesting
+            )
+        );
+
+        return $this->responseManager->success($this->citasRepository->getApposByIds(ids:[$idAppoiment])
+        );
+    }
     private function buildMsmAudit(string $action,UserRequesting $userRequesting,string $modulo = 'citas'):MessageQueue{
         return AuditMessageQueueBuilder::create()->withData([
             'audit'=>$action,

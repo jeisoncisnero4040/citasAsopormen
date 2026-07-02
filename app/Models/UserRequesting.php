@@ -53,7 +53,6 @@ class UserRequesting
 
     public function isDeveloper(): bool
     {
-        logger()->info("User role: " . $this->role);
         return $this->role === self::DEVELOPER_ROLE_ID;
     }
     public function toAuditData(): array

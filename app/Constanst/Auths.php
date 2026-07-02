@@ -240,7 +240,8 @@ class Auths {
 		a.fecha_cerrar_asp,
 		RTRIM(a.razon_cerrar_orden_asp) AS razon_cerrar_orden_asp,
 		RTRIM(pr.descrip) AS procedimiento,
-		a.cantidad
+		a.cantidad,
+        a.id
     FROM autoriza a
 	INNER JOIN procdent pr 
     ON a.procedi = pr.codigo
