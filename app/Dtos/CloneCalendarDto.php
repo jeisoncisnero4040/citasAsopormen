@@ -76,4 +76,14 @@ final class CloneCalendarDto
     {
         return $this->profesional;
     }
+    public function getFromShort(): string
+    {
+        $from=new \DateTime($this->from);
+        return $from->format('Y-d-m');
+    }
+    public function getToShort(): string
+    {
+        $to=new \DateTime($this->to);
+        return $to->format('Y-d-m');
+    }
 }

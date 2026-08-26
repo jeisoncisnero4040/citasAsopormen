@@ -25,10 +25,12 @@ use App\Repositories\CitasRepository;
 use Illuminate\Support\Str;
 use App\Services\QueueService;
 use stdClass;
+use App\Domain\KeyAuthCup;
+
 
 class CitasService{
-    private $citasModel;
-    private $responseManager;
+    private CitasModel $citasModel;
+    private ResponseManager $responseManager;
     private CitasRepository $citasRepository;
     private ProcedureService $procediproService;
     private ProfesionalService $profesionalService;
@@ -300,7 +302,7 @@ class CitasService{
         $fromString = $dto->getFrom();
         $toString = $dto->getTo();
         $startString = $dto->getStart();
-        $cedula = $dto->getCedula();
+
         $usuario = $dto->getUserRequest()->getUsername();
         $cedulaUsuario = $dto->getUserRequest()->getCedula();
         $profesional = $dto->getProfesional();
@@ -309,34 +311,27 @@ class CitasService{
         $startDate = Carbon::parse($startString)->startOfDay();
         $toDate = Carbon::parse($toString)->startOfDay();
         $diffDays = $fromDate->diffInDays($startDate);
-        $citasInfo = $this->citasModel->getInfoAppoimnetsToClone($cedula, $fromDate->format('Y-m-d'), $toDate->format('Y-m-d'));
-        $appoimentsToClone = $citasInfo['appoiments'];
-        $appoimentsAvailability = $citasInfo['availability'];
 
-        if(empty($appoimentsToClone) || empty($appoimentsAvailability)){
-            throw new NotFoundException("No hay citas disponibles para clonar en el rango de fechas especificado",404);
-        }
-        $availabilityMap = [];
-        foreach ($appoimentsAvailability as $item) {
-            $availabilityMap[$item->autorizacion] = $item->disponibles;
-        }
+        $dataClone = $this->citasModel->getInfoAppoimnetsToClone($dto);
+        $appoimentsToClone = $dataClone->getAppos();
+        $appoimentsAvailability = $dataClone->getReplicateDisponibilityArray();
 
         $ids = [];
         foreach ($appoimentsToClone as $appoiment) {
-            $authorizationAndOrder = $appoiment->autoriz . '|||' . $appoiment->tiempo;
-
-
-            if (!isset($availabilityMap[$authorizationAndOrder]) || $availabilityMap[$authorizationAndOrder] <= 0) {
+            $key = new KeyAuthCup($appoiment->autoriz, $appoiment->tiempo);
+            $dataAuth = $appoimentsAvailability->findByKey($key);
+            if ($dataAuth === null) {
                 continue;
             }
             $dateAppoiment = Carbon::parse($appoiment->fecha);
             $dateNewAppoiment = $dateAppoiment->copy()->addDays((int)$diffDays);
-            if (DateManager::isHoliday($dateNewAppoiment)) {
+            if(!$dataAuth->validateDisponibility($dateNewAppoiment)){
                 continue;
-            }            
+            }       
             $appoimentMap = AppoimentsMapper::mapAppoimentToClone($appoiment, $usuario, $dateNewAppoiment,$cedulaUsuario); 
             $idNewAppoiment = $this->citasModel->saveAppoimentClone($appoimentMap);
-            $availabilityMap[$authorizationAndOrder]--;
+            $dataAuth->decrementDisponibility();
+            $appoimentsAvailability=$appoimentsAvailability->replace($dataAuth);
             $ids[] = $idNewAppoiment;
         }
 
@@ -515,10 +510,7 @@ class CitasService{
                     VALUES (?, ?, ?, CONVERT(smalldatetime, ?, 120))",
                     [$idsToCancel, $idExample, $numSessionsCanceled, $dateCita]
                     );
-                
-        
-                
-                return $citasCanceled;
+
             });
         
             return $this->citasRepository->getApposByIds($idsForQuery);

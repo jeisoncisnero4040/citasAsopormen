@@ -36,7 +36,7 @@ Route::get('encriptar_passwords',[UserController::class,'encryptPAsswords']);
 Route::get('users',[UserController::class,'index']);
 
 
-Route::get('get_profesionals',[ProfesionalController::class,'getAllProfesionalByStringSearch'])->middleware('login');
+Route::get('get_profesionals',[ProfesionalController::class,'getAllProfesionalByStringSearch'])->middleware('login.check:agenda');
 
     
 Route::get('get_profesional_calendar/{cedula}',[ProfesionalController::class,'getProfesionalCalendarByCedula']);

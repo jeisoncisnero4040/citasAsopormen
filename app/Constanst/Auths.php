@@ -20,7 +20,8 @@ class Auths {
                                 a.dias,
                                 a.nro,
                                 a.remitente,
-                                a.id
+                                a.id,
+                                a.es_provisional
                             FROM autoriza a
                             WHERE 1=1
 							{{}}
@@ -130,7 +131,8 @@ class Auths {
                 a.remitente AS cod_remitente,
                 pr.nombre AS nombre_remitente,
                 a.id,
-                a.fecha
+                a.fecha,
+                a.es_provisional
 
             FROM procedimientos p
             LEFT JOIN contador c
@@ -236,31 +238,60 @@ class Auths {
 		)
     WHERE 1=1
     {{}}";
-    const TEMPLATE_GET_INFO_APPOS_AUTH = "SELECT count(*) AS citas,
-        ci.fecha,
-        ci.asistio,
-        ci.cancelada,
-        ci.na,
-        RTRIM(ci.procedipro) AS procedipro,
-        RTRIM(em.enombre) as profesional,
-        RTRIM(ci.direccion_cita) AS direccion_cita,
-        pro.sumable,
-        ci.tiempo
-
-    FROM citas ci 
-    INNER JOIN emplea em ON em.ecc = ci.cedprof
-    INNER JOIN procedipro pro ON ci.procedipro = pro.nombre
-    WHERE 1=1
-    {{}}
-
-    GROUP by ci.fecha,
-        ci.asistio,
-        ci.cancelada,
-        ci.na,
-        ci.tiempo,
-        ci.procedipro,
-        em.enombre,
-        ci.direccion_cita,
-        pro.sumable
-        order by ci.fecha;";
+    const TEMPLATE_GET_INFO_APPOS_AUTH = "
+        WITH citas_info AS (
+            SELECT
+                ci.fecha,
+                ci.asistio,
+                ci.cancelada,
+                ci.na,
+                ci.hora,
+                ci.id,
+                RTRIM(ci.procedipro) AS procedipro,
+                RTRIM(em.enombre) AS profesional,
+                RTRIM(ci.direccion_cita) AS direccion_cita,
+                pro.sumable,
+                ci.tiempo
+            FROM citas ci
+            INNER JOIN emplea em
+                ON em.ecc = ci.cedprof
+            INNER JOIN procedipro pro
+                ON ci.procedipro = pro.nombre
+            WHERE 1 = 1
+            {{}}
+        ),
+        primera_cita AS (
+            SELECT
+                fecha,
+                MIN(hora) AS hora
+            FROM citas_info
+            GROUP BY fecha
+        )
+        SELECT
+            COUNT(*) AS citas,
+            CAST(ci.fecha AS datetime) + CAST(pc.hora AS time) AS fecha,
+            ci.asistio,
+            ci.cancelada,
+            ci.na,
+            ci.tiempo,
+            ci.procedipro,
+            ci.profesional,
+            ci.direccion_cita,
+            ci.sumable
+        FROM citas_info ci
+        INNER JOIN primera_cita pc
+            ON ci.fecha = pc.fecha
+        GROUP BY
+            CAST(ci.fecha AS datetime) + CAST(pc.hora AS time),
+            ci.asistio,
+            ci.cancelada,
+            ci.na,
+            ci.tiempo,
+            ci.procedipro,
+            ci.profesional,
+            ci.direccion_cita,
+            ci.sumable
+        ORDER BY
+            CAST(ci.fecha AS datetime) + CAST(pc.hora AS time);
+    ";
 }

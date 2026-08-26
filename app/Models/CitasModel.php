@@ -2,20 +2,22 @@
 
 namespace App\Models;
 
+use App\Domain\DataReplicateAppos;
 use App\Models\BaseModel;
+use App\Dtos\CloneCalendarDto;
+use App\Domain\ReplicateDisponibilityArray;
 
 class CitasModel extends BaseModel
 {
-    public function getInfoAppoimnetsToClone(string $cedula, string $from, string $to)
+    public function getInfoAppoimnetsToClone(CloneCalendarDto $dto):DataReplicateAppos
     {
-        $bindingsQueryGetAvailability = [$cedula, $from, $to];
+        $bindingsQueryGetAvailability = [$dto->getCedula(), $dto->getFromShort(), $dto->getToShort()];
 
         $queryGetAvailability = "WITH autorizaciones AS (
             SELECT DISTINCT autoriz, tiempo,nro_hist AS historia
             FROM citas
             WHERE cedprof = ?
-            AND fecha BETWEEN CONVERT(smalldatetime,?, 120)
-                            AND CONVERT(smalldatetime,?, 120)
+            AND fecha BETWEEN ? AND ?
         ),
         citas_programadas AS (
             SELECT a.autoriz,
@@ -32,29 +34,20 @@ class CitasModel extends BaseModel
         citas_disponibles AS (
             SELECT au.n_autoriza AS autoriz, 
 					au.procedi, 
-					au.cantidad
+					au.cantidad,
+                    au.f_vence
             FROM autoriza au
 			INNER JOIN autorizaciones a ON au.n_autoriza = a.autoriz
 										AND au.procedi = a.tiempo
 										AND au.historia = a.historia
             AND au.cerrar_ord_asp != '1'
 			AND au.anulada = '0' 
-
-            UNION ALL
-            
-			SELECT ad.n_autoriza AS autoriz, 
-				   ad.procedi, 
-				   ad.cantidad
-            FROM autorizad ad
-			INNER JOIN autorizaciones a ON ad.n_autoriza = a.autoriz
-										AND ad.procedi = a.tiempo
-										AND ad.historia = a.historia
-			AND ad.anulada = '0' 
         )
 
         SELECT DISTINCT
             CONCAT(a.autoriz, '|||', a.tiempo) AS autorizacion,
             dis.cantidad,
+            dis.f_vence,
             ISNULL(cp.total_programadas,0) as total_programadas,
             ISNULL(dis.cantidad, 0) - ISNULL(cp.total_programadas, 0) AS disponibles
         FROM autorizaciones a
@@ -62,7 +55,7 @@ class CitasModel extends BaseModel
         LEFT JOIN citas_disponibles dis ON a.autoriz = dis.autoriz AND a.tiempo = dis.procedi
         WHERE ISNULL(dis.cantidad, 0) - ISNULL(cp.total_programadas, 0) > 0";
 
-        $bindingsGetAppointments = [$cedula,$from,$to];
+        $bindingsGetAppointments = [$dto->getCedula(), $dto->getFromShort(), $dto->getToShort()];
 
         $queryGetAppointments = "WITH citas_con_fecha AS (
                 SELECT 
@@ -71,8 +64,7 @@ class CitasModel extends BaseModel
                 FROM citas
                 WHERE 
                     cedprof = ?
-                    AND fecha BETWEEN CONVERT(smalldatetime,?, 120) 
-                                  AND CONVERT(smalldatetime, ?, 120)
+                    AND fecha BETWEEN ? AND ?
             )
             SELECT 
                 c.id,
@@ -102,12 +94,13 @@ class CitasModel extends BaseModel
             ORDER BY fecha_completa
         ";
         
-        $infoSchedule = [
-            'availability' => self::senqQuery($queryGetAvailability, $bindingsQueryGetAvailability),
-            'appoiments'   => self::senqQuery($queryGetAppointments, $bindingsGetAppointments),
-        ];
+        $dispo = $this->senqQuery($queryGetAvailability, $bindingsQueryGetAvailability);
+        $appoiments = $this->senqQuery($queryGetAppointments, $bindingsGetAppointments);
 
-        return $infoSchedule;
+        return new DataReplicateAppos(
+            replicateDisponibilityArray: ReplicateDisponibilityArray::fromArray($dispo),
+            appos: $appoiments
+        );
     }
     public function saveAppoimentClone(array $cita){
 

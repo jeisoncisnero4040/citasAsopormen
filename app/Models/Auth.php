@@ -33,6 +33,7 @@ class Auth {
     private ?string $remitente;
     private ?string $nameRemitente;
     private ?int $id;
+    private bool $isTempory= false;
 
     public function __construct(
         string $n_autoriza,
@@ -58,7 +59,8 @@ class Auth {
         string $fechaAdd,
         ?string $remitente ,
         ?string $nameRemitente ,
-        ?int $id = null
+        ?int $id = null,
+        bool $isTempory = false
     ){
         $this->n_autoriza = $n_autoriza;
         $this->tiempo = $tiempo;
@@ -84,6 +86,7 @@ class Auth {
         $this->fechaAdd = $fechaAdd;
         $this->nameRemitente = $nameRemitente;
         $this->id = $id;
+        $this->isTempory = $isTempory;
     }
 
     public static function fromArray(array $array): self
@@ -112,7 +115,9 @@ class Auth {
             $array['fecha'],
             $array['cod_remitente'],
             $array['nombre_remitente'],
-            isset($array['id']) ? (int)$array['id'] : null
+            isset($array['id']) ? (int)$array['id'] : null,
+            isset($array['es_provisional']) ? (bool)$array['es_provisional'] : false
+
         );
     }
 
@@ -142,7 +147,8 @@ class Auth {
             'cod_remitente'=>$this->remitente,
             'nombre_remitente'=>$this->nameRemitente,
             'fecha'=>$this->fechaAdd,
-            'id'=>$this->id
+            'id'=>$this->id,
+            'es_provisional'=>$this->isTempory
         ];
     }
     public function getAutoriza():string{
