@@ -16,6 +16,7 @@ final class CreateAuthDto
     private string $observations;
     private string $remitente;
     private string $clientCode;
+    private bool $isTemporal;
 
     /** @var ExternalProcedureDto[] */
     private array $procedures;
@@ -28,13 +29,14 @@ final class CreateAuthDto
         string $observations,
         string $remitente,
         array $procedures,
-        string $clientCode
+        string $clientCode,
+        bool $isTemporal
     ) {
         if(empty($clientCode)) {
             throw new BadRequestException('El código del cliente es obligatorio',400);
         }
-        if (empty($authCode)) {
-            throw new BadRequestException('El número de autorización es obligatorio',400);
+        if (empty($authCode) && !$isTemporal) {
+            throw new BadRequestException('El número de autorización es obligatorio para autorizaciones no temporales',400);
         }
 
         if (empty($from) || empty($to)) {
@@ -54,6 +56,7 @@ final class CreateAuthDto
         $this->remitente = $remitente;
         $this->procedures = $procedures;
         $this->clientCode = $clientCode;
+        $this->isTemporal = $isTemporal;
 
     }
 
@@ -72,7 +75,8 @@ final class CreateAuthDto
             observations: $data['observations'] ?? '',
             remitente: $data['remitente'] ?? '',
             procedures: $procedures,
-            clientCode: $data['clientCode'] ?? ''
+            clientCode: $data['clientCode'] ?? '',
+            isTemporal: (bool) ($data['isTemporal'] ?? false)
         );
     }
 
@@ -83,6 +87,7 @@ final class CreateAuthDto
     public function getObservations(): string { return $this->observations; }
     public function getRemitente(): string { return $this->remitente; }
     public function getClientCode(): string { return $this->clientCode; }
+    public function getIsTemporal(): bool { return $this->isTemporal; }
 
     /** @return ExternalProcedureDto[] */
     public function getProcedures(): array { return $this->procedures; }

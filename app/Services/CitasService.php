@@ -305,14 +305,17 @@ class CitasService{
         $cedulaUsuario = $dto->getUserRequest()->getCedula();
         $profesional = $dto->getProfesional();
 
-        $fromDate = Carbon::parse($fromString);
-        $startDate = Carbon::parse($startString);
-        $toDate=Carbon::parse($toString);
-        $diffDays = $startDate->diffInDays($fromDate);
+        $fromDate = Carbon::parse($fromString)->startOfDay();
+        $startDate = Carbon::parse($startString)->startOfDay();
+        $toDate = Carbon::parse($toString)->startOfDay();
+        $diffDays = $fromDate->diffInDays($startDate);
         $citasInfo = $this->citasModel->getInfoAppoimnetsToClone($cedula, $fromDate->format('Y-m-d'), $toDate->format('Y-m-d'));
         $appoimentsToClone = $citasInfo['appoiments'];
         $appoimentsAvailability = $citasInfo['availability'];
 
+        if(empty($appoimentsToClone) || empty($appoimentsAvailability)){
+            throw new NotFoundException("No hay citas disponibles para clonar en el rango de fechas especificado",404);
+        }
         $availabilityMap = [];
         foreach ($appoimentsAvailability as $item) {
             $availabilityMap[$item->autorizacion] = $item->disponibles;
@@ -327,21 +330,16 @@ class CitasService{
                 continue;
             }
             $dateAppoiment = Carbon::parse($appoiment->fecha);
-            $dateNewAppoiment = $dateAppoiment->copy()->addDays($diffDays);
-
+            $dateNewAppoiment = $dateAppoiment->copy()->addDays((int)$diffDays);
             if (DateManager::isHoliday($dateNewAppoiment)) {
                 continue;
-            }               
-            $appoimentMap = AppoimentsMapper::mapAppoimentToClone($appoiment, $usuario, $dateNewAppoiment,$cedulaUsuario);
+            }            
+            $appoimentMap = AppoimentsMapper::mapAppoimentToClone($appoiment, $usuario, $dateNewAppoiment,$cedulaUsuario); 
             $idNewAppoiment = $this->citasModel->saveAppoimentClone($appoimentMap);
             $availabilityMap[$authorizationAndOrder]--;
             $ids[] = $idNewAppoiment;
         }
 
-
-        $newsAppoiments=$this->citasModel->getApoimentByIds($ids);
-        $appoimentsMapped= $this->mapCalendarClient($newsAppoiments);
-        
         $audit=CitasDomain::buildAuditMsmClone(
                 user:$usuario,
                 profesional:$profesional,
@@ -356,7 +354,7 @@ class CitasService{
                 userRequesting:$dto->getUserRequest()
             )
         );
-        return $this->responseManager->success($appoimentsMapped);
+        return $this->responseManager->success($this->citasRepository->getApposByIds(ids:$ids));
     }
     public function deleteScheduleProfesional($request){
         //citasRequests::validateDataToCloneSchedule($request);

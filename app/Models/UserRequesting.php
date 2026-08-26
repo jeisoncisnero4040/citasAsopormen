@@ -7,6 +7,7 @@ class UserRequesting
     private const DEVELOPER_ROLE_ID = 19;
     private const ADMIN_ROLE_ID = 1;
     private const ROLES_USER = [22,23,24];
+    private const ADMISION_ROLE_ID = 30; 
     private string $cedula;
     private string $username;
     private int $role;
@@ -49,6 +50,10 @@ class UserRequesting
     public function isAdmin(): bool
     {
         return $this->role === self::ADMIN_ROLE_ID;
+    }
+    public function isAdmisionUser(): bool
+    {
+        return $this->role === self::ADMISION_ROLE_ID || $this->role === self::ADMIN_ROLE_ID;
     }
 
     public function isDeveloper(): bool

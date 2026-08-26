@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use App\utils\ZerosPadder;
 use App\Serializers\AuthsSerializer;
 use App\Commands\AuthCommand;
+use App\Domain\Consecutive;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 
 
@@ -27,8 +28,12 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
             $filters
         );
 
+
         return collect($response)
-            ->map(fn($item) => Auth::fromArray((array) $item))
+            ->unique('id')
+            ->map(function ($item) {
+                return Auth::fromArray((array) $item);
+            })
             ->toArray();
     }
     public function getCommand(GetAuthsDto $dto): array
@@ -79,14 +84,7 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
             if (!empty($exists)) {
                 throw new ServerErrorException("La autorizacion que deseas ingresar ya existe",500);
             }
-            $consecutives = DB::select("SELECT CONSECU FROM con_inv WITH (UPDLOCK, ROWLOCK) WHERE sigla = 'AU'");
             $lastId = DB::select("SELECT TOP 1 id FROM autoriza  ORDER BY id DESC")[0]->id ?? 0;
-
-            $currentConsecutive = $consecutives[0]->CONSECU ?? '0000000000';
-            $nextConsecutive = ZerosPadder::increment($currentConsecutive, 10);
-            foreach ($auths as $auth) {
-                $auth->setConsecutive($currentConsecutive);
-            }
             $query = $this->buildCreateQuery(
                 'autoriza',
                 AuthsSerializer::toPersistence($authExample),
@@ -101,7 +99,7 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
             }
 
             DB::insert($query, $bindings);
-            DB::update("UPDATE con_inv SET CONSECU = ? WHERE sigla = 'AU'", [$nextConsecutive]);
+            DB::update("UPDATE con_inv SET CONSECU = ? WHERE sigla = 'AU'", [$authExample->getConsecutive()->getNexConsecutive()]);
             DB::commit();
             return range($lastId + 1, $lastId + count($auths));
 
@@ -234,14 +232,14 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         $newCodeAuth = $auths[0]->getAuthCode();
         $clientCode = $auths[0]->getClientCode();
 
-        $codeWasChanged = $newCodeAuth !== $oldCodeAuth;
+
 
         $this->transactionalQuery(function () use (
             $auths,
             $oldCodeAuth,
             $newCodeAuth,
-            $clientCode,
-            $codeWasChanged
+            $clientCode
+
         ) {
 
             foreach ($auths as $auth) {
@@ -261,9 +259,7 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
                 ]);
             }
 
-            if (!$codeWasChanged) {
-                return 0;
-            }
+
 
 
             $rowsCitasUpdate =DB::update(
@@ -310,6 +306,12 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         $filter = $builder->toFilter();
 
         return $this->executeQuery($template, $filter);
+    }
+    public function getConsecutive():Consecutive{
+        $consecutives = DB::select("SELECT CONSECU,sigla FROM con_inv WITH (UPDLOCK, ROWLOCK) WHERE sigla = 'AU'");
+        $consecutive = $consecutives[0]->CONSECU;
+        $prefix = $consecutives[0]->sigla;
+        return new Consecutive($consecutive, $prefix);
     }
 
 

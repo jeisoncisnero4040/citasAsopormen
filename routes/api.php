@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\AuditContoller;
+
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AuthsController;
 use App\Http\Controllers\AuthsDocumentsController;
@@ -36,7 +36,7 @@ Route::get('encriptar_passwords',[UserController::class,'encryptPAsswords']);
 Route::get('users',[UserController::class,'index']);
 
 
-Route::get('get_profesionals',[ProfesionalController::class,'getAllProfesionalByStringSearch']);
+Route::get('get_profesionals',[ProfesionalController::class,'getAllProfesionalByStringSearch'])->middleware('login');
 
     
 Route::get('get_profesional_calendar/{cedula}',[ProfesionalController::class,'getProfesionalCalendarByCedula']);
@@ -70,14 +70,11 @@ Route::get('get_procedures/{string}',[ProcedureController::class,'searchProcedur
 Route::get('procedures',[ProcedureController::class,'find']);
 
 
-Route::post('citas',[CitasController::class, 'createGroupCitas'])->middleware('login.check:agenda');
-Route::delete('citas', [CitasController::class, 'deleteCitaById'])->middleware('login.check:agenda');
+Route::post('citas',[CitasController::class, 'createGroupCitas'])->middleware('login.check:agenda-escritura');
+Route::delete('citas', [CitasController::class, 'deleteCitaById'])->middleware('login.check:agenda-escritura');
 Route::get('citas',[CitasController::class, 'getCitaById'])->middleware('login.check:agenda');
-Route::post('citas/cancel_cita',[CitasController::class, 'cancelCita']);
 Route::post('citas/confirm_all_sessions_cita',[CitasController::class, 'confirmateCitaBySessionIds']);
-Route::get('citas/get_citas_canceled',[CitasController::class,'GetAllCitasCanceled']);
 Route::post('citas/cancel_all_sessions_cita',[CitasController::class, 'CancelCitaBySessionsIds']);
-Route::post('citas/Unactivate_cita_canceled',[CitasController::class, 'unactivateCita']);
 Route::post('citas/change_profesional',[CitasController::class,'ChangeProfesionalCitas'])->middleware('login.check:reasignar-citas');
 Route::get('citas/get_citas_client/{clientCode}',[CitasController::class, 'GetCitasClient']);
 Route::get('citas/get_citas_client_history/{clientCode}',[CitasController::class, 'GetHistoryCitasClientByCode']);
@@ -109,17 +106,17 @@ Route::get('informes/new-clients-by-procedure',[InformesController::class,'count
 Route::get('informes/old-users',[InformesController::class,'getOldUser'])->middleware('login.check:informes-citas');
 Route::get('informes/old-users-not-citas',[InformesController::class,'getOldUserNotFountCitad'])->middleware('login.check:informes-citas');
 
-Route::post('auths',[AuthsController::class,'store']);
-Route::delete('auths',[AuthsController::class,'destroy']);
+Route::post('auths',[AuthsController::class,'store'])->middleware('login.check:autorizaciones');
+Route::delete('auths',[AuthsController::class,'destroy'])->middleware('login.check:autorizaciones');
 Route::get('auths',[AuthsController::class,'index']);
-Route::patch('auths',[AuthsController::class,'update']);
+Route::patch('auths',[AuthsController::class,'update'])->middleware('login.check:autorizaciones');
 Route::get('auths/detail',[AuthsController::class,'getDetail']);
 
 
-Route::get('auths/documents',[AuthsDocumentsController::class,'index']);
-Route::post('auths/documents',[AuthsDocumentsController::class,'store']);
-Route::delete('auths/documents/{id}',[AuthsDocumentsController::class,'destroy']);
-Route::get('auths/documents/utility',[AuthsDocumentsController::class,'getUtility']);
+Route::get('auths/documents',[AuthsDocumentsController::class,'index'])->middleware('login.check:autorizaciones');
+Route::post('auths/documents',[AuthsDocumentsController::class,'store'])->middleware('login.check:autorizaciones');
+Route::delete('auths/documents/{id}',[AuthsDocumentsController::class,'destroy'])->middleware('login.check:autorizaciones') ;
+Route::get('auths/documents/utility',[AuthsDocumentsController::class,'getUtility'])->middleware('login.check:autorizaciones');
 
 
 Route::get('external-procedures',[ExternalProcedureController::class,'index']);

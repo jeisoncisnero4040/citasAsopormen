@@ -40,11 +40,13 @@ class AuthsService extends BaseService{
     public function Create(CreateAuthDto $dto, UserRequesting $userRequesting): array{
         $client = $this->clientService->getByClientCode($dto->getClientCode());
         $tarife= $this->tarifeService->getTarifeByClient($client);
+        $consecutive = $this->authsRepository->getConsecutive();
         $authsBuilder=AuthBuilder::create()
             ->withCreateAuthDto($dto)
             ->withClientView($client)
             ->withUserRequesting($userRequesting)
-            ->withTarife($tarife);
+            ->withTarife($tarife)
+            ->withConsecutive($consecutive);
 
         $authCommands = $authsBuilder->buildMany($dto->getProcedures());
         $exampleAuthCommand = $authCommands[0];
@@ -53,8 +55,14 @@ class AuthsService extends BaseService{
         
         $newAuths = $this->authsRepository->getByIds($newIds);
         $this->dispatchToQueue($msm, $userRequesting);
-        return $this->attachSpecialtiesWithoutCollapsing($newAuths);
+        $groupedAuths = $this->attachSpecialtiesWithoutCollapsing($newAuths);
+        $groupedAuths = collect($groupedAuths)
+            ->unique('id')
+            ->values()
+            ->toArray();
+        return $groupedAuths;
     }
+
     public function get(GetAuthsDto $dto): array
     {
         $auths = $this->authsRepository->get(dto: $dto);
@@ -131,9 +139,13 @@ class AuthsService extends BaseService{
             throw new NotFoundException("No se han encontrado Autorizaciones para actualizar",404);
         }
         $curentAuthCode = $authsToUpdate[0]->getAuthCode();
+        $newAuthCode = $dto->getAuthCode();
+
+        $codeIsChanged = $curentAuthCode !== $newAuthCode;
+
         $authsUpdated = collect($authsToUpdate)
-            ->map(function (AuthCommand $auth) use ($dto) {
-                $auth->update($dto);
+            ->map(function (AuthCommand $auth) use ($dto, $codeIsChanged,$userRequesting) {
+                $auth->update($dto, $codeIsChanged, $userRequesting);
                 return $auth;
             })
             ->toArray();

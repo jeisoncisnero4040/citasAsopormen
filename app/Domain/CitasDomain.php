@@ -112,7 +112,8 @@ class CitasDomain{
             
             $startHour = $startDate->setTime(hour:$hour, minute:$minute);
              
-            if (!DateManager::isHoliday($startHour)) {
+            if (!DateManager::isHoliday($startHour))
+            {
                 for ($session = 0; $session < $numSessions; $session++) {
                     $schedule[] = $startDate->copy();  
                     $startDate->addMinutes($sessionDuration);

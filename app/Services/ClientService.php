@@ -449,8 +449,12 @@ class ClientService extends BaseService{
                     au.cerrar_ord_asp AS cerrado,
                     es.Descripcion    AS especialidad
                 FROM autoriza au
+				INNER JOIN entidades ent ON 
+					ent.codigo = au.paquete
+					AND ent.admini = au.entidad
                 INNER JOIN procdent pr 
                     ON au.procedi = pr.codigo
+					AND ent.tarifa = pr.cod_enti
                 LEFT JOIN especialidadAsp es 
                     ON es.id = pr.especialidadAsp
                 INNER JOIN autorizaciones a 
@@ -458,11 +462,7 @@ class ClientService extends BaseService{
                 CROSS JOIN params p
                 WHERE au.anulada = '0'
                 AND au.historia = p.historia
-                AND pr.cod_enti = (
-                        SELECT TOP 1 en.tarifa
-                        FROM entidades en
-                        WHERE en.admini = au.entidad
-                )
+
 
                 UNION ALL
 

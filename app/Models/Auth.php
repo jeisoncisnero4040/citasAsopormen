@@ -29,6 +29,7 @@ class Auth {
     private string $n_convenio;
     private int $days;
     private string $consecutive;
+    private string $fechaAdd;
     private ?string $remitente;
     private ?string $nameRemitente;
     private ?int $id;
@@ -54,6 +55,7 @@ class Auth {
         string $n_convenio,
         int $days,
         string $consecutive,
+        string $fechaAdd,
         ?string $remitente ,
         ?string $nameRemitente ,
         ?int $id = null
@@ -79,6 +81,7 @@ class Auth {
         $this->days = $days;
         $this->consecutive = $consecutive;
         $this->remitente = $remitente;
+        $this->fechaAdd = $fechaAdd;
         $this->nameRemitente = $nameRemitente;
         $this->id = $id;
     }
@@ -106,6 +109,7 @@ class Auth {
             $array['n_convenio'],
             (int)$array['dias'],
             $array['nro'],
+            $array['fecha'],
             $array['cod_remitente'],
             $array['nombre_remitente'],
             isset($array['id']) ? (int)$array['id'] : null
@@ -137,6 +141,7 @@ class Auth {
             'nro'=>$this->consecutive,
             'cod_remitente'=>$this->remitente,
             'nombre_remitente'=>$this->nameRemitente,
+            'fecha'=>$this->fechaAdd,
             'id'=>$this->id
         ];
     }

@@ -6,6 +6,7 @@ namespace App\Interfaces;
 use App\Dtos\GetAuthsDto;
 use App\Models\Auth;
 use App\Commands\AuthCommand;
+use App\Domain\Consecutive;
 
 interface AuthsInterface{
     /**
@@ -44,6 +45,7 @@ interface AuthsInterface{
      * @return void
      */
     public function updateMany(array $auths,string $oldCodeAuth): void;
+    public function getConsecutive():Consecutive;
 
     
 }

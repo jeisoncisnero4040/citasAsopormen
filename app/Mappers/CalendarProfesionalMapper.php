@@ -14,7 +14,7 @@ class CalendarProfesionalMapper{
             $fechaHora = Carbon::parse($cita->fecha);
             $hora24 = $this->convertHourTo24Format($cita->hora);
             $startFechaHora = $fechaHora->copy()->addMinutes($this->calculateMinutesSinceStartOfDay($hora24));
-            $minutesToAdd = $cita->duracion;
+            $minutesToAdd =(int) $cita->duracion;
             $endFechaHora = $startFechaHora->copy()->addMinutes($minutesToAdd);
             $cita->start = $startFechaHora->toIso8601String();
             $cita->end = $endFechaHora->toIso8601String();

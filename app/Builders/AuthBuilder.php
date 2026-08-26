@@ -8,6 +8,8 @@ use App\Dtos\CreateAuthDto;
 use App\Dtos\ExternalProcedureDto;
 use App\Models\ClientView;
 use App\Models\UserRequesting;
+use App\Domain\ProvisionalAuthCode;
+use App\Domain\Consecutive;
 
 
 class AuthBuilder{
@@ -16,6 +18,7 @@ class AuthBuilder{
     private ?UserRequesting $userRequesting=null;
     private ?ExternalProcedureDto $externalProcedureDto=null;
     private ?Tarife $tarife=null;
+    private ?Consecutive $consecutive=null;
     private string $now;
     public function __construct()
     {
@@ -45,10 +48,24 @@ class AuthBuilder{
         $this->tarife = $tarife;
         return $this;   
     }
+    public function withConsecutive(Consecutive $consecutive): self
+    {
+        $this->consecutive = $consecutive;
+        return $this;   
+    }
     public function withExternalProcedureDto(ExternalProcedureDto $externalProcedureDto): self
     {
         $this->externalProcedureDto = $externalProcedureDto;
         return $this;   
+    }
+    private function  resolveAuthCode(): string
+    {
+        if ($this->createAuthDto->getIsTemporal()) {
+            $consecutive = $this->consecutive->getConsecutive();
+            $tempory= new ProvisionalAuthCode($consecutive);
+            return $tempory->getCode();
+        }
+        return $this->createAuthDto->getAuthCode();
     }
     public function build(): AuthCommand
     {
@@ -61,7 +78,7 @@ class AuthBuilder{
             expiredDate: $this->createAuthDto->getTo(),
             epsCode: $this->clientView->getEpsCode(),
             clientCode: $this->clientView->getCode(),
-            authCode: $this->createAuthDto->getAuthCode(),
+            authCode: $this->resolveAuthCode(),
             amountDays: $this->createAuthDto->getNumberDays(),
             userCreating: $this->userRequesting->getUsername(),
             dateCreating: $this->now,
@@ -69,7 +86,9 @@ class AuthBuilder{
             startDate: $this->createAuthDto->getFrom(),
             covenantCode: $this->clientView->getCovenantCode(),
             remitente: $this->createAuthDto->getRemitente(),
-            tarifeCode: $this->tarife->getCode()
+            tarifeCode: $this->tarife->getCode(),
+            consecutive: $this->consecutive,
+            isTempory: $this->createAuthDto->getIsTemporal()
         );
     }
 
@@ -86,6 +105,7 @@ class AuthBuilder{
                 ->withClientView($this->clientView)
                 ->withUserRequesting($this->userRequesting)
                 ->withTarife($this->tarife)
+                ->withConsecutive($this->consecutive)
                 ->withExternalProcedureDto($procedure)
                 ->build();
         }
@@ -99,6 +119,7 @@ class AuthBuilder{
         if (!$this->userRequesting) throw new \Exception('UserRequesting requerido');
         if (!$this->externalProcedureDto) throw new \Exception('ExternalProcedureDto requerido');
         if (!$this->tarife) throw new \Exception('Tarife requerido');
+        if (!$this->consecutive) throw new \Exception('Consecutive requerido');
     }
 
 }

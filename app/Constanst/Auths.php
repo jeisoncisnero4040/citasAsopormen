@@ -23,13 +23,14 @@ class Auths {
                                 a.id
                             FROM autoriza a
                             WHERE 1=1
-                            {{}}
+							{{}}
                         ),
             params AS (
                 SELECT TOP 1 historia FROM autorizaciones
             ),
             procedimientos AS (
                 SELECT
+					au.id,
                     au.n_autoriza,
                     au.procedi        AS tiempo,
                     RTRIM(pr.descrip)        AS procedim,
@@ -37,8 +38,12 @@ class Auths {
                     au.cerrar_ord_asp AS cerrado,
                     RTRIM(es.Descripcion)    AS especialidad
                 FROM autoriza au
+				INNER JOIN entidades ent ON 
+					ent.codigo = au.paquete
+					AND ent.admini = au.entidad
                 INNER JOIN procdent pr 
                     ON au.procedi = pr.codigo
+					AND ent.tarifa = pr.cod_enti
                 LEFT JOIN especialidadAsp es 
                     ON es.id = pr.especialidadAsp
                 INNER JOIN autorizaciones a 
@@ -46,29 +51,7 @@ class Auths {
                 CROSS JOIN params p
                 WHERE au.anulada = '0'
                 AND au.historia = p.historia
-                AND pr.cod_enti = (
-                        SELECT TOP 1 en.tarifa
-                        FROM entidades en
-                        WHERE en.admini = au.entidad
-                )
 
-                UNION ALL
-
-                SELECT
-                    ad.n_autoriza,
-                    ad.procedi     AS tiempo,
-                    RTRIM(ad.nombre)      AS procedim,
-                    ad.cantidad,
-                    '0'            AS cerrado,
-                    RTRIM(es.Descripcion) AS especialidad
-                FROM autorizad ad
-                INNER JOIN procdent pr 
-                    ON ad.procedi = pr.codigo
-                LEFT JOIN especialidadAsp es 
-                    ON es.id = pr.especialidadAsp
-                INNER JOIN autorizaciones a 
-                    ON a.n_autoriza = ad.n_autoriza
-                WHERE ad.anulada = '0'
             ),
 
             contador AS (
@@ -105,7 +88,7 @@ class Auths {
                 GROUP BY autoriz
             )
 
-            SELECT
+            SELECT DISTINCT
                 p.n_autoriza,
                 p.tiempo,
                 p.procedim,
@@ -146,14 +129,15 @@ class Auths {
                 a.nro,
                 a.remitente AS cod_remitente,
                 pr.nombre AS nombre_remitente,
-                a.id
+                a.id,
+                a.fecha
 
             FROM procedimientos p
             LEFT JOIN contador c
                 ON c.n_autoriza = p.n_autoriza
                 AND c.tiempo     = p.tiempo
             INNER JOIN autorizaciones a
-                    ON a.n_autoriza = p.n_autoriza
+                    ON a.id = p.id
             INNER JOIN eps e
                     ON e.codigo = a.entidad
             LEFT JOIN citas_por_autoriz ca
@@ -162,7 +146,7 @@ class Auths {
                 ON en.codigo = a.paquete
             LEFT JOIN prof_Remitentes pr 
                 ON pr.codigo = a.remitente
-            ORDER BY a.f_inicial, a.f_vence;";
+            ORDER BY a.f_inicial, a.f_vence";
 
     const TEMPLATE_GET_TRAZABILITY = "WITH autorizaciones AS (
             SELECT DISTINCT 

@@ -2,6 +2,7 @@
 
 namespace App\Serializers;
 use App\Commands\AuthCommand;
+use App\Domain\Consecutive;
 
 class AuthsSerializer
 {
@@ -14,7 +15,7 @@ class AuthsSerializer
             'sdt_fecha'=>$auth->getDate(),
             'sdt_f_vence'=>$auth->getExpiredDate(),
             'entidad'=>$auth->getEpsCode(),
-            'nro'=>$auth->getConsecutive(),
+            'nro'=>$auth->getConsecutive()->getConsecutive(),
             'historia'=>$auth->getClientCode(),
             'n_autoriza'=>$auth->getAuthCode(),
             'dias'=>$auth->getAmountDays(),
@@ -38,6 +39,7 @@ class AuthsSerializer
             'tarifa'=>$auth->getTarifeCode(),
             'remitente'=>$auth->getRemitente(),
             'clinico_nuevo'=>$auth->isNewSystem() ? 1 : 0,
+            'es_provisional'=>$auth->isTempory() ? 1 : 0,
 
 
         ];
@@ -74,7 +76,8 @@ class AuthsSerializer
             'cambios_Asp',
             'tarifa',
             'remitente',
-            'clinico_nuevo'
+            'clinico_nuevo',
+            'es_provisional'
         ];
     }
     public static function fromArray(array $data): AuthCommand
@@ -86,7 +89,6 @@ class AuthsSerializer
             date: $data['fecha'] ?? null,
             expiredDate: $data['f_vence'] ?? null,
             epsCode: $data['entidad'] ?? null,
-            consecutive: $data['nro'] ?? null,
             clientCode: $data['historia'] ?? null,
             amountDays: $data['dias'] ?? null,
             userCreating: $data['usuario'] ?? null,
@@ -108,7 +110,9 @@ class AuthsSerializer
             tarifeCode: $data['tarifa'] ?? null,
             remitente: $data['remitente'] ?? null,
             newSystem: (bool) ($data['clinico_nuevo'] ?? 0),
-            id: $data['id'] ?? null
+            id: $data['id'] ?? null,
+            consecutive: new Consecutive($data['nro'],'AU'),
+            isTempory: (bool) ($data['es_provisional'] ?? 0)
         );
     }
     public static function getColumnsWithAlias(string $alias = 'a'): array

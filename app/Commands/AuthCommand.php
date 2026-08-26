@@ -5,6 +5,8 @@ namespace App\Commands;
 use App\Dtos\UpdateAuthsDto;
 use App\Models\UserRequesting;
 use App\Dtos\ExternalProcedureDto;
+use App\Domain\Consecutive;
+use App\Exceptions\CustomExceptions\ForbidenException;
 
 final class AuthCommand
 {
@@ -13,7 +15,7 @@ final class AuthCommand
     private string $date;
     private string $expiredDate;
     private string $epsCode;
-    private ?string $consecutive = null;
+    private Consecutive $consecutive;
     private string $clientCode;
     private string $authCode;
     private int $amountDays;
@@ -38,6 +40,7 @@ final class AuthCommand
     private bool $newSystem;
     private ?string $remitente;
     private ?int $id;
+    private bool $isTempory;
 
     public function __construct(
         string $cupCode,
@@ -55,8 +58,9 @@ final class AuthCommand
         string $covenantCode,
         ?string $remitente,
         ?string $tarifeCode,
+        bool $isTempory,
 
-        ?string $consecutive = null,
+        Consecutive $consecutive,
         bool $anulated = false,
         string $userAnulating = '',
         int $assistedSessionsCounter = 0,
@@ -70,7 +74,8 @@ final class AuthCommand
         ?string $userClosedDate = null,
         ?string $changuesAsp = null,
         bool $newSystem = true,
-        ?int $id = null
+        ?int $id = null,
+        
     ){
         $this->cupCode = $cupCode;
         $this->amount = $amount;
@@ -102,6 +107,7 @@ final class AuthCommand
         $this->newSystem = $newSystem;
         $this->remitente = $remitente;
         $this->id = $id;
+        $this->isTempory = $isTempory;
     }
 
 
@@ -124,6 +130,7 @@ final class AuthCommand
     public function getDateCreating(): string { return $this->dateCreating; }
     public function getUserAnulating(): string { return $this->userAnulating; }
     public function getMotiveAnulation(): string { return $this->motiveAnulation; }
+    public function getConsecutive(): Consecutive { return $this->consecutive; }
     public function getDateClosed(): ?string { return $this->dateClosed; }
     public function getUserClosed(): ?string { return $this->userClosed; }
     public function getMotiveClosed(): ?string { return $this->motiveClosed; }
@@ -131,11 +138,12 @@ final class AuthCommand
     public function getChanguesAsp(): ?string { return $this->changuesAsp; }
     public function getTarifeCode(): ?string { return $this->tarifeCode; }
     public function isNewSystem(): bool { return $this->newSystem; }  
-    public function getConsecutive(): ?string { return $this->consecutive; }
+    
     public function getStartDate(): string { return $this->startDate; }
+    public function isTempory(): bool { return $this->isTempory; }
     public function getAssistedSessionsCounter(): int { return $this->assistedSessionsCounter; }
 
-    public function setConsecutive(?string $consecutive): void { $this->consecutive = $consecutive; } 
+    public function setConsecutive(?Consecutive $consecutive): void { $this->consecutive = $consecutive; } 
     public function getId(): ?int { return $this->id; }
     
     public function getMsmCreate(array $ids): string
@@ -156,7 +164,7 @@ final class AuthCommand
         $expirationDate->setTime(0, 0, 0);
         return $currentDate > $expirationDate;
     }
-    public function update(UpdateAuthsDto $dto): void
+    public function update(UpdateAuthsDto $dto,bool $codeIsChanged, UserRequesting $userRequesting): void
     {
         $this->authCode = $dto->getAuthCode();
         $this->startDate = $dto->getFrom();
@@ -165,6 +173,13 @@ final class AuthCommand
         $this->remitente = $dto->getSenderCode() ;
         $this->amount = $this->resolveAmmountToUpdate($dto->getCups());
         $this->observations = trim($dto->getObservations() ?? '');
+        if($codeIsChanged && $this->isTempory) {
+            if (!$userRequesting->isAdmisionUser()) {
+                throw new ForbidenException("Solo los usuarios de nómina pueden cambiar el código de autorización temporal", 403);
+            }
+            $this->isTempory = false;
+        }
+        
     }
 
     /**
