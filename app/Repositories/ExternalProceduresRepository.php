@@ -39,13 +39,16 @@ final class ExternalProceduresRepository extends BaseRepository implements Exter
             es.Descripcion AS especialidad
             from procdent pr
             INNER JOIN especialidadAsp es ON es.id = pr.especialidadAsp
-            WHERE 1=1;
-           {{}};";
+            WHERE 1=1
+           {{}}";
 
         $filters = FilterBuilder::create();
 
         if($dto->getTarife() !== null){
             $filters->add("pr.cod_enti = ?", $dto->getTarife());
+        }
+        if($dto->getCode() !== null){
+            $filters->add("pr.codigo = ?", $dto->getCode());
         }
         $filtersString = $filters->toFilter();
         $query=QueryBuilder::create()

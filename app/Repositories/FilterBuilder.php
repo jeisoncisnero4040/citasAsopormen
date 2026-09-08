@@ -64,4 +64,16 @@ class FilterBuilder {
         }
         return $sentence;
     }
+    public function addIn(string $field, array $values): self
+    {
+        if (empty($values)) {
+            throw new \Exception('No se proporcionaron valores para el filtro IN.');
+        }
+
+        $placeholders = implode(',', array_fill(0, count($values), '?'));
+        $this->sentences[] = "($field IN ($placeholders))";
+        $this->bindings    = array_merge($this->bindings, $values);
+
+        return $this;
+    }
 }

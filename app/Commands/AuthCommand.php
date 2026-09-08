@@ -173,6 +173,8 @@ final class AuthCommand
         $this->remitente = $dto->getSenderCode() ;
         $this->amount = $this->resolveAmmountToUpdate($dto->getCups());
         $this->observations = trim($dto->getObservations() ?? '');
+        $this->covenantCode = $dto->getCovenant();
+        $this->epsCode = $dto->getCodEps();
         if($codeIsChanged && $this->isTempory) {
             if (!$userRequesting->isAdmisionUser()) {
                 throw new ForbidenException("Solo los usuarios de nómina pueden cambiar el código de autorización temporal", 403);
@@ -180,6 +182,41 @@ final class AuthCommand
             $this->isTempory = false;
         }
         
+    }
+    public function updateWithProcedure(UpdateAuthsDto $dto,bool $codeIsChanged, UserRequesting $userRequesting, ExternalProcedureDto $procedureDto): void
+    {
+        logger()->info("Updating authorization with procedure", ["authCode" => $this->authCode, 
+                                                                "procedureCode" => $procedureDto->getCode(),
+                                                                "new CovenantCode" => $dto->getCovenant(),
+                                                                "new EpsCode" => $dto->getCodEps(),
+                                                                "new Observations" => $dto->getObservations(),
+                                                                "new From" => $dto->getFrom(),
+                                                                "new To" => $dto->getTo(),
+                                                                "new NumberDays" => $dto->getNumberDays(),
+                                                                "new SenderCode" => $dto->getSenderCode()
+                                                                
+                                                                
+                                                                ]
+                                                                
+                                                                
+                                                                );
+        $this->authCode = $dto->getAuthCode();
+        $this->startDate = $dto->getFrom();
+        $this->expiredDate = $dto->getTo();
+        $this->amountDays = $dto->getNumberDays();
+        $this->remitente = $dto->getSenderCode() ;
+        $this->cupCode = $procedureDto->getCode();
+
+        $this->amount = $this->resolveAmmountToUpdate([$procedureDto]);
+        $this->observations = trim($dto->getObservations() ?? '');
+        $this->covenantCode = $dto->getCovenant();
+        $this->epsCode = $dto->getCodEps();
+        if($codeIsChanged && $this->isTempory) {
+            if (!$userRequesting->isAdmisionUser()) {
+                throw new ForbidenException("No tienes permisos para cambiar el código de autorización temporal", 403);
+            }
+            $this->isTempory = false;
+        }
     }
 
     /**

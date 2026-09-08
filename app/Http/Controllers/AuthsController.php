@@ -65,7 +65,7 @@ class AuthsController extends Controller{
     public function update(Request $request):JsonResponse{
         $dto=UpdateAuthsDto::fromArray($request->all());
         $userRequesting =$this->user();
-        $response = $this->service->updateAuths(dto:$dto, userRequesting:$userRequesting);
+        $response = $this->service->update(dto:$dto, userRequesting:$userRequesting);
         return response()->json(
             data:$this->responseManager->success($response),
             status:200

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Dtos\GetExrenalProcedureDto;
 use Illuminate\Support\Js;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use App\Models\ExternProcedure;
 
 class ExternalProcedureController extends Controller
 {   
@@ -26,7 +27,8 @@ class ExternalProcedureController extends Controller
 
         $dto = GetExrenalProcedureDto::fromRequest($request->query());
         $procedures = $this->service->getProcedures($dto);
-        $response=$this->responseManager->success($procedures);
+        $outPutData = array_map(fn(ExternProcedure $procedure) => $procedure->toArray(), $procedures);
+        $response=$this->responseManager->success($outPutData);
         return response()->json(data:$response,status:200);
     }
 }

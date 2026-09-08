@@ -20,6 +20,7 @@ use App\Http\Controllers\PrometheusController;
 use App\Http\Controllers\KafkaController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\CapacitacionMediaController;
+use App\Http\Controllers\AgreementsController;
 
 Route::get('kafka/publish', [KafkaController::class, 'publish']);
 
@@ -127,6 +128,7 @@ Route::get('profesional-senders/utility',[ProfesionalSenderController::class,'ut
 
 
 Route::get('capacitacion-media',[CapacitacionMediaController::class,'index']);
+Route::get('agreements',[AgreementsController::class,'index']);
 
 Route::get('metrics',[PrometheusController::class,'metrics']);
 

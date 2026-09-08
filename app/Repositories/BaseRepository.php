@@ -113,5 +113,10 @@ class BaseRepository
             throw new ServerErrorException("Error en transacción: " . $e->getMessage(), 500);
         }
     }
+    public function execute(QueryBuilder $query, string $type = 'select'): int|array
+    {
+        return $this->sendQuery($query->toQuery(), $query->getBindings(), $type);
+    }
+
 
 }

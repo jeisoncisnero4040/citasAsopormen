@@ -21,7 +21,8 @@ class Auths {
                                 a.nro,
                                 a.remitente,
                                 a.id,
-                                a.es_provisional
+                                a.es_provisional,
+                                a.tarifa
                             FROM autoriza a
                             WHERE 1=1
 							{{}}
@@ -90,9 +91,9 @@ class Auths {
             )
 
             SELECT DISTINCT
-                p.n_autoriza,
-                p.tiempo,
-                p.procedim,
+                RTRIM(p.n_autoriza) AS n_autoriza,
+                RTRIM(p.tiempo) AS tiempo,
+                RTRIM(p.procedim) AS procedim,
                 p.cantidad,
                 p.cerrado,
                 ISNULL(p.especialidad, 'No Encontrada') AS especialidad,
@@ -132,7 +133,8 @@ class Auths {
                 pr.nombre AS nombre_remitente,
                 a.id,
                 a.fecha,
-                a.es_provisional
+                a.es_provisional,
+                a.tarifa
 
             FROM procedimientos p
             LEFT JOIN contador c

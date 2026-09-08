@@ -42,7 +42,7 @@ class QueryBuilder
     public function withFilterBuilder(FilterBuilder $filtersbuilder): self
     {
         $this->filters= $filtersbuilder->toFilter()->getQuery();
-        $this->bindings = $filtersbuilder->toFilter()->getBindings();
+        $this->bindings =array_merge($this->bindings, $filtersbuilder->toFilter()->getBindings());
         return $this;
     }
 
@@ -53,5 +53,23 @@ class QueryBuilder
         }
         
         return str_replace('{{}}',$this->filters, $this->baseQuery);
+    }
+    public function withSelect(string $table, array $columns): self
+    {
+        $columnsString = implode(', ', $columns);
+        $this->baseQuery = "SELECT {$columnsString} FROM {$table} WHERE 1 = 1 {{}}";
+        $this->bindings  = array_merge($this->bindings, []);
+        return $this;
+    }
+    public function withUpdate(string $table, array $columns, array $values): self
+    {
+        $setClauses = [];
+        foreach ($columns as $column) {
+            $setClauses[] = "{$column} = ?";
+        }
+        $setString = implode(', ', $setClauses);
+        $this->baseQuery = "UPDATE {$table} SET {$setString} WHERE 1 = 1 {{}}";
+        $this->bindings  = array_merge($this->bindings, $values);
+        return $this;
     }
 }

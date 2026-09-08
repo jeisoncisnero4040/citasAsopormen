@@ -7,6 +7,7 @@ use App\Dtos\GetAuthsDto;
 use App\Models\Auth;
 use App\Commands\AuthCommand;
 use App\Domain\Consecutive;
+use App\Models\ExternProcedure;
 
 interface AuthsInterface{
     /**
@@ -46,6 +47,11 @@ interface AuthsInterface{
      */
     public function updateMany(array $auths,string $oldCodeAuth): void;
     public function getConsecutive():Consecutive;
+
+    /**
+     * @param array<array{auth: AuthCommand, procedure: ExternProcedure, oldCupCode: string}> $updates
+     */
+    public function updateProcedures(array $updates, string $oldCodeAuth): void;
 
     
 }

@@ -25,9 +25,7 @@ final class ExternalProceduresService{
             new ProcedureByEpsStrategy($this->repository)
         ]);
         $procedures = $strategy->resolve($dto)->execute($dto);
-        return collect($procedures)
-            ->map(fn($item) => $item->toArray())
-            ->toArray();
+        return $procedures;
 
     }
 

@@ -30,10 +30,12 @@ class Auth {
     private int $days;
     private string $consecutive;
     private string $fechaAdd;
+    private string $tarife;
     private ?string $remitente;
     private ?string $nameRemitente;
     private ?int $id;
     private bool $isTempory= false;
+    
 
     public function __construct(
         string $n_autoriza,
@@ -57,6 +59,7 @@ class Auth {
         int $days,
         string $consecutive,
         string $fechaAdd,
+        string $tarife,
         ?string $remitente ,
         ?string $nameRemitente ,
         ?int $id = null,
@@ -84,6 +87,7 @@ class Auth {
         $this->consecutive = $consecutive;
         $this->remitente = $remitente;
         $this->fechaAdd = $fechaAdd;
+        $this->tarife = $tarife;
         $this->nameRemitente = $nameRemitente;
         $this->id = $id;
         $this->isTempory = $isTempory;
@@ -113,6 +117,7 @@ class Auth {
             (int)$array['dias'],
             $array['nro'],
             $array['fecha'],
+            $array['tarifa'],
             $array['cod_remitente'],
             $array['nombre_remitente'],
             isset($array['id']) ? (int)$array['id'] : null,
@@ -148,7 +153,8 @@ class Auth {
             'nombre_remitente'=>$this->nameRemitente,
             'fecha'=>$this->fechaAdd,
             'id'=>$this->id,
-            'es_provisional'=>$this->isTempory
+            'es_provisional'=>$this->isTempory,
+            'tarifa'=>$this->tarife
         ];
     }
     public function getAutoriza():string{
@@ -170,7 +176,10 @@ class Auth {
     public function getAuthCode(): string
     {
         return $this->n_autoriza;
-    }   
+    }  
+    public function getCovenantCode(): string{
+        return $this->convenio;
+    }
     public function getClientCode(): string
     {
         return $this->codeClient;
@@ -182,6 +191,9 @@ class Auth {
     public function isUpdatableAmmount(): bool
     {
         return $this->cantidad > 0 && !$this->cerrado && !$this->isInvoiced && !$this->isExpired();
+    }
+    public function getTarife():string{
+        return $this->tarife;
     }
     public function isExpired(): bool
     {

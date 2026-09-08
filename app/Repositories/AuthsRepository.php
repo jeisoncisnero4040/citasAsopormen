@@ -12,6 +12,7 @@ use App\Serializers\AuthsSerializer;
 use App\Commands\AuthCommand;
 use App\Domain\Consecutive;
 use App\Exceptions\CustomExceptions\ServerErrorException;
+use App\Models\ExternProcedure;
 
 
 class AuthsRepository extends BaseRepository implements AuthsInterface
@@ -289,6 +290,42 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
              ];
         });
     }
+    /**
+     * @param array<array{auth: AuthCommand, procedure: ExternProcedure, oldCupCode: string}> $updates
+     */
+    public function updateProcedures(array $updates, string $oldCodeAuth): void
+    {
+        $this->transactionalQuery(function () use ($updates, $oldCodeAuth) {
+            foreach ($updates as $update) {
+                $this->applyProcedureUpdate($update['auth'], $update['procedure'], $oldCodeAuth, $update['oldCupCode']);
+            }
+            return 0;
+        });
+    }
+    private function applyProcedureUpdate(AuthCommand $auth, ExternProcedure $procedure, string $oldCodeAuth, string $oldCupCode): void
+    {
+        $queryGetIdsAppos = QueryBuilder::create() 
+                            ->withSelect(table:'citas',columns: ['id'])
+                            ->withFilterBuilder(
+                                FilterBuilder::create()
+                                ->add('nro_hist', $auth->getClientCode())
+                                ->add('autoriz', $oldCodeAuth)
+                                ->add('tiempo', $oldCupCode)
+                            );
+        $idsAppos = $this->execute(
+            query:$queryGetIdsAppos,
+            type:'select'
+        );
+        $idsAppos = array_map(static fn($row) => $row->id, $idsAppos);
+
+        $this->updateAuth($auth);
+        $this->updateAppos($auth, $idsAppos);
+        if (!empty($idsAppos)) {
+            $this->updateEvolutions($auth, $idsAppos);
+            $this->updateDx($auth, $procedure,$idsAppos);
+            $this->updateAdmissions($auth,$procedure, $idsAppos);
+        }
+    }
 
 
     private function executeQuery(string $template, Filter $filter): array
@@ -312,6 +349,108 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         $consecutive = $consecutives[0]->CONSECU;
         $prefix = $consecutives[0]->sigla;
         return new Consecutive($consecutive, $prefix);
+    }
+    private function updateAppos(authCommand $auth, array $idsAppos): void{
+
+        $query = QueryBuilder::create()
+            ->withUpdate(table:'citas',columns: ['autoriz','tiempo','codent','codent2'],values: [$auth->getAuthCode(), $auth->getCupCode(), $auth->getEpsCode(), $auth->getCovenantCode()])
+            ->withFilterBuilder(
+                FilterBuilder::create()
+
+                ->addIn('id', $idsAppos)
+            );
+        $this->execute(
+            query: $query,
+            type: 'update'
+        );
+    }
+    private function updateAuth(authCommand $auth): void
+    {
+        $data = AuthsSerializer::toPersistence($auth);
+        $query = $this->buildUpdateQuery(
+            'autoriza',
+            $data,
+            "id = ?"
+        );
+        DB::update($query, [...array_values($data),$auth->getId()]);
+    }
+    private function updateEvolutions(AuthCommand $auth,array $idsAppos):void{
+        $this->updateEvos($auth,$idsAppos);
+        $this->updateFonoAudiologia($auth,$idsAppos);
+    }
+    private function updateAdmissions(AuthCommand $auth,ExternProcedure $newCode,array $idsAppos){
+        $this->updatePagodet($auth,$newCode,$idsAppos);
+        $this->updatePagosR($auth,$idsAppos);
+    }
+    private function updateEvos(AuthCommand $auth,array $idsAppos): void{
+        $query = QueryBuilder::create()
+            ->withUpdate(table:'evoluciones',columns: ['nautoriz_asp','entidad','convenio'],values: [$auth->getAuthCode(), $auth->getEpsCode(), $auth->getCovenantCode()])
+            ->withFilterBuilder(
+                FilterBuilder::create()
+                ->addIn('id_cita', $idsAppos)
+            );
+        $this->execute(
+            query: $query,
+            type: 'update'
+        );
+    }
+    private function updateFonoAudiologia(AuthCommand $auth,array $idsAppos): void{
+        $query = QueryBuilder::create()
+            ->withUpdate(table:'fonoaudiologia_2',columns: ['nautoriz_asp','entidad','convenio'],values: [$auth->getAuthCode(), $auth->getEpsCode(), $auth->getCovenantCode()])
+            ->withFilterBuilder(
+                FilterBuilder::create()
+                ->addIn('id_cita', $idsAppos)
+            );
+        $this->execute(
+            query: $query,
+            type: 'update',
+
+        );
+    }
+    private function updateDx(AuthCommand $auth,ExternProcedure $newCode,array $idsAppos): void{
+        $query = QueryBuilder::create()
+            ->withUpdate(table:'dx',columns: ['convenio','entidad','proc_adm'],values: [ $auth->getCovenantCode(), $auth->getEpsCode(), $newCode->getCode()])
+            ->withFilterBuilder(
+                FilterBuilder::create()
+                ->addIn('id_cita', $idsAppos)
+            );
+        $this->execute(
+            query: $query,
+            type: 'update',
+
+        );
+    }
+    private function updatePagodet(AuthCommand $auth, ExternProcedure $newCode,array $idsAppos):void{
+        $query = QueryBuilder::create()
+            ->withUpdate(table:'pagodet',
+                        columns:['cedprof','cod_ing','descrip','nivel'],
+                        values:[$auth->getEpsCode(),$auth->getCupCode(),$newCode->getDescription(),$auth->getAuthCode()]
+            )
+            ->withFilterBuilder(
+                FilterBuilder::create()
+                ->addIn('id_cita', $idsAppos)
+            );
+        $this->execute(
+            query: $query,
+            type: 'update',
+
+        );
+    }
+    private function updatePagosR(AuthCommand $auth,array $idsAppos): void{
+        $query = QueryBuilder::create()
+            ->withUpdate(table:'pagosr',
+                        columns:['detalle','entsub'],
+                        values:[$auth->getEpsCode(),$auth->getCovenantCode()]
+            )
+            ->withFilterBuilder(
+                FilterBuilder::create()
+                ->addIn('idcita', $idsAppos)
+            );
+        $this->execute(
+            query: $query,
+            type: 'update',
+
+        );
     }
 
 

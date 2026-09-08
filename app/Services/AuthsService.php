@@ -13,19 +13,24 @@ use App\Models\UserRequesting;
 use App\Builders\AuthBuilder;
 use App\Dtos\DeleteAuthsDto;
 use App\Dtos\UpdateAuthsDto;
+use App\Dtos\ExternalProcedureDto;
 use App\Services\QueueService;
 use App\Commands\AuthCommand;
+use App\Services\ExternalProceduresService;
+use App\Dtos\GetExrenalProcedureDto;
 
 class AuthsService extends BaseService{
     private AuthsInterface $authsRepository;
     private ClientService $clientService;
     private TarifeService $tarifeService;
     protected QueueService $queueService;   
+    private ExternalProceduresService $procedures;
 
     public  function __construct(AuthsInterface $authsRepository,
                                 ClientService $clientService,
                                 TarifeService $tarifeService,
-                                QueueService $queueService
+                                QueueService $queueService,
+                                ExternalProceduresService $procedures
 
     ) {
         parent::__construct($queueService);
@@ -33,6 +38,7 @@ class AuthsService extends BaseService{
         $this->clientService = $clientService;  
         $this->tarifeService = $tarifeService;
         $this->queueService = $queueService;
+        $this->procedures = $procedures;
     }
     /**
      * @return array<array<string, mixed>>
@@ -128,8 +134,9 @@ class AuthsService extends BaseService{
             ->withApposTrace($apposTrace)
             ->toArray();
     }
-    public function updateAuths(UpdateAuthsDto $dto, UserRequesting $userRequesting): array
-    {   
+
+    public function update(UpdateAuthsDto $dto, UserRequesting $userRequesting): array
+    {
         if(empty($dto->getNro())) {
             throw new BadRequestException("El número de autorización es obligatorio para actualizar",400);
         }
@@ -140,21 +147,36 @@ class AuthsService extends BaseService{
         }
         $curentAuthCode = $authsToUpdate[0]->getAuthCode();
         $newAuthCode = $dto->getAuthCode();
-
         $codeIsChanged = $curentAuthCode !== $newAuthCode;
 
-        $authsUpdated = collect($authsToUpdate)
-            ->map(function (AuthCommand $auth) use ($dto, $codeIsChanged,$userRequesting) {
-                $auth->update($dto, $codeIsChanged, $userRequesting);
-                return $auth;
-            })
-            ->toArray();
-        $this->authsRepository->updateMany($authsUpdated, $curentAuthCode);
+        $procedureUpdates = [];
+        foreach ($authsToUpdate as $auth) {
+            $infoCup = collect($dto->getCups())->first(fn(ExternalProcedureDto $cup) => $cup->getId() === $auth->getId());
+            $oldCupCode = $auth->getCupCode();
+            if (!$infoCup) {
+                throw new BadRequestException("No se ha encontrado información del procedimiento para la autorización con id {$auth->getId()}",400);
+            }
+            $auth->updateWithProcedure($dto, $codeIsChanged, $userRequesting, $infoCup);
+            $dtoGetProcedure = $auth->getTarifeCode() !== null
+                ? new GetExrenalProcedureDto(tarife: $auth->getTarifeCode(), code: $infoCup->getCode())
+                : new GetExrenalProcedureDto(epsCode: $auth->getEpsCode(), covenantCode: $auth->getCovenantCode(), code: $infoCup->getCode());
+            $procedure = $this->procedures->getProcedures($dtoGetProcedure);
+            if(count($procedure) !== 1){
+                throw new NotFoundException("No se ha encontrado el procedimiento externo con tarife {$auth->getTarifeCode()} y code {$infoCup->getCode()}",404);
+            }
+            $procedureUpdates[] = [
+                'auth' => $auth,
+                'procedure' => $procedure[0],
+                'oldCupCode' => $oldCupCode
+            ];
+        }
+        $this->authsRepository->updateProcedures($procedureUpdates, $curentAuthCode);
+
         $msm = "El usuario {$userRequesting->getUsername()} ha actualizado la autorización con numero de autorizacion {$curentAuthCode} el dia ". date("Y-m-d H:i:s");
         $this->dispatchToQueue($msm, $userRequesting);
         return $this->get($dtoGet);
-              
-       
+
+
     }
     public function deleteAuths(DeleteAuthsDto $dto, UserRequesting $userRequesting): void
     {
