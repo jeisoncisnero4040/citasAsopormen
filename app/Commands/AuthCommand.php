@@ -7,107 +7,49 @@ use App\Models\UserRequesting;
 use App\Dtos\ExternalProcedureDto;
 use App\Domain\Consecutive;
 use App\Exceptions\CustomExceptions\ForbidenException;
+use App\Domain\Date;
 
 final class AuthCommand
 {
-    private string $cupCode;
-    private int $amount;
-    private string $date;
-    private string $expiredDate;
-    private string $epsCode;
-    private Consecutive $consecutive;
-    private string $clientCode;
-    private string $authCode;
-    private int $amountDays;
-    private string $userCreating;
-    private bool $anulated;
-    private string $dateCreating;
-    private string $userAnulating;
-    private int $assistedSessionsCounter;
-    private string $motiveAnulation;
-    private string $observations;
-    private string $startDate;
-    private string $covenantCode;
-    private bool $suspended;
-    private string $headQuarters;
-    private bool $closed;
-    private ?string $dateClosed;
-    private ?string $userClosed;
-    private ?string $motiveClosed;
-    private ?string $userClosedDate;
-    private ?string $changuesAsp;
-    private ?string $tarifeCode;
-    private bool $newSystem;
-    private ?string $remitente;
-    private ?int $id;
-    private bool $isTempory;
+
 
     public function __construct(
-        string $cupCode,
-        int $amount,
-        string $date,
-        string $expiredDate,
-        string $epsCode,
-        string $clientCode,
-        string $authCode,
-        int $amountDays,
-        string $userCreating,
-        string $dateCreating,
-        string $observations,
-        string $startDate,
-        string $covenantCode,
-        ?string $remitente,
-        ?string $tarifeCode,
-        bool $isTempory,
+        private string $cupCode,
+        private int $amount,
+        private string $date,
+        private string $expiredDate,
+        private string $epsCode,
+        private string $clientCode,
+        private string $authCode,
+        private int $amountDays,
+        private string $userCreating,
+        private string $dateCreating,
+        private string $observations,
+        private string $startDate,
+        private string $covenantCode,
+        private ?string $remitente,
+        private ?string $tarifeCode,
+        private bool $isTempory,
 
-        Consecutive $consecutive,
-        bool $anulated = false,
-        string $userAnulating = '',
-        int $assistedSessionsCounter = 0,
-        string $motiveAnulation = '',
-        bool $suspended = false,
-        string $headQuarters = '001',
-        bool $closed = false,
-        ?string $dateClosed = null,
-        ?string $userClosed = null,
-        ?string $motiveClosed = null,
-        ?string $userClosedDate = null,
-        ?string $changuesAsp = null,
-        bool $newSystem = true,
-        ?int $id = null,
+        private Consecutive $consecutive,
+        private bool $anulated = false,
+        private string $userAnulating = '',
+        private int $assistedSessionsCounter = 0,
+        private string $motiveAnulation = '',
+        private bool $suspended = false,
+        private string $headQuarters = '001',
+        private bool $closed = false,
+        private ?string $dateClosed = null,
+        private ?string $userClosed = null,
+        private ?string $motiveClosed = null,
+        private ?string $userClosedDate = null,
+        private ?string $changuesAsp = null,
+        private bool $newSystem = true,
+        private ?int $id = null,
+        private ?Date $dateAdmision = null,
+        private ?string $userAdmision = null,
         
     ){
-        $this->cupCode = $cupCode;
-        $this->amount = $amount;
-        $this->date = $date;
-        $this->expiredDate = $expiredDate;
-        $this->epsCode = $epsCode;
-        $this->consecutive = $consecutive;
-        $this->clientCode = $clientCode;
-        $this->authCode = $authCode;
-        $this->amountDays = $amountDays;
-        $this->userCreating = $userCreating;
-        $this->anulated = $anulated;
-        $this->dateCreating = $dateCreating;
-        $this->userAnulating = $userAnulating;
-        $this->assistedSessionsCounter = $assistedSessionsCounter;
-        $this->motiveAnulation = $motiveAnulation;
-        $this->observations = trim($observations);
-        $this->startDate = $startDate;
-        $this->covenantCode = $covenantCode;
-        $this->suspended = $suspended;
-        $this->headQuarters = $headQuarters;
-        $this->closed = $closed;
-        $this->dateClosed = $dateClosed;
-        $this->userClosed = $userClosed;
-        $this->motiveClosed = $motiveClosed;
-        $this->userClosedDate = $userClosedDate;
-        $this->changuesAsp = $changuesAsp;
-        $this->tarifeCode = $tarifeCode;
-        $this->newSystem = $newSystem;
-        $this->remitente = $remitente;
-        $this->id = $id;
-        $this->isTempory = $isTempory;
     }
 
 
@@ -138,6 +80,8 @@ final class AuthCommand
     public function getChanguesAsp(): ?string { return $this->changuesAsp; }
     public function getTarifeCode(): ?string { return $this->tarifeCode; }
     public function isNewSystem(): bool { return $this->newSystem; }  
+    public function getDateAdmision(): ?Date { return $this->dateAdmision; }
+    public function getUserAdmision(): ?string { return $this->userAdmision; }
     
     public function getStartDate(): string { return $this->startDate; }
     public function isTempory(): bool { return $this->isTempory; }
@@ -180,26 +124,14 @@ final class AuthCommand
                 throw new ForbidenException("Solo los usuarios de nómina pueden cambiar el código de autorización temporal", 403);
             }
             $this->isTempory = false;
+            $this->dateAdmision = Date::now();
+            $this->userAdmision = $userRequesting->getUsername();
         }
         
     }
     public function updateWithProcedure(UpdateAuthsDto $dto,bool $codeIsChanged, UserRequesting $userRequesting, ExternalProcedureDto $procedureDto): void
     {
-        logger()->info("Updating authorization with procedure", ["authCode" => $this->authCode, 
-                                                                "procedureCode" => $procedureDto->getCode(),
-                                                                "new CovenantCode" => $dto->getCovenant(),
-                                                                "new EpsCode" => $dto->getCodEps(),
-                                                                "new Observations" => $dto->getObservations(),
-                                                                "new From" => $dto->getFrom(),
-                                                                "new To" => $dto->getTo(),
-                                                                "new NumberDays" => $dto->getNumberDays(),
-                                                                "new SenderCode" => $dto->getSenderCode()
-                                                                
-                                                                
-                                                                ]
-                                                                
-                                                                
-                                                                );
+
         $this->authCode = $dto->getAuthCode();
         $this->startDate = $dto->getFrom();
         $this->expiredDate = $dto->getTo();
@@ -216,6 +148,8 @@ final class AuthCommand
                 throw new ForbidenException("No tienes permisos para cambiar el código de autorización temporal", 403);
             }
             $this->isTempory = false;
+            $this->dateAdmision = Date::now();
+            $this->userAdmision = $userRequesting->getUsername();
         }
     }
 

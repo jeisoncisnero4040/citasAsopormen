@@ -22,7 +22,9 @@ class Auths {
                                 a.remitente,
                                 a.id,
                                 a.es_provisional,
-                                a.tarifa
+                                a.tarifa,
+                                a.usuario_admisiona,
+                                a.f_admisionada
                             FROM autoriza a
                             WHERE 1=1
 							{{}}
@@ -134,7 +136,9 @@ class Auths {
                 a.id,
                 a.fecha,
                 a.es_provisional,
-                a.tarifa
+                a.tarifa,
+                a.f_admisionada,
+                a.usuario_admisiona
 
             FROM procedimientos p
             LEFT JOIN contador c

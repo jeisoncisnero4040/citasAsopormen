@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Dtos\UpdateAuthsDto;
 use App\Dtos\ExternalProcedureDto;
+use App\Domain\Date;
 
 class Auth {
     private string $n_autoriza;
@@ -30,11 +31,13 @@ class Auth {
     private int $days;
     private string $consecutive;
     private string $fechaAdd;
-    private string $tarife;
+    private ?string $tarife;
     private ?string $remitente;
     private ?string $nameRemitente;
     private ?int $id;
     private bool $isTempory= false;
+    private ? Date $dateAdmision = null;
+    private ?string $userAdmision = null;
     
 
     public function __construct(
@@ -59,11 +62,13 @@ class Auth {
         int $days,
         string $consecutive,
         string $fechaAdd,
-        string $tarife,
+        ?string $tarife,
         ?string $remitente ,
         ?string $nameRemitente ,
         ?int $id = null,
-        bool $isTempory = false
+        bool $isTempory = false,
+        ? Date $dateAdmision = null,
+        ?string $userAdmision = null,
     ){
         $this->n_autoriza = $n_autoriza;
         $this->tiempo = $tiempo;
@@ -91,6 +96,8 @@ class Auth {
         $this->nameRemitente = $nameRemitente;
         $this->id = $id;
         $this->isTempory = $isTempory;
+        $this->dateAdmision = $dateAdmision;
+        $this->userAdmision = $userAdmision;
     }
 
     public static function fromArray(array $array): self
@@ -117,11 +124,14 @@ class Auth {
             (int)$array['dias'],
             $array['nro'],
             $array['fecha'],
-            $array['tarifa'],
+            $array['tarifa'] ?? null,
             $array['cod_remitente'],
             $array['nombre_remitente'],
             isset($array['id']) ? (int)$array['id'] : null,
-            isset($array['es_provisional']) ? (bool)$array['es_provisional'] : false
+            isset($array['es_provisional']) ? (bool)$array['es_provisional'] : false,
+            $array['f_admisionada'] ? Date::create($array['f_admisionada']) : null,
+            $array['usuario_admisiona'] ?? null,
+
 
         );
     }
@@ -154,7 +164,9 @@ class Auth {
             'fecha'=>$this->fechaAdd,
             'id'=>$this->id,
             'es_provisional'=>$this->isTempory,
-            'tarifa'=>$this->tarife
+            'tarifa'=>$this->tarife,
+            'f_admisionada'=>$this->dateAdmision->getDate(),
+            'usuario_admisiona'=>$this->userAdmision,
         ];
     }
     public function getAutoriza():string{

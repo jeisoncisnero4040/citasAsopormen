@@ -40,6 +40,8 @@ class AuthsSerializer
             'remitente'=>$auth->getRemitente(),
             'clinico_nuevo'=>$auth->isNewSystem() ? 1 : 0,
             'es_provisional'=>$auth->isTempory() ? 1 : 0,
+            'usuario_admisiona'=>$auth->getUserAdmision(),
+            'f_admisionada'=>$auth->getDateAdmision()?->getFullDate()??null,
 
 
         ];
@@ -77,7 +79,9 @@ class AuthsSerializer
             'tarifa',
             'remitente',
             'clinico_nuevo',
-            'es_provisional'
+            'es_provisional',
+            'usuario_admisiona',
+            'f_admisionada'
         ];
     }
     public static function fromArray(array $data): AuthCommand

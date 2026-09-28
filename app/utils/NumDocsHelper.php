@@ -10,7 +10,7 @@ class NumDocsHelper
         $nit = (string) $nit;
 
         $weights = [
-            71,67,59,53,47,43,41,37,29,23,19,17,13,7,3
+            3,7,13,17,19,23,29,37,41,43,47,53,59,67,71
         ];
 
         $nitLength = strlen($nit);

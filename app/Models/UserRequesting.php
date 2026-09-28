@@ -7,7 +7,7 @@ class UserRequesting
     private const DEVELOPER_ROLE_ID = 19;
     private const ADMIN_ROLE_ID = 1;
     private const ROLES_USER = [22,23,24];
-    private const ADMISION_ROLE_ID = 30; 
+    private const ADMISION_ROLE_ID = 28; 
     private string $cedula;
     private string $username;
     private int $role;

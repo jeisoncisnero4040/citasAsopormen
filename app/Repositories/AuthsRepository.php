@@ -319,8 +319,9 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         $idsAppos = array_map(static fn($row) => $row->id, $idsAppos);
 
         $this->updateAuth($auth);
-        $this->updateAppos($auth, $idsAppos);
+        
         if (!empty($idsAppos)) {
+            $this->updateAppos($auth, $idsAppos);
             $this->updateEvolutions($auth, $idsAppos);
             $this->updateDx($auth, $procedure,$idsAppos);
             $this->updateAdmissions($auth,$procedure, $idsAppos);

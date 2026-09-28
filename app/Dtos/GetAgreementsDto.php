@@ -19,7 +19,7 @@ class GetAgreementsDto
             id: $data['id'] ?? null,
             epsCode: $data['epsCode'] ?? null,
             agreementCode: $data['covenantCode'] ?? null,
-            tarife:$data['tarife']
+            tarife:$data['tarife']??null
         );
     }
     public function getId(): ?int
