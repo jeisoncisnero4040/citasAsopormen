@@ -8,6 +8,7 @@ use App\Models\Auth;
 use App\Commands\AuthCommand;
 use App\Domain\Consecutive;
 use App\Models\ExternProcedure;
+use App\Domain\Eps;
 
 interface AuthsInterface{
     /**
@@ -52,7 +53,7 @@ interface AuthsInterface{
      * @param array<array{auth: AuthCommand, procedure: ExternProcedure, oldCupCode: string}> $updates
      */
     public function updateProcedures(array $updates, string $oldCodeAuth): void;
-
+    public function checkAuthExists(AuthCommand $auth,Eps $eps): bool;
     
 }
 

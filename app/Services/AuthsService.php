@@ -15,9 +15,11 @@ use App\Dtos\DeleteAuthsDto;
 use App\Dtos\UpdateAuthsDto;
 use App\Dtos\ExternalProcedureDto;
 use App\Services\QueueService;
-use App\Commands\AuthCommand;
+use App\Domain\Code;
 use App\Services\ExternalProceduresService;
 use App\Dtos\GetExrenalProcedureDto;
+use App\Services\EpsService;
+use App\Dtos\GetEpsDto;
 
 class AuthsService extends BaseService{
     private AuthsInterface $authsRepository;
@@ -25,12 +27,14 @@ class AuthsService extends BaseService{
     private TarifeService $tarifeService;
     protected QueueService $queueService;   
     private ExternalProceduresService $procedures;
+    private EpsService $epsService;
 
     public  function __construct(AuthsInterface $authsRepository,
                                 ClientService $clientService,
                                 TarifeService $tarifeService,
                                 QueueService $queueService,
-                                ExternalProceduresService $procedures
+                                ExternalProceduresService $procedures,
+                                EpsService $epsService
 
     ) {
         parent::__construct($queueService);
@@ -39,6 +43,7 @@ class AuthsService extends BaseService{
         $this->tarifeService = $tarifeService;
         $this->queueService = $queueService;
         $this->procedures = $procedures;
+        $this->epsService = $epsService;
     }
     /**
      * @return array<array<string, mixed>>
@@ -47,15 +52,22 @@ class AuthsService extends BaseService{
         $client = $this->clientService->getByClientCode($dto->getClientCode());
         $tarife= $this->tarifeService->getTarifeByClient($client);
         $consecutive = $this->authsRepository->getConsecutive();
+        $dtoGetEps = new GetEpsDto(code: Code::fromString($client->getEpsCode()));
+        $eps = $this->epsService->find($dtoGetEps);
         $authsBuilder=AuthBuilder::create()
             ->withCreateAuthDto($dto)
             ->withClientView($client)
             ->withUserRequesting($userRequesting)
             ->withTarife($tarife)
-            ->withConsecutive($consecutive);
+            ->withConsecutive($consecutive)
+            ->withEps($eps);
 
         $authCommands = $authsBuilder->buildMany($dto->getProcedures());
         $exampleAuthCommand = $authCommands[0];
+        $authExists = $this->authsRepository->checkAuthExists($exampleAuthCommand, $eps);
+        if ($authExists) {
+            throw new BadRequestException("La autorización ya existe para esta EPS", 400);
+        }
         $newIds = $this->authsRepository->saveMany($authCommands);
         $msm = $exampleAuthCommand->getMsmCreate(ids : $newIds);
         
@@ -148,7 +160,8 @@ class AuthsService extends BaseService{
         $curentAuthCode = $authsToUpdate[0]->getAuthCode();
         $newAuthCode = $dto->getAuthCode();
         $codeIsChanged = $curentAuthCode !== $newAuthCode;
-
+        $dtoGetEps = new GetEpsDto(code: Code::fromString($dto->getCodEps()));
+        $eps = $this->epsService->find($dtoGetEps);
         $procedureUpdates = [];
         foreach ($authsToUpdate as $auth) {
             $infoCup = collect($dto->getCups())->first(fn(ExternalProcedureDto $cup) => $cup->getId() === $auth->getId());
@@ -169,6 +182,10 @@ class AuthsService extends BaseService{
                 'procedure' => $procedure[0],
                 'oldCupCode' => $oldCupCode
             ];
+        } 
+        $authExists = $this->authsRepository->checkAuthExists($procedureUpdates[0]['auth'], $eps);
+        if ($authExists) {
+            throw new BadRequestException("La autorización ya existe para esta EPS", 400);
         }
         $this->authsRepository->updateProcedures($procedureUpdates, $curentAuthCode);
 

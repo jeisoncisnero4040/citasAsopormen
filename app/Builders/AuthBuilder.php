@@ -4,12 +4,14 @@ namespace App\Builders;
 
 use App\Commands\AuthCommand;
 use App\Models\Tarife;
+use App\Domain\Eps;
 use App\Dtos\CreateAuthDto;
 use App\Dtos\ExternalProcedureDto;
 use App\Models\ClientView;
 use App\Models\UserRequesting;
 use App\Domain\ProvisionalAuthCode;
 use App\Domain\Consecutive;
+use App\Domain\Date;
 
 
 class AuthBuilder{
@@ -20,6 +22,7 @@ class AuthBuilder{
     private ?Tarife $tarife=null;
     private ?Consecutive $consecutive=null;
     private string $now;
+    private ?Eps $eps=null;
     public function __construct()
     {
         $this->now = date('Y-m-d H:i:s');
@@ -67,6 +70,11 @@ class AuthBuilder{
         }
         return $this->createAuthDto->getAuthCode();
     }
+    public function withEps(Eps $eps): self
+    {
+        $this->eps = $eps;
+        return $this;
+    }
     public function build(): AuthCommand
     {
         $this->validate();
@@ -88,7 +96,10 @@ class AuthBuilder{
             remitente: $this->createAuthDto->getRemitente(),
             tarifeCode: $this->tarife->getCode(),
             consecutive: $this->consecutive,
-            isTempory: $this->createAuthDto->getIsTemporal()
+            isTempory: $this->createAuthDto->getIsTemporal(),
+            epsNit: $this->eps->getNit(),
+            userAdmision:$this->isTempory()?null:$this->userRequesting->getUsername(),
+            dateAdmision:$this->isTempory()?null:Date::now(),
         );
     }
 
@@ -107,6 +118,7 @@ class AuthBuilder{
                 ->withTarife($this->tarife)
                 ->withConsecutive($this->consecutive)
                 ->withExternalProcedureDto($procedure)
+                ->withEps($this->eps)
                 ->build();
         }
 
@@ -120,6 +132,11 @@ class AuthBuilder{
         if (!$this->externalProcedureDto) throw new \Exception('ExternalProcedureDto requerido');
         if (!$this->tarife) throw new \Exception('Tarife requerido');
         if (!$this->consecutive) throw new \Exception('Consecutive requerido');
+        if (!$this->eps) throw new \Exception('Eps requerido');
+    }
+    private function isTempory(): bool
+    {
+        return $this->createAuthDto->getIsTemporal();
     }
 
 }

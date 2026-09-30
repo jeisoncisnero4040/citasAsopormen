@@ -13,7 +13,7 @@ use App\Commands\AuthCommand;
 use App\Domain\Consecutive;
 use App\Exceptions\CustomExceptions\ServerErrorException;
 use App\Models\ExternProcedure;
-
+use App\Domain\Eps;
 
 class AuthsRepository extends BaseRepository implements AuthsInterface
 {
@@ -71,20 +71,9 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
      */
     public function saveMany(array $auths): array
     {
-        DB::beginTransaction();
-        try {
+        return $this->transactionalQuery(function() use ($auths) {
             $authExample = $auths[0];
-            $exists = DB::select("SELECT 1 FROM autoriza 
-                WHERE n_autoriza = ? AND entidad = ? AND historia = ?",
-                [
-                    $authExample->getAuthCode(),
-                    $authExample->getEpsCode(),
-                    $authExample->getClientCode()
-                ]
-            );
-            if (!empty($exists)) {
-                throw new ServerErrorException("La autorizacion que deseas ingresar ya existe",500);
-            }
+
             $lastId = DB::select("SELECT TOP 1 id FROM autoriza  ORDER BY id DESC")[0]->id ?? 0;
             $query = $this->buildCreateQuery(
                 'autoriza',
@@ -101,17 +90,8 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
 
             DB::insert($query, $bindings);
             DB::update("UPDATE con_inv SET CONSECU = ? WHERE sigla = 'AU'", [$authExample->getConsecutive()->getNexConsecutive()]);
-            DB::commit();
             return range($lastId + 1, $lastId + count($auths));
-
-        } catch (ServerErrorException $e) {
-            DB::rollBack();
-            throw $e;
-        }
-        catch(\Exception){
-            DB::rollBack();
-            throw new ServerErrorException("Ha ocurrido un error al intentar guardar la autorizacion, por favor intenta de nuevo",500);
-        }
+        });
     }
 
     private function buildFilters(GetAuthsDto $dto): Filter
@@ -350,6 +330,13 @@ class AuthsRepository extends BaseRepository implements AuthsInterface
         $consecutive = $consecutives[0]->CONSECU;
         $prefix = $consecutives[0]->sigla;
         return new Consecutive($consecutive, $prefix);
+    }
+    public function checkAuthExists(AuthCommand $auth,Eps $eps): bool
+    {
+        $authCode = $auth->getAuthCode();
+        $epsCode = $eps->getNit()->getCode();
+        $result = DB::select("SELECT COUNT(*) as count FROM autoriza WHERE n_autoriza = ? AND nit_entidad = ?", [$authCode, $epsCode]);
+        return $result[0]->count > 0;
     }
     private function updateAppos(authCommand $auth, array $idsAppos): void{
 

@@ -114,7 +114,7 @@ class RequestClientConstants
         'discapaciadad_tipo' => 'nullable|string|max:100',
         
         // RESPONSABLE
-        'a_documento' => 'required|numeric|digits_between:5,20',
+        'a_documento' => 'nullable|numeric|digits_between:5,20',
         'a_primer_nombre' => 'required|string|min:2|max:50',
         'a_segundo_nombre' => 'nullable|string|max:50',
         'a_primer_apellido' => 'required|string|min:2|max:50',

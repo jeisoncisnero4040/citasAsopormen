@@ -25,7 +25,7 @@ class Date
     }
     public function getShort(): string
     {
-        return $this->date->format('Ydm');
+        return $this->date->format('Y-d-m');
     }
     public function getYear(): string
     {
@@ -62,5 +62,9 @@ class Date
     public function getFullDate(): string
     {
         return $this->date->format('Y-d-m H:i:s');
+    }
+    public function plusDays(int $days = 1): self
+    {
+        return new self($this->date->copy()->addDays($days));
     }
 }

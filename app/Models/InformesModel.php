@@ -1,6 +1,6 @@
 <?php
 namespace App\Models;
-
+use App\Domain\Date;
 class InformesModel extends BaseModel{
 
     public function getUserWhithNewProcedure(string $from,string $to,$procedure){
@@ -389,4 +389,49 @@ class InformesModel extends BaseModel{
             return self::senqQuery($query, $bindings);
         }
         }
+    public function getAuthsAdded(Date $from, Date $to): array
+    {
+        $query = "WITH eps AS (
+	select codigo,
+	nombre from cliente where 
+	ok_ent = '1'
+)
+
+select  
+	CAST(au.fecha AS date) AS feha,
+	td.documento AS tipo_documento,
+	RTRIM(cli.nit_cli) AS identificacion,
+	RTRIM(cli.nombre) AS nombre,
+	au.usuario,
+	procedi AS cod_ing,
+	pro.descrip,
+	au.cantidad,
+	n_autoriza as n_autorizacion,
+	CAST(f_inicial AS date) AS inicio_vigencia,
+	CAST(f_vence AS date) AS final_vigencia,
+	RTRIM(eps.nombre) AS entidad,
+	se.nombre
+FROM autoriza au
+INNER JOIN cliente cli 
+	ON cli.codigo = au.historia
+INNER JOIN eps 
+				ON eps.codigo = au.entidad
+INNER JOIN tipo_doc td 
+				ON td.tipo = cli.tip_iden
+INNER JOIN entidades ent 
+				ON ent.admini = au.entidad
+				AND ent.codigo = au.paquete
+INNER JOIN procdent pro
+				ON pro.cod_enti = ent.tarifa
+				AND pro.codigo = au.procedi
+INNER JOIN usuarios usu
+				ON usu.usuario = au.usuario
+INNER JOIN sede se ON
+				se.cod = usu.sede
+where au.fecha > ?
+and au.fecha < ?
+        ";
+        $bindings = [$from->getShort(), $to->getShort()];
+        return self::senqQuery($query, $bindings);
+    }
 }

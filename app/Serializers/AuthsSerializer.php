@@ -3,6 +3,8 @@
 namespace App\Serializers;
 use App\Commands\AuthCommand;
 use App\Domain\Consecutive;
+use App\Domain\Date;
+use App\Domain\Code;
 
 class AuthsSerializer
 {
@@ -42,6 +44,7 @@ class AuthsSerializer
             'es_provisional'=>$auth->isTempory() ? 1 : 0,
             'usuario_admisiona'=>$auth->getUserAdmision(),
             'f_admisionada'=>$auth->getDateAdmision()?->getFullDate()??null,
+            'nit_entidad'=>$auth->getEpsNit()?->getCode() ?? null,
 
 
         ];
@@ -81,7 +84,8 @@ class AuthsSerializer
             'clinico_nuevo',
             'es_provisional',
             'usuario_admisiona',
-            'f_admisionada'
+            'f_admisionada',
+            'nit_entidad'
         ];
     }
     public static function fromArray(array $data): AuthCommand
@@ -116,7 +120,10 @@ class AuthsSerializer
             newSystem: (bool) ($data['clinico_nuevo'] ?? 0),
             id: $data['id'] ?? null,
             consecutive: new Consecutive($data['nro'],'AU'),
-            isTempory: (bool) ($data['es_provisional'] ?? 0)
+            isTempory: (bool) ($data['es_provisional'] ?? 0),
+            userAdmision: $data['usuario_admisiona'] ?? null,
+            dateAdmision: isset($data['f_admisionada']) ? Date::create($data['f_admisionada']) : null,
+            epsNit: isset($data['nit_entidad']) ? new Code($data['nit_entidad']) : null,
         );
     }
     public static function getColumnsWithAlias(string $alias = 'a'): array

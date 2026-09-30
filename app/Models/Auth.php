@@ -165,7 +165,7 @@ class Auth {
             'id'=>$this->id,
             'es_provisional'=>$this->isTempory,
             'tarifa'=>$this->tarife,
-            'f_admisionada'=>$this->dateAdmision->getDate(),
+            'f_admisionada'=>$this->dateAdmision?->getDate(),
             'usuario_admisiona'=>$this->userAdmision,
         ];
     }

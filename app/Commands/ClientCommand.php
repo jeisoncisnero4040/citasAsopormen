@@ -139,7 +139,7 @@ class ClientCommand implements Persistable
             'parentresponsable'=>$this->guardianRelationship,
 
             'meses'=>$this->getMouths(),
-            'cedula_resp'=>$this->guardianDocument,
+            'cedula_resp'=>$this->guardianDocument??'',
 
             'G_poblacional'=>$this->populationGroup,
             'P_etnica'=>$this->etnia,
@@ -153,7 +153,7 @@ class ClientCommand implements Persistable
             'tel_acompa'=>$this->guardianPhone,
             'lugarnac'=>$this->placeBirth,
             'parentacompañante'=>$this->guardianRelationship,
-            'cedulaacompañante'=>$this->guardianDocument,
+            'cedulaacompañante'=>$this->guardianDocument??'',
             'niv_academi'=>$this->academicLevel,
             'n_hijos'=>$this->numHijos,
             'cod_ciudad'=>$this->distric,

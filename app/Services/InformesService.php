@@ -8,7 +8,9 @@ use App\Models\InformesModel;
 use App\Requests\InformesRequest;
 use App\utils\ResponseManager;
 use Carbon\Carbon;
-
+use App\Domain\Date;
+use App\Models\UserRequesting;
+use App\Exceptions\CustomExceptions\ForbidenException;
 class InformesService extends BaseModel{
    
     private ResponseManager $responseManager;
@@ -20,7 +22,8 @@ class InformesService extends BaseModel{
         $this->informesRepository=$informesRepository;
 
     }
-    public function getInformeNewClients($request){
+    public function getInformeNewClients(array $request, UserRequesting $user){
+        $this->validateLeaderAppoiments($user);
         InformesRequest::validateUserNewsData($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d");
         $to=Carbon::parse($request['to'])->format("Y-m-d");
@@ -32,7 +35,8 @@ class InformesService extends BaseModel{
         return $this->responseManager->success($data);
 
     }
-    public function getInformeUserNotAppoiments($request){
+    public function getInformeUserNotAppoiments(array $request, UserRequesting $user){
+        $this->validateLeaderAppoiments($user);
         InformesRequest::validateDateRange($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d H:m:s");
         $to=Carbon::parse($request['to'])->format("Y-m-d H:m:s");
@@ -43,7 +47,8 @@ class InformesService extends BaseModel{
         return $this->responseManager->success($data);
 
     }
-    public function getAppoimentsByDayByEntity($request){
+    public function getAppoimentsByDayByEntity(array $request, UserRequesting $user){
+        $this->validateLeaderAppoiments($user);
         InformesRequest::validateDateRange($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d");
         $to=Carbon::parse($request['to'])->format("Y-m-d");
@@ -54,14 +59,16 @@ class InformesService extends BaseModel{
         return $this->responseManager->success($data);
     }
 
-    public function getNewClientsByProcedure($request){
+    public function getNewClientsByProcedure(array $request, UserRequesting $user){
+        $this->validateLeaderAppoiments($user);
         InformesRequest::validateDateRange($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d");
         $to=Carbon::parse($request['to'])->format("Y-m-d");
         $data=$this->informesRepository->getNewClientsByProcedure($from,$to);
         return $this->responseManager->success($data);
     }
-    public function getoldUsersInService($request){
+    public function getoldUsersInService(array $request, UserRequesting $user){
+        $this->validateLeaderAppoiments($user);
         InformesRequest::validateUserNewsData($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d");
         $to=Carbon::parse($request['to'])->format("Y-m-d");
@@ -72,7 +79,8 @@ class InformesService extends BaseModel{
         }
         return $this->responseManager->success($data);
     }
-    public function oldUsersNotCitas($request){
+    public function oldUsersNotCitas(array $request, UserRequesting $user){
+        $this->validateLeaderAppoiments($user);
         InformesRequest::validateDateRange($request);
         $from =Carbon::parse($request['from'])->format("Y-m-d H:m:s");
         $to=Carbon::parse($request['to'])->format("Y-m-d H:m:s");
@@ -82,5 +90,22 @@ class InformesService extends BaseModel{
         }
         return $this->responseManager->success($data);
     }
-
+    public function getAuthsAdded(array $request, UserRequesting $user){
+        if(!$user->isAdmisionUser()){
+            throw new ForbidenException("El usuario no tiene permisos para acceder a este informe",403);
+        }
+        InformesRequest::validateDateRange($request);
+        $from =Date::create($request['from']);
+        $to=Date::create($request['to'])->plusDays();
+        $data=$this->informesRepository->getAuthsAdded(from: $from, to: $to);
+        if(empty($data)){
+            throw new NotFoundException("No se han encontrado reagistros en este rango de Tiempo",404);
+        }
+        return $this->responseManager->success($data);
+    }
+    public function validateLeaderAppoiments(UserRequesting $user):void{
+        if(!$user->isAppoimentLeader()){
+            throw new ForbidenException("El usuario no tiene permisos para acceder a este informe",403);
+        }
+    }
 }

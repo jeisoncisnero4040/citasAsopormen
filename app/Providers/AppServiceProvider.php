@@ -62,6 +62,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\AgreementsPort::class,
             \App\Repositories\AgreementsRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\EpsPort::class,
+            \App\Repositories\EpsRepository::class
+        );
     }
 
     /**

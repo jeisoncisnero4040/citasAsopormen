@@ -43,7 +43,7 @@ class CreateClientDto
     private bool $hasDisability;
     private ?string $disabilityType;
 
-    private string $guardianDocument;
+    private ?string $guardianDocument;
     private string $guardianFirstName;
     private ?string $guardianMiddleName;
     private string $guardianLastName;
@@ -88,7 +88,7 @@ class CreateClientDto
         ?string $ethnicity,
         bool $hasDisability,
         ?string $disabilityType,
-        string $guardianDocument,
+        ?string $guardianDocument,
         string $guardianFirstName,
         ?string $guardianMiddleName,
         string $guardianLastName,
@@ -199,7 +199,7 @@ class CreateClientDto
             hasDisability: (bool)($data['discapacidad'] ?? false),
             disabilityType: $data['discapacidad_tipo'] ?? '',
 
-            guardianDocument: $data['a_documento'],
+            guardianDocument: $data['a_documento']??'',
             guardianFirstName: $data['a_primer_nombre'],
             guardianMiddleName: $data['a_segundo_nombre'] ?? '',
             guardianLastName: $data['a_primer_apellido'],

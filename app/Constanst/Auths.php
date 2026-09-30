@@ -154,7 +154,7 @@ class Auths {
                 ON en.codigo = a.paquete
             LEFT JOIN prof_Remitentes pr 
                 ON pr.codigo = a.remitente
-            ORDER BY a.f_inicial, a.f_vence";
+            ORDER BY a.f_inicial DESC, a.f_vence DESC";
 
     const TEMPLATE_GET_TRAZABILITY = "WITH autorizaciones AS (
             SELECT DISTINCT 
@@ -177,8 +177,6 @@ class Auths {
                 ON cli.codigo = a.entidad
             INNER JOIN entidades ent 
                 ON ent.codigo = a.paquete
-            --WHERE a.n_autoriza = '16511713'
-            --AND a.historia = '0000029622'
             WHERE 1=1
             {{}}
         ),
@@ -222,7 +220,9 @@ class Auths {
             AND f.codigo = au.historia
         LEFT JOIN nota_det nt ON nt.factura = f.nro_fact
         LEFT JOIN auditoria ad 
-            ON ad.nro = f.nro_fact;
+            ON ad.nro = f.nro_fact
+            
+        ;
     ";
 
     const TEMPLATE_GET_TRAZA_ORDERS = " SELECT DISTINCT 

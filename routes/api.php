@@ -106,6 +106,7 @@ Route::get('informes/appoiments-by-entity',[InformesController::class,'countAppi
 Route::get('informes/new-clients-by-procedure',[InformesController::class,'countNewsClientsByProcedure'])->middleware('login.check:informes-citas');
 Route::get('informes/old-users',[InformesController::class,'getOldUser'])->middleware('login.check:informes-citas');
 Route::get('informes/old-users-not-citas',[InformesController::class,'getOldUserNotFountCitad'])->middleware('login.check:informes-citas');
+Route::get('informes/auths-added',[InformesController::class,'getAuthsAdded'])->middleware('login.check:informes-citas');
 
 Route::post('auths',[AuthsController::class,'store'])->middleware('login.check:autorizaciones');
 Route::delete('auths',[AuthsController::class,'destroy'])->middleware('login.check:autorizaciones');

@@ -8,6 +8,7 @@ use App\Dtos\ExternalProcedureDto;
 use App\Domain\Consecutive;
 use App\Exceptions\CustomExceptions\ForbidenException;
 use App\Domain\Date;
+use App\Domain\Code;
 
 final class AuthCommand
 {
@@ -48,7 +49,7 @@ final class AuthCommand
         private ?int $id = null,
         private ?Date $dateAdmision = null,
         private ?string $userAdmision = null,
-        
+        private ?Code $epsNit = null,
     ){
     }
 
@@ -89,6 +90,7 @@ final class AuthCommand
 
     public function setConsecutive(?Consecutive $consecutive): void { $this->consecutive = $consecutive; } 
     public function getId(): ?int { return $this->id; }
+    public function getEpsNit(): ?Code { return $this->epsNit; }
     
     public function getMsmCreate(array $ids): string
     {

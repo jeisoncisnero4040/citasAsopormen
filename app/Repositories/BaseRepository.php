@@ -109,8 +109,13 @@ class BaseRepository
 
         } catch (\Throwable $e) {
             DB::rollBack();
+            $message = $e->getMessage();
+            if (str_contains($message, 'clave duplicada')) {
+                throw new ServerErrorException("No se puede completar la accion por que ya existe un registro con el mismo valor", 500);
+            }
 
-            throw new ServerErrorException("Error en transacción: " . $e->getMessage(), 500);
+
+            throw new ServerErrorException("Error en transacción: " . $message, 500);
         }
     }
     public function execute(QueryBuilder $query, string $type = 'select'): int|array

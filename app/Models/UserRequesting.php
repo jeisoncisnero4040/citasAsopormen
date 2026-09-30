@@ -60,6 +60,10 @@ class UserRequesting
     {
         return $this->role === self::DEVELOPER_ROLE_ID;
     }
+    public function isAppoimentLeader(): bool
+    {
+        return $this->role === self::DEVELOPER_ROLE_ID;
+    }
     public function toAuditData(): array
     {
         return [

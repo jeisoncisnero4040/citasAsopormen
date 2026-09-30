@@ -14,30 +14,41 @@ class InformesController extends Controller
         $this->informesService=$informesService;
     }
     public function getNewClientsInforme(Request $request){
-        $response = $this->informesService->getInformeNewClients($request->query());
+        $user = $this->user();
+        $response = $this->informesService->getInformeNewClients($request->query(), $user);
         return response()->json($response,200);
     }
     public function getClientsAppoimentsNotFound(Request $request){
-        $response = $this->informesService->getInformeUserNotAppoiments($request->query());
+        $user = $this->user();
+        $response = $this->informesService->getInformeUserNotAppoiments($request->query(), $user);
         return response()->json($response,200);
     }
     public function countAppimentsEntity(Request $request){
-        $response = $this->informesService->getAppoimentsByDayByEntity($request->query());
+        $user = $this->user();
+        $response = $this->informesService->getAppoimentsByDayByEntity($request->query(), $user);
         return response()->json($response,200);
     }
 
     public function countNewsClientsByProcedure(Request $request){
-        $response = $this->informesService->getNewClientsByProcedure($request->query());
+        $user = $this->user();
+        $response = $this->informesService->getNewClientsByProcedure($request->query(), $user);
         return response()->json($response,200);
     }
     public function getOldUser(Request $request){
-        $response = $this->informesService->getoldUsersInService($request->query());
+        $user = $this->user();
+        $response = $this->informesService->getoldUsersInService($request->query(), $user);
         return response()->json($response,200);
     }
     public function getOldUserNotFountCitad(Request $request){
-        $response = $this->informesService->oldUsersNotCitas($request->query());
+        $user = $this->user();
+        $response = $this->informesService->oldUsersNotCitas($request->query(), $user);
         return response()->json($response,200);
 
+    }
+    public function getAuthsAdded(Request $request){
+        $user = $this->user();
+        $response = $this->informesService->getAuthsAdded($request->query(), $user);
+        return response()->json($response,200);
     }
     
 }
