@@ -4,7 +4,7 @@ namespace App\Files\Domain;
 
 use setasign\Fpdi\Fpdi;
 
-class JoinerPdfEngine
+class PdfEngine
 {
     public function create(): Fpdi
     {

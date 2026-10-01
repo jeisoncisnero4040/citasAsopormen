@@ -185,7 +185,7 @@ class AuthsService extends BaseService{
         } 
         $authExists = $this->authsRepository->checkAuthExists($procedureUpdates[0]['auth'], $eps);
         if ($authExists) {
-            throw new BadRequestException("La autorización ya existe para esta EPS", 400);
+            //throw new BadRequestException("La autorización ya existe para esta EPS", 400);
         }
         $this->authsRepository->updateProcedures($procedureUpdates, $curentAuthCode);
 

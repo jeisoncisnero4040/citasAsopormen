@@ -2,30 +2,32 @@
 
 namespace App\Files\Services;
 
-use App\Files\Domain\JoinerPdfEngine;
+use App\Files\Domain\PdfEngine;
 use App\Files\Ports\PdfJoinerPort;
+use App\Files\Domain\PdfCollection;
+use App\Files\Domain\Pdf;
 
 class PdfJoinerService implements PdfJoinerPort
 {
     public function __construct(
-        private JoinerPdfEngine $joinerPdfEngine
+        private PdfEngine $pdfEngine
     ) {}
 
     /**
-     * @param string[] $pdfContents
-     * @return string
+     * @param PdfCollection $pdfCollection
+     * @return Pdf
      */
-    public function join(array $pdfContents): string
+    public function join(PdfCollection $pdfCollection): Pdf
     {
-        $pdf = $this->joinerPdfEngine->create();
+        $pdf = $this->pdfEngine->create();
 
         $tempFiles = [];
 
         try {
 
-            foreach ($pdfContents as $index => &$content) {
+            foreach ($pdfCollection->getPdfs() as $index => $pdfItem) {
 
-                if (empty($content)) {
+                if (empty($pdfItem->getContent())) {
                     continue;
                 }
 
@@ -37,8 +39,8 @@ class PdfJoinerService implements PdfJoinerPort
                     mkdir(dirname($tempPath), 0777, true);
                 }
 
-                file_put_contents($tempPath, $content);
-                unset($content); 
+                file_put_contents($tempPath, $pdfItem->getContent());
+                unset($pdfItem); 
 
                 $tempFiles[] = $tempPath;
 
@@ -59,11 +61,11 @@ class PdfJoinerService implements PdfJoinerPort
                 }
             }
 
-            unset($content);
+            unset($pdfCollection);
 
             $output = $pdf->Output('', 'S');
             unset($pdf);
-            return $output;
+            return new Pdf($output);
 
         } finally {
 
@@ -74,5 +76,14 @@ class PdfJoinerService implements PdfJoinerPort
                 }
             }
         }
+    }
+
+    /**
+     * @param Pdf $pdf
+     * @return PdfCollection
+     */
+    public function split(Pdf $pdf): PdfCollection
+    {
+        return new PdfCollection();
     }
 }

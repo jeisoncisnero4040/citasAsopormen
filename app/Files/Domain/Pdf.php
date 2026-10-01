@@ -16,4 +16,8 @@ class Pdf
     {
         return $this->pdf;
     }
+    public function getContent(): string
+    {
+        return $this->pdf;
+    }
 }
