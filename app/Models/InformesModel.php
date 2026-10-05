@@ -410,7 +410,7 @@ select
 	CAST(f_inicial AS date) AS inicio_vigencia,
 	CAST(f_vence AS date) AS final_vigencia,
 	RTRIM(eps.nombre) AS entidad,
-	se.nombre
+	se.nombre AS sede
 FROM autoriza au
 INNER JOIN cliente cli 
 	ON cli.codigo = au.historia

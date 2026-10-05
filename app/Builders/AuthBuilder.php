@@ -12,6 +12,7 @@ use App\Models\UserRequesting;
 use App\Domain\ProvisionalAuthCode;
 use App\Domain\Consecutive;
 use App\Domain\Date;
+use App\Domain\Code;
 
 
 class AuthBuilder{
@@ -100,6 +101,8 @@ class AuthBuilder{
             epsNit: $this->eps->getNit(),
             userAdmision:$this->isTempory()?null:$this->userRequesting->getUsername(),
             dateAdmision:$this->isTempory()?null:Date::now(),
+            isParticular: $this->createAuthDto->getIsParticular(),
+            mipressCode: new Code($this->createAuthDto->getIdMipress()),
         );
     }
 

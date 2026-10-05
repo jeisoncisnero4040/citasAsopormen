@@ -7,17 +7,20 @@ use InvalidArgumentException;
 class GetAuthsDocumentsDto
 {
     private ?int $id;
-    private string $n_autoriza;
-    private string $clientCode;
+    private ?string $n_autoriza;
+    private ?string $clientCode;
+    private ?int $typeDocumentId;
 
     public function __construct(
         ?int $id = null,
-        string $n_autoriza = '',
-        string $clientCode = ''
+        ?string $n_autoriza = null,
+        ?string $clientCode = null,
+        ?int $typeDocumentId = null
     ) {
         $this->id = $id;
         $this->n_autoriza = $n_autoriza;
         $this->clientCode = $clientCode;
+        $this->typeDocumentId = $typeDocumentId;
     }
 
     public static function fromArray(array $data): self
@@ -25,8 +28,9 @@ class GetAuthsDocumentsDto
 
         return new self(
             $data['id'] ?? null,
-            $data['n_autoriza'] ?? '',
-            $data['clientCode'] ?? ''
+            $data['n_autoriza'] ?? null,
+            $data['clientCode'] ?? null,
+            $data['typeDocumentId'] ?? null
         );
     }
     public static function fromId(int $id): self
@@ -37,13 +41,17 @@ class GetAuthsDocumentsDto
     {
         return $this->id;
     }
-    public function getNAutoriza(): string
+    public function getNAutoriza(): ?string
     {
         return $this->n_autoriza;
     }
-    public function getClientCode(): string
+    public function getClientCode(): ?string
     {
         return $this->clientCode;       
+    }
+    public function getTypeDocumentId(): ?int
+    {
+        return $this->typeDocumentId;
     }
     public function isEmptyRequiredFields(): bool
     {

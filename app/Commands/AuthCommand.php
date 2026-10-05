@@ -31,6 +31,7 @@ final class AuthCommand
         private ?string $remitente,
         private ?string $tarifeCode,
         private bool $isTempory,
+        private bool $isParticular,
 
         private Consecutive $consecutive,
         private bool $anulated = false,
@@ -50,6 +51,8 @@ final class AuthCommand
         private ?Date $dateAdmision = null,
         private ?string $userAdmision = null,
         private ?Code $epsNit = null,
+        private ?Code $mipressCode = null,
+        
     ){
     }
 
@@ -91,6 +94,8 @@ final class AuthCommand
     public function setConsecutive(?Consecutive $consecutive): void { $this->consecutive = $consecutive; } 
     public function getId(): ?int { return $this->id; }
     public function getEpsNit(): ?Code { return $this->epsNit; }
+    public function isParticular(): bool { return $this->isParticular; }
+    public function getMipress(): ?Code { return $this->mipressCode; }
     
     public function getMsmCreate(array $ids): string
     {

@@ -96,6 +96,12 @@ class AuthsDocumentsRepository extends BaseRepository implements AuthsDocumentsP
             $builder->add('docs.autorizacion_id ', $dto->getNAutoriza());
             $builder->add('docs.historia', $dto->getClientCode());
         }
+        if($dto->getTypeDocumentId() !== null) {
+            $builder->add('docs.tipo_documento_id', $dto->getTypeDocumentId());
+        }
+        if($dto->getClientCode() !== null) {
+            $builder->add('docs.historia', $dto->getClientCode());
+        }
         return QueryBuilder::create()
             ->withBaseQuery($this->baseSelectQuery)
             ->withFilterBuilder($builder);

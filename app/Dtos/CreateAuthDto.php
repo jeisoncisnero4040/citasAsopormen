@@ -17,6 +17,8 @@ final class CreateAuthDto
     private string $remitente;
     private string $clientCode;
     private bool $isTemporal;
+    private bool $isParticular;
+    private ?string $idMipress;
 
     /** @var ExternalProcedureDto[] */
     private array $procedures;
@@ -30,7 +32,9 @@ final class CreateAuthDto
         string $remitente,
         array $procedures,
         string $clientCode,
-        bool $isTemporal
+        bool $isTemporal,
+        bool $isParticular,
+        ?string $idMipress = null
     ) {
         if(empty($clientCode)) {
             throw new BadRequestException('El código del cliente es obligatorio',400);
@@ -57,6 +61,8 @@ final class CreateAuthDto
         $this->procedures = $procedures;
         $this->clientCode = $clientCode;
         $this->isTemporal = $isTemporal;
+        $this->isParticular = $isParticular;
+        $this->idMipress = $idMipress;
 
     }
 
@@ -76,7 +82,9 @@ final class CreateAuthDto
             remitente: $data['remitente'] ?? '',
             procedures: $procedures,
             clientCode: $data['clientCode'] ?? '',
-            isTemporal: (bool) ($data['isTemporal'] ?? false)
+            isTemporal: (bool) ($data['isTemporal'] ?? false),
+            isParticular: (bool) ($data['isParticular'] ?? false),
+            idMipress: $data['idMipres'] ?? null
         );
     }
 
@@ -88,6 +96,8 @@ final class CreateAuthDto
     public function getRemitente(): string { return $this->remitente; }
     public function getClientCode(): string { return $this->clientCode; }
     public function getIsTemporal(): bool { return $this->isTemporal; }
+    public function getIsParticular(): bool { return $this->isParticular; }
+    public function getIdMipress(): ?string { return $this->idMipress; }
 
     /** @return ExternalProcedureDto[] */
     public function getProcedures(): array { return $this->procedures; }

@@ -45,6 +45,7 @@ class AuthsSerializer
             'usuario_admisiona'=>$auth->getUserAdmision(),
             'f_admisionada'=>$auth->getDateAdmision()?->getFullDate()??null,
             'nit_entidad'=>$auth->getEpsNit()?->getCode() ?? null,
+            'mipress'=>$auth->getMipress()?->getCode() ?? null,
 
 
         ];
@@ -85,7 +86,8 @@ class AuthsSerializer
             'es_provisional',
             'usuario_admisiona',
             'f_admisionada',
-            'nit_entidad'
+            'nit_entidad',
+            'mipress'
         ];
     }
     public static function fromArray(array $data): AuthCommand
@@ -124,6 +126,8 @@ class AuthsSerializer
             userAdmision: $data['usuario_admisiona'] ?? null,
             dateAdmision: isset($data['f_admisionada']) ? Date::create($data['f_admisionada']) : null,
             epsNit: isset($data['nit_entidad']) ? new Code($data['nit_entidad']) : null,
+            mipressCode: isset($data['mipress']) ? new Code($data['mipress']) : null,
+            isParticular: false,
         );
     }
     public static function getColumnsWithAlias(string $alias = 'a'): array
