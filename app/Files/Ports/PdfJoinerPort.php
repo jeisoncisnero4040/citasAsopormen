@@ -1,8 +1,11 @@
 <?php
 
 namespace App\Files\Ports;
+
 use App\Files\Domain\PdfCollection;
 use App\Files\Domain\Pdf;
+use App\Files\Domain\PdfExplitterIndexsCollection;
+use App\Files\Domain\SubRangeIndex;
 
 interface PdfJoinerPort
 {
@@ -20,5 +23,7 @@ interface PdfJoinerPort
      * @param Pdf $pdf PDF a dividir
      * @return PdfCollection Colección de PDFs resultantes
      */
-    public function split(Pdf $pdf): PdfCollection;
+    public function split(Pdf $pdf, PdfExplitterIndexsCollection $config): PdfCollection;
+
+    public function splitBySubRange(Pdf $pdf, SubRangeIndex $subRangeIndex): Pdf;
 }

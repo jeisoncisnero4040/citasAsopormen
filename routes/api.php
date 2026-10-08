@@ -119,6 +119,7 @@ Route::get('auths/documents',[AuthsDocumentsController::class,'index'])->middlew
 Route::post('auths/documents',[AuthsDocumentsController::class,'store'])->middleware('login.check:autorizaciones');
 Route::delete('auths/documents/{id}',[AuthsDocumentsController::class,'destroy'])->middleware('login.check:autorizaciones') ;
 Route::get('auths/documents/utility',[AuthsDocumentsController::class,'getUtility'])->middleware('login.check:autorizaciones');
+Route::post('auths/documents/massive',[AuthsDocumentsController::class,'createMany']);//public por que esta en debug;
 
 
 Route::get('external-procedures',[ExternalProcedureController::class,'index']);

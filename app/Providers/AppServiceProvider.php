@@ -66,6 +66,15 @@ class AppServiceProvider extends ServiceProvider
             \App\Interfaces\EpsPort::class,
             \App\Repositories\EpsRepository::class
         );
+        $this->app->bind(
+            \App\Interfaces\StorageInterface::class,
+            \App\Services\StorageService::class
+        );
+        $this->app->bind(
+            \App\Files\Ports\PdfJoinerPort::class,
+            \App\Files\Services\PdfJoinerService::class
+
+        );
     }
 
     /**

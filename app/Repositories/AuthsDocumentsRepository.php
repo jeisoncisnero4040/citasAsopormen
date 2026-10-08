@@ -68,6 +68,29 @@ class AuthsDocumentsRepository extends BaseRepository implements AuthsDocumentsP
             return AuthsDocumentsSerializer::fromArray((array) $row);
         }, $results);
     }
+    /**
+     * @param AuthsDocumentsCommand[] $items
+     * @return void
+     */
+    public function createMany(array $items): void{
+        $arrays = array_map(function(AuthsDocumentsCommand $item) {
+            return AuthsDocumentsSerializer::toPersistenceArray($item);
+        }, $items);
+        $queries = QueryBuilder::create()
+            ->withInsertMany($this->table, $arrays);
+        $this->transactionalQuery(function () use ($queries) {
+            foreach ($queries as $query) {
+                $this->execute(
+                    query: $query,
+                    type: 'insert'
+                );
+            }
+            return 1;
+        });
+
+
+
+    }
 
     public function delete(int $id): void{
         $query = "DELETE FROM documentos_autorizacion WHERE id = ?";

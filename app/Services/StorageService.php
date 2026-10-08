@@ -7,6 +7,7 @@ use App\Interfaces\StorageInterface;
 use App\Interfaces\Retryable;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use App\Interfaces\Keyable;
 
 class StorageService implements StorageInterface, Retryable
 {
@@ -14,6 +15,13 @@ class StorageService implements StorageInterface, Retryable
     {
         return $this->retryApply(function () use ($file, $path) {
             return $file->store($path, 's3');
+        });
+    }
+
+    public function put(Keyable $key, string $contents): bool
+    {
+        return $this->retryApply(function () use ($key, $contents) {
+            return Storage::disk('s3')->put($key->getKey(), $contents);
         });
     }
 
@@ -39,8 +47,7 @@ class StorageService implements StorageInterface, Retryable
         } catch (\Throwable $e) {
             throw new ServerErrorException(
                 "Error al ejecutar operación de almacenamiento ".$e->getMessage(),
-                500,
-                $e
+                500
             );
         }
     }

@@ -12,7 +12,6 @@ class AuthsDocumentsCommand {
     private string $epsCode;
     private string $created_At;
     private string $clientCode;
-    private ?string $nameDocument;
     private ?string $keyDocument; 
     public function __construct(
         string $n_autoriza,
@@ -22,7 +21,6 @@ class AuthsDocumentsCommand {
         string $created_At,
         string $clientCode,
         ?int $id=null,
-        ?string $nameDocument=null,
         ?string $keyDocument=null
     ) {
         $this->id = $id;
@@ -33,7 +31,7 @@ class AuthsDocumentsCommand {
         $this->epsCode = $epsCode;
         $this->created_At = $created_At;
         $this->keyDocument = $keyDocument;
-        $this->nameDocument = $nameDocument;
+
 
     }
     public function buildkeyDocument(): string
@@ -64,10 +62,6 @@ class AuthsDocumentsCommand {
     {
         return $this->created_At;
     }
-    public function getNameDocument(): ?string
-    {
-        return $this->nameDocument;
-    }
     public function getClientCode(): string
     {
         return $this->clientCode;
@@ -77,16 +71,12 @@ class AuthsDocumentsCommand {
     {
         return $this->keyDocument;
     }
-    public function setNameDocument(string $name): void
-    {
-        $this->nameDocument = $name;
-    }
     public function messaggeAudit(UserRequesting $user):string{
-        return "El usuario ". $user->getUsername().  " añadio el documento ". $this->nameDocument. 
+        return "El usuario ". $user->getUsername().  " añadio el documento ". $this->documentTypeId. 
         " a la autorizacion  ". $this->n_autoriza ." el dia ". $this->created_At;
     }
     public function messaggeAuditDelete(UserRequesting $user):string{
-        return "El usuario ". $user->getUsername().  " elimino el documento ". $this->nameDocument. 
+        return "El usuario ". $user->getUsername().  " elimino el documento ". $this->documentTypeId. 
         " de la autorizacion  ". $this->n_autoriza ." el dia ". now()->toDateTimeString();
     }
     public function setKeyDocument(string $key): void

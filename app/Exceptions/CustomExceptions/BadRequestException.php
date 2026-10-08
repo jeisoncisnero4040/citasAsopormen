@@ -6,7 +6,7 @@ use Exception;
 class BadRequestException extends Exception{
     private $status;
 
-    public function __construct($message, $status)
+    public function __construct(string $message, int $status = 400)
     {
         parent::__construct($message);
         $this->status = $status;

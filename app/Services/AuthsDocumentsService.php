@@ -12,22 +12,31 @@ use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Models\UserRequesting;
 use Illuminate\Http\UploadedFile;
 use App\Models\AuthsDocumentsViewModel;
-
+use App\Dtos\CreateMassiveAuthsDocumentsDto;
+use App\Dtos\TypeDocumentsAuthSplitDto;
+use App\Files\Domain\Pdf;
+use App\Files\Domain\SubRangeIndex;
+use App\Files\Ports\PdfJoinerPort;
+use App\Domain\DocumentKeyStorage;
+use App\Interfaces\StorageInterface;
 
 class AuthsDocumentsService extends BaseService
 {
     private AuthsDocumentsPort $repository;
-    private StorageService $storage;
+    private StorageInterface $storage;
+    private PdfJoinerPort $pdfJoiner;
     protected QueueService $queueService;
 
     public function __construct(
         AuthsDocumentsPort $repository,
         QueueService $queueService,
-        StorageService $storage
+        PdfJoinerPort $pdfJoiner,
+        StorageInterface $storage
     ) {
         parent::__construct($queueService);
         $this->repository = $repository;
         $this->queueService = $queueService;
+        $this->pdfJoiner = $pdfJoiner;
         $this->storage = $storage;
     }
     /**
@@ -43,9 +52,8 @@ class AuthsDocumentsService extends BaseService
             documentTypeId: $dto->getDocumentTypeId(),
             cedulaUser: $dto->getCedulaUser(),
             epsCode: $dto->getEpsCode(),
-            created_At: now()->toDateTimeString(),
-            clientCode: $dto->getClientCode(),
-            nameDocument: $dto->getNameDocument()
+            created_At: now()->format('Y-d-m H:i:s'),
+            clientCode: $dto->getClientCode()
 
         );
         $key=$this->storage->store($file, $documentCommand->buildkeyDocument());
@@ -59,6 +67,30 @@ class AuthsDocumentsService extends BaseService
 
         return $this->singUrl($response);
     }
+    /**
+     * @param CreateMassiveAuthsDocumentsDto $dto
+     * @return AuthsDocumentsViewModel[]
+     */
+    public function createFromOnlyDocument(CreateMassiveAuthsDocumentsDto $dto, Pdf $file): array
+    {
+        $docuemntsCollection = [];
+        $config = $dto->getTypeDocumentsAuthSplitDto();
+        foreach ($config as $item) {
+            $subRangeIndex = new SubRangeIndex($item->getStartIndex(), $item->getEndIndex());
+            $pdf= $this->pdfJoiner->splitBySubRange($file, $subRangeIndex);
+            $keyStorage = $this->loadSplitPdf($dto, $pdf);
+            $docuemntsCollection[] = $this->buildCommand($dto, $item, $keyStorage);
+        }
+        $this->repository->createMany($docuemntsCollection);
+        $dtoGet = new GetAuthsDocumentsDto(
+            n_autoriza: $dto->getNAutoriza(),
+            clientCode: $dto->getClientCode()
+        );
+        return $this->get($dtoGet);
+        
+
+    }
+                
     /**
      * @param GetAuthsDocumentsDto $dto
      * @return AuthsDocumentsViewModel[]
@@ -113,6 +145,27 @@ class AuthsDocumentsService extends BaseService
                 return $item->WithUrlSigned($url);
             },
             $documents
+        );
+    }
+    public function loadSplitPdf(CreateMassiveAuthsDocumentsDto $dto,Pdf $file): DocumentKeyStorage
+    {
+        $keyStorage = new DocumentKeyStorage(
+            clientCode: $dto->getClientCode(),
+            n_autoriza: $dto->getNAutoriza()
+        );
+        $this->storage->put($keyStorage, $file->getContent());
+        return $keyStorage;
+    }
+    private function buildCommand(CreateMassiveAuthsDocumentsDto $dto, TypeDocumentsAuthSplitDto $item, DocumentKeyStorage $keyStorage): AuthsDocumentsCommand
+    {
+        return new AuthsDocumentsCommand(
+            n_autoriza: $dto->getNAutoriza(),
+            documentTypeId: $item->getTypeDocumentId(),
+            cedulaUser: $dto->getCedulaUser(),
+            epsCode: $dto->getEpsCode(),
+            created_At: now()->format('Y-d-m H:i:s'),
+            clientCode: $dto->getClientCode(),
+            keyDocument: $keyStorage->getKey()
         );
     }
 }

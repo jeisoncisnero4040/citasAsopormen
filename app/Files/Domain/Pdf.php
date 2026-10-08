@@ -1,9 +1,9 @@
 <?php
 
 namespace App\Files\Domain;
+use App\Files\Concrats\Adaptable;
 
-
-class Pdf
+class Pdf implements Adaptable
 {
     private string $pdf;
 
@@ -19,5 +19,9 @@ class Pdf
     public function getContent(): string
     {
         return $this->pdf;
+    }
+    public function getExtension(): string
+    {
+        return 'pdf';
     }
 }

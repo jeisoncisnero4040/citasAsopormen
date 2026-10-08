@@ -25,6 +25,12 @@ interface AuthsDocumentsPort
      * @return \StdClass[]
      */
     public function getUtility():array;
-
+    
     public function delete(int $id): void;
+
+    /**
+     * @param AuthsDocumentsCommand[] $items
+     * @return void
+     */
+    public function createMany(array $items): void;
 }

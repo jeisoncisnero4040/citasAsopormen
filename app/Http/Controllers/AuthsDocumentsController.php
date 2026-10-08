@@ -10,6 +10,8 @@ use App\Models\AuthsDocumentsViewModel;
 use App\Serializers\AuthsDocumentsSerializer;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use App\Dtos\CreateMassiveAuthsDocumentsDto;
+use App\Adapters\PdfFileAdapter;
 
 class AuthsDocumentsController extends Controller
 {
@@ -67,5 +69,19 @@ class AuthsDocumentsController extends Controller
             data:$this->responseManager->success($response),
             status:200
         );
+    }
+    public function createMany(Request $request): JsonResponse
+    {
+        $adapter = new PdfFileAdapter();
+        $file = $request->file('document');
+        $userRequesting = $this->user();
+        $dto = CreateMassiveAuthsDocumentsDto::fromArray($request->all());
+        $pdfFile = $adapter->adapt($file);
+        $documents = $this->service->createFromOnlyDocument($dto, $pdfFile);
+        $response = array_map(
+            function (AuthsDocumentsViewModel $item) {return AuthsDocumentsSerializer::serialize($item);},
+            $documents
+        );
+        return response()->json($this->responseManager->created($response),201);
     }
 }

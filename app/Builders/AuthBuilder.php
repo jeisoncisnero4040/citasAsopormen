@@ -102,7 +102,7 @@ class AuthBuilder{
             userAdmision:$this->isTempory()?null:$this->userRequesting->getUsername(),
             dateAdmision:$this->isTempory()?null:Date::now(),
             isParticular: $this->createAuthDto->getIsParticular(),
-            mipressCode: new Code($this->createAuthDto->getIdMipress()),
+            mipressCode: $this->createAuthDto->getIdMipress() ? new Code($this->createAuthDto->getIdMipress()) : null,
         );
     }
 

@@ -72,4 +72,40 @@ class QueryBuilder
         $this->bindings  = array_merge($this->bindings, $values);
         return $this;
     }
+    public function withInsertMany(string $table,array $items,int $batchSize = 20): array {
+        if (empty($items)) {
+            return [];
+        }
+        $queries = [];
+        foreach (array_chunk($items, $batchSize) as $chunk) {
+            $query = new self();
+
+            $queries[] = $query->withInsertManyChunk($table,$chunk);
+        }
+
+        return $queries;
+    }
+    private function withInsertManyChunk(string $table,array $items ): self {
+        if (empty($items)) {
+            throw new \Exception('No se proporcionaron elementos para insertar.');
+        }
+        $columns = array_keys($items[0]);
+        $placeholders = '(' .
+            implode( ', ',array_fill(0, count($columns), '?')) .')';
+
+        $valuesPlaceholders = implode(', ', array_fill(0,count($items),$placeholders));
+
+        $this->baseQuery ="INSERT INTO {$table} (" . implode(', ', $columns) .") VALUES {$valuesPlaceholders}";
+
+        $this->bindings = [];
+
+        foreach ($items as $item) {
+            $this->bindings = [
+                ...$this->bindings,
+                ...array_values($item)
+            ];
+        }
+
+        return $this;
+    }
 }

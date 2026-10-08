@@ -11,21 +11,21 @@ class CreateAuthsDocumentsDto
     private string $cedula_usuario;
     private string $codigo_eps;
     private string $clientCode;   
-    private string $nameDocument;
+
     public function __construct(
         string $clientCode,
         string $n_autoriza,
         int $tipo_documento_id,
         string $cedula_usuario,
         string $codigo_eps,
-        string $nameDocument
+
     ) {
         $this->clientCode = $clientCode;
         $this->n_autoriza = $n_autoriza;
         $this->tipo_documento_id = $tipo_documento_id;
         $this->cedula_usuario = $cedula_usuario;
         $this->codigo_eps = $codigo_eps;
-        $this->nameDocument = $nameDocument;
+
 
     }
 
@@ -36,8 +36,7 @@ class CreateAuthsDocumentsDto
                 $data['n_autoriza'],
                 $data['tipo_documento_id'],
                 $data['cedula_usuario'],
-                $data['codigo_eps'],
-                $data['nameDocument']
+                $data['codigo_eps']
                 );
         }
     public function getNAutoriza(): string{return $this->n_autoriza;}
@@ -45,5 +44,5 @@ class CreateAuthsDocumentsDto
     public function getCedulaUser(): string{return $this->cedula_usuario;}
     public function getEpsCode(): string{return $this->codigo_eps;}
     public function getClientCode(): string{return $this->clientCode;}
-    public function getNameDocument(): string{return $this->nameDocument;}
+
 }

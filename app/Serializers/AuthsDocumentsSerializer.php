@@ -14,7 +14,7 @@ class AuthsDocumentsSerializer
             "tipo_documento_id" => $command->getDocumentTypeId(),
             "cedula_usuario" => $command->getCedulaUser(),
             "codigo_eps" => $command->getEpsCode(),
-            "sdt_fecha_registro" => $command->getCreatedAt(),
+            "fecha_registro" => $command->getCreatedAt(),
             "documento_path" => $command->getKeyDocument(),
             "historia" => $command->getClientCode()
         ];
@@ -45,7 +45,6 @@ class AuthsDocumentsSerializer
             epsCode:$data['codigo_eps'] ?? '',
             created_At:$data['fecha_registro'] ?? '',
             keyDocument:$data['documento_path'] ?? null,
-            nameDocument:$data['nameDocument'] ?? '',
             clientCode:$data['historia'] ?? ''
         );
         

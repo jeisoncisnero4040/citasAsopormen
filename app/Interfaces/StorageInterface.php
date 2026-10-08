@@ -3,6 +3,8 @@
 namespace App\Interfaces;
 
 use Illuminate\Http\UploadedFile;
+use App\Domain\KeyStorage;
+use App\Interfaces\Keyable;
 
 interface StorageInterface
 {
@@ -11,6 +13,8 @@ interface StorageInterface
     public function destroy(string $key): bool;
 
     public function signedUrl(string $key): string;
+
+    public function put(Keyable $key, string $contents): bool;
 
     public function replace(
         UploadedFile $file,
