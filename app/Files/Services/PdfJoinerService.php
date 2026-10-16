@@ -8,6 +8,7 @@ use App\Files\Domain\PdfCollection;
 use App\Files\Domain\Pdf;
 use App\Files\Domain\PdfExplitterIndexsCollection;
 use App\Files\Domain\SubRangeIndex;
+use App\Exceptions\CustomExceptions\ServerErrorException;
 
 class PdfJoinerService implements PdfJoinerPort
 {
@@ -119,13 +120,13 @@ class PdfJoinerService implements PdfJoinerPort
             $endPage = $range->getLastPage();
 
             if ($startPage < 1 || $endPage < $startPage) {
-                throw new \InvalidArgumentException(
+                throw new ServerErrorException(
                     "Rango de páginas inválido: {$startPage}-{$endPage}"
                 );
             }
 
             if ($startPage > $pageCount) {
-                throw new \InvalidArgumentException(
+                throw new ServerErrorException(
                     "La página inicial {$startPage} no existe. "
                     . "El PDF tiene {$pageCount} páginas."
                 );

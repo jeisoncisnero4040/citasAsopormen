@@ -130,7 +130,9 @@ class RequestClientConstants
         'discapacidad_tipo'=>'nullable',
         'cedula_user'=>'required|string',
         'user'=>'required|string',
-        'activo'=>'nullable'
+        'activo'=>'nullable',
+        'yaearsOld'=>'nullable',
+        'mountsOld'=>'nullable'
 
     ];
     const DATA_UPDATE_CLIENT = [...self::DATA_CREATE_CLIENT,'codigo'=>'required|string|min:10'];

@@ -27,9 +27,9 @@ use Illuminate\Support\Carbon;
 
 
 class ClientService extends BaseService{
-    private $responseManager;
-    private $emailService;
-    private $whatsappService;
+    private ResponseManager $responseManager;
+    private EmailService $emailService;
+    private WhatsappService $whatsappService;
     private ClientRepositoryInterface $clientRepo;
     private DistrictService $districtService;
     private StorageInterface $storage;

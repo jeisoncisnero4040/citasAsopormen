@@ -31,4 +31,7 @@ class TypeDocumentsAuthSplitDto
     {
         return $this->typeDocumentId;
     }
+    public function isDocumentUser():bool{
+        return $this->typeDocumentId === 1;
+    }
 }

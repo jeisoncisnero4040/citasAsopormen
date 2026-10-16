@@ -212,7 +212,7 @@ class ClientCommand implements Persistable
             'barrio'=>$this->neighborhood,
             'ciudad'=>$this->nameMunicipality,
             'telefono'=>$this->phone,
-            'regimen'=>'SIMPLIFICADO',
+            'regimen'=>'RÉGIMEN ORDINARIO',
             'pais'=>$this->country,
             'email'=>$this->email,
             'celular'=>$this->phone,

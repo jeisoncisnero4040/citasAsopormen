@@ -75,6 +75,10 @@ class AppServiceProvider extends ServiceProvider
             \App\Files\Services\PdfJoinerService::class
 
         );
+        $this->app->bind(
+            \App\Interfaces\ClientDocumentPort::class,
+            \App\Repositories\ClientDocumentRepository::class
+        );
     }
 
     /**

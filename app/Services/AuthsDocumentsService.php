@@ -7,6 +7,7 @@ use App\Dtos\CreateAuthsDocumentsDto;
 use App\Dtos\GetAuthsDocumentsDto;
 use App\Interfaces\AuthsDocumentsPort;
 use App\Commands\AuthsDocumentsCommand;
+use App\Domain\Code;
 use App\Exceptions\CustomExceptions\BadRequestException;
 use App\Exceptions\CustomExceptions\NotFoundException;
 use App\Models\UserRequesting;
@@ -19,6 +20,8 @@ use App\Files\Domain\SubRangeIndex;
 use App\Files\Ports\PdfJoinerPort;
 use App\Domain\DocumentKeyStorage;
 use App\Interfaces\StorageInterface;
+use App\Domain\DocumentClient;
+use App\Services\DocumentClientService;
 
 class AuthsDocumentsService extends BaseService
 {
@@ -26,18 +29,21 @@ class AuthsDocumentsService extends BaseService
     private StorageInterface $storage;
     private PdfJoinerPort $pdfJoiner;
     protected QueueService $queueService;
+    private DocumentClientService $documentClientService;
 
     public function __construct(
         AuthsDocumentsPort $repository,
         QueueService $queueService,
         PdfJoinerPort $pdfJoiner,
-        StorageInterface $storage
+        StorageInterface $storage,
+        DocumentClientService $documentClientService
     ) {
         parent::__construct($queueService);
         $this->repository = $repository;
         $this->queueService = $queueService;
         $this->pdfJoiner = $pdfJoiner;
         $this->storage = $storage;
+        $this->documentClientService = $documentClientService;
     }
     /**
      * @param CreateAuthsDocumentsDto $dto
@@ -74,13 +80,25 @@ class AuthsDocumentsService extends BaseService
     public function createFromOnlyDocument(CreateMassiveAuthsDocumentsDto $dto, Pdf $file): array
     {
         $docuemntsCollection = [];
+        $updatedClientDocument = false;
+
         $config = $dto->getTypeDocumentsAuthSplitDto();
-        foreach ($config as $item) {
+        foreach ($config as  $item) {
             $subRangeIndex = new SubRangeIndex($item->getStartIndex(), $item->getEndIndex());
             $pdf= $this->pdfJoiner->splitBySubRange($file, $subRangeIndex);
+            if($item->isDocumentUser()) {
+                $this->updateClientDocument($pdf, new Code($dto->getClientCode()));
+                $updatedClientDocument = true;
+                continue;
+            }
             $keyStorage = $this->loadSplitPdf($dto, $pdf);
             $docuemntsCollection[] = $this->buildCommand($dto, $item, $keyStorage);
         }
+
+        if ($updatedClientDocument && empty($docuemntsCollection)) {
+            return [];
+        }
+
         $this->repository->createMany($docuemntsCollection);
         $dtoGet = new GetAuthsDocumentsDto(
             n_autoriza: $dto->getNAutoriza(),
@@ -167,5 +185,13 @@ class AuthsDocumentsService extends BaseService
             clientCode: $dto->getClientCode(),
             keyDocument: $keyStorage->getKey()
         );
+    }
+    private function updateClientDocument(Pdf $file, Code $clientCode): void
+    {
+        $documentClient = new DocumentClient(
+            codeClient: $clientCode,
+            pdf: $file
+        );
+        $this->documentClientService->update($documentClient);
     }
 }
